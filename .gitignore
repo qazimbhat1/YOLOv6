@@ -122,3 +122,7 @@ coco/
 
 #weigths
 pretrained_models/
+
+
+#outputfile
+*.txt

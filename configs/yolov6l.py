@@ -30,7 +30,7 @@ model = dict(
         strides=[8, 16, 32],
         atss_warmup_epoch=0,
         iou_type='giou',
-        use_dfl=False,
+        use_dfl=True,
         reg_max=0, #if use_dfl is False, please set reg_max to 0
         distill_weight={
             'class': 2.0,
