@@ -115,3 +115,10 @@ venv.bak/
 *.onnx
 *.pt
 *.engine
+
+
+#dataset
+coco/
+
+#weigths
+pretrained_models/

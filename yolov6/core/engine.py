@@ -63,7 +63,7 @@ class Trainer:
             if self.args.fuse_ab:
                 LOGGER.error('ERROR in: Distill models should turn off the fuse_ab.\n')
                 exit()
-            self.teacher_model = self.get_teacher_model(args, cfg, teacher_config, self.num_classes, device)
+            self.teacher_model = self.get_teacher_model(args, teacher_config, self.num_classes, device)
         if self.args.quant:
             self.quant_setup(model, cfg, device)
         if cfg.training_mode == 'repopt':

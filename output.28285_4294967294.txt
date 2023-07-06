@@ -1,0 +1,1231 @@
+Using 1 GPU for training... 
+training args are: Namespace(batch_size=64, bs_per_gpu=32, calib=False, check_images=True, check_labels=True, conf_file='configs/yolov6l.py', data_path='data/coco.yaml', device='0', dist_url='env://', distill=False, distill_feat=False, epochs=300, eval_final_only=False, eval_interval=20, fuse_ab=True, gpu_count=0, heavy_eval_range=50, height=None, img_size=640, local_rank=-1, name='yolov6n_coco_l_teacher', output_dir='./runs/train', quant=False, rank=-1, rect=False, resume=False, save_ckpt_on_last_n_epoch=-1, save_dir='runs/train/yolov6n_coco_l_teacher', specific_shape=False, stop_aug_last_n_epoch=15, teacher_config='./configs/yolov6l.py', teacher_model_path=None, temperature=20, width=None, workers=8, world_size=1, write_trainbatch_tb=True)
+
+Model: Model(
+  (backbone): CSPBepBackbone(
+    (stem): ConvBNSiLU(
+      (block): ConvModule(
+        (conv): Conv2d(3, 64, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (bn): BatchNorm2d(64, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+        (act): SiLU(inplace=True)
+      )
+    )
+    (ERBlock_2): Sequential(
+      (0): ConvBNSiLU(
+        (block): ConvModule(
+          (conv): Conv2d(64, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+          (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+      (1): BepC3(
+        (cv1): ConvBNSiLU(
+          (block): ConvModule(
+            (conv): Conv2d(128, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn): BatchNorm2d(64, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+            (act): SiLU(inplace=True)
+          )
+        )
+        (cv2): ConvBNSiLU(
+          (block): ConvModule(
+            (conv): Conv2d(128, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn): BatchNorm2d(64, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+            (act): SiLU(inplace=True)
+          )
+        )
+        (cv3): ConvBNSiLU(
+          (block): ConvModule(
+            (conv): Conv2d(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+            (act): SiLU(inplace=True)
+          )
+        )
+        (m): RepBlock(
+          (conv1): BottleRep(
+            (conv1): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(64, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+            (conv2): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(64, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+          )
+          (block): Sequential(
+            (0): BottleRep(
+              (conv1): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(64, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+              (conv2): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(64, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+            )
+            (1): BottleRep(
+              (conv1): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(64, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+              (conv2): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(64, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+    (ERBlock_3): Sequential(
+      (0): ConvBNSiLU(
+        (block): ConvModule(
+          (conv): Conv2d(128, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+          (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+      (1): BepC3(
+        (cv1): ConvBNSiLU(
+          (block): ConvModule(
+            (conv): Conv2d(256, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+            (act): SiLU(inplace=True)
+          )
+        )
+        (cv2): ConvBNSiLU(
+          (block): ConvModule(
+            (conv): Conv2d(256, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+            (act): SiLU(inplace=True)
+          )
+        )
+        (cv3): ConvBNSiLU(
+          (block): ConvModule(
+            (conv): Conv2d(256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+            (act): SiLU(inplace=True)
+          )
+        )
+        (m): RepBlock(
+          (conv1): BottleRep(
+            (conv1): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+            (conv2): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+          )
+          (block): Sequential(
+            (0): BottleRep(
+              (conv1): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+              (conv2): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+            )
+            (1): BottleRep(
+              (conv1): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+              (conv2): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+            )
+            (2): BottleRep(
+              (conv1): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+              (conv2): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+            )
+            (3): BottleRep(
+              (conv1): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+              (conv2): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+            )
+            (4): BottleRep(
+              (conv1): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+              (conv2): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+    (ERBlock_4): Sequential(
+      (0): ConvBNSiLU(
+        (block): ConvModule(
+          (conv): Conv2d(256, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+          (bn): BatchNorm2d(512, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+      (1): BepC3(
+        (cv1): ConvBNSiLU(
+          (block): ConvModule(
+            (conv): Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+            (act): SiLU(inplace=True)
+          )
+        )
+        (cv2): ConvBNSiLU(
+          (block): ConvModule(
+            (conv): Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+            (act): SiLU(inplace=True)
+          )
+        )
+        (cv3): ConvBNSiLU(
+          (block): ConvModule(
+            (conv): Conv2d(512, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn): BatchNorm2d(512, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+            (act): SiLU(inplace=True)
+          )
+        )
+        (m): RepBlock(
+          (conv1): BottleRep(
+            (conv1): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+            (conv2): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+          )
+          (block): Sequential(
+            (0): BottleRep(
+              (conv1): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+              (conv2): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+            )
+            (1): BottleRep(
+              (conv1): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+              (conv2): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+            )
+            (2): BottleRep(
+              (conv1): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+              (conv2): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+            )
+            (3): BottleRep(
+              (conv1): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+              (conv2): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+            )
+            (4): BottleRep(
+              (conv1): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+              (conv2): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+            )
+            (5): BottleRep(
+              (conv1): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+              (conv2): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+            )
+            (6): BottleRep(
+              (conv1): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+              (conv2): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+            )
+            (7): BottleRep(
+              (conv1): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+              (conv2): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+    (ERBlock_5): Sequential(
+      (0): ConvBNSiLU(
+        (block): ConvModule(
+          (conv): Conv2d(512, 1024, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+          (bn): BatchNorm2d(1024, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+      (1): BepC3(
+        (cv1): ConvBNSiLU(
+          (block): ConvModule(
+            (conv): Conv2d(1024, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn): BatchNorm2d(512, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+            (act): SiLU(inplace=True)
+          )
+        )
+        (cv2): ConvBNSiLU(
+          (block): ConvModule(
+            (conv): Conv2d(1024, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn): BatchNorm2d(512, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+            (act): SiLU(inplace=True)
+          )
+        )
+        (cv3): ConvBNSiLU(
+          (block): ConvModule(
+            (conv): Conv2d(1024, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (bn): BatchNorm2d(1024, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+            (act): SiLU(inplace=True)
+          )
+        )
+        (m): RepBlock(
+          (conv1): BottleRep(
+            (conv1): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(512, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+            (conv2): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(512, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+          )
+          (block): Sequential(
+            (0): BottleRep(
+              (conv1): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(512, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+              (conv2): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(512, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+            )
+            (1): BottleRep(
+              (conv1): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(512, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+              (conv2): ConvBNSiLU(
+                (block): ConvModule(
+                  (conv): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                  (bn): BatchNorm2d(512, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                  (act): SiLU(inplace=True)
+                )
+              )
+            )
+          )
+        )
+      )
+      (2): SPPF(
+        (sppf): SPPFModule(
+          (cv1): ConvBNSiLU(
+            (block): ConvModule(
+              (conv): Conv2d(1024, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(512, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+              (act): SiLU(inplace=True)
+            )
+          )
+          (cv2): ConvBNSiLU(
+            (block): ConvModule(
+              (conv): Conv2d(2048, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+              (bn): BatchNorm2d(1024, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+              (act): SiLU(inplace=True)
+            )
+          )
+          (m): MaxPool2d(kernel_size=5, stride=1, padding=2, dilation=1, ceil_mode=False)
+        )
+      )
+    )
+  )
+  (neck): CSPRepBiFPANNeck(
+    (reduce_layer0): ConvBNReLU(
+      (block): ConvModule(
+        (conv): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+        (act): ReLU(inplace=True)
+      )
+    )
+    (Bifusion0): BiFusion(
+      (cv1): ConvBNReLU(
+        (block): ConvModule(
+          (conv): Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): ReLU(inplace=True)
+        )
+      )
+      (cv2): ConvBNReLU(
+        (block): ConvModule(
+          (conv): Conv2d(256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): ReLU(inplace=True)
+        )
+      )
+      (cv3): ConvBNReLU(
+        (block): ConvModule(
+          (conv): Conv2d(768, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): ReLU(inplace=True)
+        )
+      )
+      (upsample): Transpose(
+        (upsample_transpose): ConvTranspose2d(256, 256, kernel_size=(2, 2), stride=(2, 2))
+      )
+      (downsample): ConvBNReLU(
+        (block): ConvModule(
+          (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+          (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): ReLU(inplace=True)
+        )
+      )
+    )
+    (Rep_p4): BepC3(
+      (cv1): ConvBNSiLU(
+        (block): ConvModule(
+          (conv): Conv2d(256, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+      (cv2): ConvBNSiLU(
+        (block): ConvModule(
+          (conv): Conv2d(256, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+      (cv3): ConvBNSiLU(
+        (block): ConvModule(
+          (conv): Conv2d(256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+      (m): RepBlock(
+        (conv1): BottleRep(
+          (conv1): ConvBNSiLU(
+            (block): ConvModule(
+              (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+              (act): SiLU(inplace=True)
+            )
+          )
+          (conv2): ConvBNSiLU(
+            (block): ConvModule(
+              (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+              (act): SiLU(inplace=True)
+            )
+          )
+        )
+        (block): Sequential(
+          (0): BottleRep(
+            (conv1): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+            (conv2): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+          )
+          (1): BottleRep(
+            (conv1): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+            (conv2): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+          )
+          (2): BottleRep(
+            (conv1): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+            (conv2): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+          )
+          (3): BottleRep(
+            (conv1): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+            (conv2): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+          )
+          (4): BottleRep(
+            (conv1): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+            (conv2): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+          )
+        )
+      )
+    )
+    (reduce_layer1): ConvBNReLU(
+      (block): ConvModule(
+        (conv): Conv2d(256, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+        (act): ReLU(inplace=True)
+      )
+    )
+    (Bifusion1): BiFusion(
+      (cv1): ConvBNReLU(
+        (block): ConvModule(
+          (conv): Conv2d(256, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): ReLU(inplace=True)
+        )
+      )
+      (cv2): ConvBNReLU(
+        (block): ConvModule(
+          (conv): Conv2d(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): ReLU(inplace=True)
+        )
+      )
+      (cv3): ConvBNReLU(
+        (block): ConvModule(
+          (conv): Conv2d(384, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): ReLU(inplace=True)
+        )
+      )
+      (upsample): Transpose(
+        (upsample_transpose): ConvTranspose2d(128, 128, kernel_size=(2, 2), stride=(2, 2))
+      )
+      (downsample): ConvBNReLU(
+        (block): ConvModule(
+          (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+          (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): ReLU(inplace=True)
+        )
+      )
+    )
+    (Rep_p3): BepC3(
+      (cv1): ConvBNSiLU(
+        (block): ConvModule(
+          (conv): Conv2d(128, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): BatchNorm2d(64, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+      (cv2): ConvBNSiLU(
+        (block): ConvModule(
+          (conv): Conv2d(128, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): BatchNorm2d(64, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+      (cv3): ConvBNSiLU(
+        (block): ConvModule(
+          (conv): Conv2d(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+      (m): RepBlock(
+        (conv1): BottleRep(
+          (conv1): ConvBNSiLU(
+            (block): ConvModule(
+              (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (bn): BatchNorm2d(64, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+              (act): SiLU(inplace=True)
+            )
+          )
+          (conv2): ConvBNSiLU(
+            (block): ConvModule(
+              (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (bn): BatchNorm2d(64, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+              (act): SiLU(inplace=True)
+            )
+          )
+        )
+        (block): Sequential(
+          (0): BottleRep(
+            (conv1): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(64, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+            (conv2): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(64, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+          )
+          (1): BottleRep(
+            (conv1): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(64, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+            (conv2): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(64, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+          )
+          (2): BottleRep(
+            (conv1): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(64, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+            (conv2): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(64, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+          )
+          (3): BottleRep(
+            (conv1): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(64, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+            (conv2): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(64, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+          )
+          (4): BottleRep(
+            (conv1): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(64, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+            (conv2): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(64, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+          )
+        )
+      )
+    )
+    (downsample2): ConvBNReLU(
+      (block): ConvModule(
+        (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+        (act): ReLU(inplace=True)
+      )
+    )
+    (Rep_n3): BepC3(
+      (cv1): ConvBNSiLU(
+        (block): ConvModule(
+          (conv): Conv2d(256, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+      (cv2): ConvBNSiLU(
+        (block): ConvModule(
+          (conv): Conv2d(256, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+      (cv3): ConvBNSiLU(
+        (block): ConvModule(
+          (conv): Conv2d(256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+      (m): RepBlock(
+        (conv1): BottleRep(
+          (conv1): ConvBNSiLU(
+            (block): ConvModule(
+              (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+              (act): SiLU(inplace=True)
+            )
+          )
+          (conv2): ConvBNSiLU(
+            (block): ConvModule(
+              (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+              (act): SiLU(inplace=True)
+            )
+          )
+        )
+        (block): Sequential(
+          (0): BottleRep(
+            (conv1): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+            (conv2): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+          )
+          (1): BottleRep(
+            (conv1): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+            (conv2): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+          )
+          (2): BottleRep(
+            (conv1): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+            (conv2): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+          )
+          (3): BottleRep(
+            (conv1): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+            (conv2): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+          )
+          (4): BottleRep(
+            (conv1): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+            (conv2): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+          )
+        )
+      )
+    )
+    (downsample1): ConvBNReLU(
+      (block): ConvModule(
+        (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+        (act): ReLU(inplace=True)
+      )
+    )
+    (Rep_n4): BepC3(
+      (cv1): ConvBNSiLU(
+        (block): ConvModule(
+          (conv): Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+      (cv2): ConvBNSiLU(
+        (block): ConvModule(
+          (conv): Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+      (cv3): ConvBNSiLU(
+        (block): ConvModule(
+          (conv): Conv2d(512, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): BatchNorm2d(512, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+      (m): RepBlock(
+        (conv1): BottleRep(
+          (conv1): ConvBNSiLU(
+            (block): ConvModule(
+              (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+              (act): SiLU(inplace=True)
+            )
+          )
+          (conv2): ConvBNSiLU(
+            (block): ConvModule(
+              (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+              (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+              (act): SiLU(inplace=True)
+            )
+          )
+        )
+        (block): Sequential(
+          (0): BottleRep(
+            (conv1): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+            (conv2): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+          )
+          (1): BottleRep(
+            (conv1): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+            (conv2): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+          )
+          (2): BottleRep(
+            (conv1): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+            (conv2): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+          )
+          (3): BottleRep(
+            (conv1): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+            (conv2): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+          )
+          (4): BottleRep(
+            (conv1): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+            (conv2): ConvBNSiLU(
+              (block): ConvModule(
+                (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+                (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+                (act): SiLU(inplace=True)
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+  (detect): Detect(
+    (proj_conv): Conv2d(17, 1, kernel_size=(1, 1), stride=(1, 1), bias=False)
+    (stems): ModuleList(
+      (0): ConvBNSiLU(
+        (block): ConvModule(
+          (conv): Conv2d(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+      (1): ConvBNSiLU(
+        (block): ConvModule(
+          (conv): Conv2d(256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+      (2): ConvBNSiLU(
+        (block): ConvModule(
+          (conv): Conv2d(512, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (bn): BatchNorm2d(512, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+    )
+    (cls_convs): ModuleList(
+      (0): ConvBNSiLU(
+        (block): ConvModule(
+          (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+      (1): ConvBNSiLU(
+        (block): ConvModule(
+          (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+      (2): ConvBNSiLU(
+        (block): ConvModule(
+          (conv): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn): BatchNorm2d(512, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+    )
+    (reg_convs): ModuleList(
+      (0): ConvBNSiLU(
+        (block): ConvModule(
+          (conv): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn): BatchNorm2d(128, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+      (1): ConvBNSiLU(
+        (block): ConvModule(
+          (conv): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn): BatchNorm2d(256, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+      (2): ConvBNSiLU(
+        (block): ConvModule(
+          (conv): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn): BatchNorm2d(512, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+          (act): SiLU(inplace=True)
+        )
+      )
+    )
+    (cls_preds): ModuleList(
+      (0): Conv2d(128, 80, kernel_size=(1, 1), stride=(1, 1))
+      (1): Conv2d(256, 80, kernel_size=(1, 1), stride=(1, 1))
+      (2): Conv2d(512, 80, kernel_size=(1, 1), stride=(1, 1))
+    )
+    (reg_preds): ModuleList(
+      (0): Conv2d(128, 68, kernel_size=(1, 1), stride=(1, 1))
+      (1): Conv2d(256, 68, kernel_size=(1, 1), stride=(1, 1))
+      (2): Conv2d(512, 68, kernel_size=(1, 1), stride=(1, 1))
+    )
+    (cls_preds_ab): ModuleList(
+      (0): Conv2d(128, 240, kernel_size=(1, 1), stride=(1, 1))
+      (1): Conv2d(256, 240, kernel_size=(1, 1), stride=(1, 1))
+      (2): Conv2d(512, 240, kernel_size=(1, 1), stride=(1, 1))
+    )
+    (reg_preds_ab): ModuleList(
+      (0): Conv2d(128, 12, kernel_size=(1, 1), stride=(1, 1))
+      (1): Conv2d(256, 12, kernel_size=(1, 1), stride=(1, 1))
+      (2): Conv2d(512, 12, kernel_size=(1, 1), stride=(1, 1))
+    )
+  )
+)
+img record infomation path is:coco/images/.train2017_cache.json
+Train: Checking formats of images with 8 process(es): 
+  0%|          | 0/118287 [00:00<?, ?it/s]0 image(s) corrupted:   0%|          | 81/118287 [00:00<02:27, 802.41it/s]0 image(s) corrupted:   0%|          | 162/118287 [00:00<02:43, 723.97it/s]0 image(s) corrupted:   0%|          | 248/118287 [00:00<02:56, 667.09it/s]0 image(s) corrupted:   0%|          | 379/118287 [00:00<02:17, 859.63it/s]0 image(s) corrupted:   0%|          | 468/118287 [00:00<02:17, 855.90it/s]0 image(s) corrupted:   1%|          | 671/118287 [00:00<01:36, 1212.99it/s]0 image(s) corrupted:   1%|          | 796/118287 [00:00<01:49, 1068.16it/s]0 image(s) corrupted:   1%|          | 945/118287 [00:00<01:39, 1184.32it/s]0 image(s) corrupted:   1%|          | 1069/118287 [00:01<01:42, 1146.28it/s]0 image(s) corrupted:   1%|          | 1203/118287 [00:01<01:37, 1197.59it/s]0 image(s) corrupted:   1%|          | 1326/118287 [00:01<01:49, 1069.93it/s]0 image(s) corrupted:   1%|▏         | 1500/118287 [00:01<01:33, 1245.67it/s]0 image(s) corrupted:   1%|▏         | 1630/118287 [00:01<01:36, 1203.42it/s]0 image(s) corrupted:   2%|▏         | 1838/118287 [00:01<01:20, 1441.03it/s]0 image(s) corrupted:   2%|▏         | 1988/118287 [00:01<01:28, 1309.72it/s]0 image(s) corrupted:   2%|▏         | 2125/118287 [00:01<01:30, 1287.80it/s]0 image(s) corrupted:   2%|▏         | 2258/118287 [00:01<01:32, 1249.02it/s]0 image(s) corrupted:   2%|▏         | 2396/118287 [00:02<01:30, 1276.78it/s]0 image(s) corrupted:   2%|▏         | 2526/118287 [00:02<01:43, 1115.61it/s]0 image(s) corrupted:   2%|▏         | 2647/118287 [00:02<01:44, 1106.17it/s]0 image(s) corrupted:   2%|▏         | 2761/118287 [00:02<01:56, 993.05it/s] 0 image(s) corrupted:   2%|▏         | 2864/118287 [00:02<02:05, 917.66it/s]0 image(s) corrupted:   3%|▎         | 3016/118287 [00:02<02:00, 954.11it/s]0 image(s) corrupted:   3%|▎         | 3140/118287 [00:02<01:55, 992.79it/s]0 image(s) corrupted:   3%|▎         | 3242/118287 [00:03<02:40, 716.00it/s]0 image(s) corrupted:   3%|▎         | 3325/118287 [00:03<02:41, 711.48it/s]0 image(s) corrupted:   3%|▎         | 3404/118287 [00:03<03:18, 578.87it/s]0 image(s) corrupted:   3%|▎         | 3509/118287 [00:03<03:02, 628.87it/s]0 image(s) corrupted:   3%|▎         | 3579/118287 [00:03<03:21, 569.65it/s]0 image(s) corrupted:   3%|▎         | 3781/118287 [00:03<02:11, 868.57it/s]0 image(s) corrupted:   3%|▎         | 3884/118287 [00:04<02:14, 849.43it/s]0 image(s) corrupted:   3%|▎         | 3986/118287 [00:04<02:27, 777.07it/s]0 image(s) corrupted:   3%|▎         | 4072/118287 [00:04<02:24, 787.77it/s]0 image(s) corrupted:   4%|▎         | 4207/118287 [00:04<02:03, 923.66it/s]0 image(s) corrupted:   4%|▎         | 4308/118287 [00:04<02:00, 944.84it/s]0 image(s) corrupted:   4%|▎         | 4408/118287 [00:04<02:11, 867.31it/s]0 image(s) corrupted:   4%|▍         | 4500/118287 [00:04<02:40, 709.40it/s]0 image(s) corrupted:   4%|▍         | 4654/118287 [00:04<02:07, 889.89it/s]0 image(s) corrupted:   4%|▍         | 4780/118287 [00:05<01:55, 979.55it/s]0 image(s) corrupted:   4%|▍         | 4909/118287 [00:05<01:47, 1055.26it/s]0 image(s) corrupted:   4%|▍         | 5041/118287 [00:05<01:41, 1116.16it/s]0 image(s) corrupted:   4%|▍         | 5182/118287 [00:05<01:34, 1194.51it/s]0 image(s) corrupted:   4%|▍         | 5307/118287 [00:05<02:10, 863.44it/s] 0 image(s) corrupted:   5%|▍         | 5470/118287 [00:05<01:49, 1032.03it/s]0 image(s) corrupted:   5%|▍         | 5590/118287 [00:05<01:57, 961.05it/s] 0 image(s) corrupted:   5%|▍         | 5699/118287 [00:05<01:55, 972.59it/s]0 image(s) corrupted:   5%|▍         | 5806/118287 [00:06<02:03, 911.95it/s]0 image(s) corrupted:   5%|▍         | 5912/118287 [00:06<02:05, 892.40it/s]0 image(s) corrupted:   5%|▌         | 6061/118287 [00:06<01:47, 1039.56it/s]0 image(s) corrupted:   5%|▌         | 6172/118287 [00:06<01:59, 939.52it/s] 0 image(s) corrupted:   5%|▌         | 6338/118287 [00:06<01:55, 965.49it/s]0 image(s) corrupted:   5%|▌         | 6439/118287 [00:06<02:01, 917.56it/s]0 image(s) corrupted:   6%|▌         | 6533/118287 [00:06<02:05, 891.00it/s]0 image(s) corrupted:   6%|▌         | 6624/118287 [00:07<02:35, 720.04it/s]0 image(s) corrupted:   6%|▌         | 6752/118287 [00:07<02:13, 834.19it/s]0 image(s) corrupted:   6%|▌         | 6878/118287 [00:07<02:00, 928.30it/s]0 image(s) corrupted:   6%|▌         | 6978/118287 [00:07<02:08, 865.81it/s]0 image(s) corrupted:   6%|▌         | 7086/118287 [00:07<02:04, 894.67it/s]0 image(s) corrupted:   6%|▌         | 7223/118287 [00:07<01:49, 1014.83it/s]0 image(s) corrupted:   6%|▌         | 7340/118287 [00:07<01:45, 1055.72it/s]0 image(s) corrupted:   6%|▋         | 7450/118287 [00:07<01:48, 1018.27it/s]0 image(s) corrupted:   6%|▋         | 7555/118287 [00:07<02:03, 896.39it/s] 0 image(s) corrupted:   6%|▋         | 7649/118287 [00:08<02:34, 717.87it/s]0 image(s) corrupted:   7%|▋         | 7729/118287 [00:08<04:06, 449.14it/s]0 image(s) corrupted:   7%|▋         | 7791/118287 [00:08<05:10, 355.58it/s]0 image(s) corrupted:   7%|▋         | 7841/118287 [00:09<05:55, 311.08it/s]0 image(s) corrupted:   7%|▋         | 7882/118287 [00:09<08:23, 219.08it/s]0 image(s) corrupted:   7%|▋         | 7914/118287 [00:09<08:07, 226.52it/s]0 image(s) corrupted:   7%|▋         | 7945/118287 [00:09<08:02, 228.71it/s]0 image(s) corrupted:   7%|▋         | 7974/118287 [00:09<07:47, 236.08it/s]0 image(s) corrupted:   7%|▋         | 8026/118287 [00:10<07:09, 256.86it/s]0 image(s) corrupted:   7%|▋         | 8122/118287 [00:10<04:41, 390.81it/s]0 image(s) corrupted:   7%|▋         | 8196/118287 [00:10<03:56, 465.45it/s]0 image(s) corrupted:   7%|▋         | 8289/118287 [00:10<03:11, 574.10it/s]0 image(s) corrupted:   7%|▋         | 8479/118287 [00:10<02:01, 905.14it/s]0 image(s) corrupted:   7%|▋         | 8616/118287 [00:10<01:47, 1019.25it/s]0 image(s) corrupted:   7%|▋         | 8790/118287 [00:10<01:30, 1213.40it/s]0 image(s) corrupted:   8%|▊         | 8921/118287 [00:10<01:36, 1136.79it/s]0 image(s) corrupted:   8%|▊         | 9088/118287 [00:10<01:26, 1264.38it/s]0 image(s) corrupted:   8%|▊         | 9224/118287 [00:11<01:24, 1288.25it/s]0 image(s) corrupted:   8%|▊         | 9358/118287 [00:11<01:49, 991.81it/s] 0 image(s) corrupted:   8%|▊         | 9471/118287 [00:11<01:52, 968.65it/s]0 image(s) corrupted:   8%|▊         | 9619/118287 [00:11<01:39, 1091.05it/s]0 image(s) corrupted:   8%|▊         | 9760/118287 [00:11<01:33, 1156.87it/s]0 image(s) corrupted:   8%|▊         | 9890/118287 [00:11<01:32, 1174.92it/s]0 image(s) corrupted:   8%|▊         | 10013/118287 [00:11<01:36, 1125.38it/s]0 image(s) corrupted:   9%|▊         | 10130/118287 [00:11<01:45, 1028.09it/s]0 image(s) corrupted:   9%|▊         | 10299/118287 [00:12<01:31, 1176.79it/s]0 image(s) corrupted:   9%|▉         | 10421/118287 [00:12<01:44, 1032.89it/s]0 image(s) corrupted:   9%|▉         | 10530/118287 [00:12<01:45, 1023.73it/s]0 image(s) corrupted:   9%|▉         | 10700/118287 [00:12<01:43, 1041.18it/s]0 image(s) corrupted:   9%|▉         | 10862/118287 [00:12<01:31, 1171.91it/s]0 image(s) corrupted:   9%|▉         | 10984/118287 [00:12<01:32, 1161.51it/s]0 image(s) corrupted:   9%|▉         | 11122/118287 [00:12<01:34, 1129.11it/s]0 image(s) corrupted:  10%|▉         | 11238/118287 [00:12<01:47, 999.29it/s] 0 image(s) corrupted:  10%|▉         | 11342/118287 [00:13<02:28, 720.32it/s]0 image(s) corrupted:  10%|▉         | 11427/118287 [00:13<03:35, 496.20it/s]0 image(s) corrupted:  10%|▉         | 11494/118287 [00:13<03:57, 450.37it/s]0 image(s) corrupted:  10%|▉         | 11568/118287 [00:13<03:48, 467.09it/s]0 image(s) corrupted:  10%|▉         | 11624/118287 [00:14<04:09, 427.05it/s]0 image(s) corrupted:  10%|▉         | 11673/118287 [00:14<05:11, 341.86it/s]0 image(s) corrupted:  10%|▉         | 11732/118287 [00:14<04:55, 360.51it/s]0 image(s) corrupted:  10%|▉         | 11773/118287 [00:14<06:04, 292.50it/s]0 image(s) corrupted:  10%|█         | 11872/118287 [00:14<04:20, 408.89it/s]0 image(s) corrupted:  10%|█         | 11924/118287 [00:14<04:14, 418.32it/s]0 image(s) corrupted:  10%|█         | 11986/118287 [00:15<03:53, 455.62it/s]0 image(s) corrupted:  10%|█         | 12200/118287 [00:15<02:05, 845.60it/s]0 image(s) corrupted:  10%|█         | 12301/118287 [00:15<02:12, 802.81it/s]0 image(s) corrupted:  11%|█         | 12425/118287 [00:15<01:56, 907.74it/s]0 image(s) corrupted:  11%|█         | 12617/118287 [00:15<01:31, 1161.01it/s]0 image(s) corrupted:  11%|█         | 12744/118287 [00:15<01:31, 1149.35it/s]0 image(s) corrupted:  11%|█         | 12929/118287 [00:15<01:18, 1336.91it/s]0 image(s) corrupted:  11%|█         | 13070/118287 [00:15<01:18, 1341.51it/s]0 image(s) corrupted:  11%|█         | 13210/118287 [00:15<01:21, 1282.67it/s]0 image(s) corrupted:  11%|█▏        | 13346/118287 [00:16<01:20, 1298.19it/s]0 image(s) corrupted:  11%|█▏        | 13479/118287 [00:16<01:42, 1026.84it/s]0 image(s) corrupted:  12%|█▏        | 13621/118287 [00:16<01:34, 1102.37it/s]0 image(s) corrupted:  12%|█▏        | 13751/118287 [00:16<01:31, 1146.23it/s]0 image(s) corrupted:  12%|█▏        | 13873/118287 [00:16<01:46, 978.98it/s] 0 image(s) corrupted:  12%|█▏        | 13980/118287 [00:16<01:45, 989.81it/s]0 image(s) corrupted:  12%|█▏        | 14086/118287 [00:16<01:49, 950.41it/s]0 image(s) corrupted:  12%|█▏        | 14229/118287 [00:16<01:37, 1067.96it/s]0 image(s) corrupted:  12%|█▏        | 14341/118287 [00:17<01:39, 1049.62it/s]0 image(s) corrupted:  12%|█▏        | 14450/118287 [00:17<01:42, 1017.99it/s]0 image(s) corrupted:  12%|█▏        | 14579/118287 [00:17<01:36, 1072.89it/s]0 image(s) corrupted:  12%|█▏        | 14689/118287 [00:17<01:41, 1016.08it/s]0 image(s) corrupted:  13%|█▎        | 14808/118287 [00:17<01:37, 1060.08it/s]0 image(s) corrupted:  13%|█▎        | 14966/118287 [00:17<01:26, 1197.13it/s]0 image(s) corrupted:  13%|█▎        | 15088/118287 [00:17<01:50, 933.61it/s] 0 image(s) corrupted:  13%|█▎        | 15230/118287 [00:17<01:50, 934.69it/s]0 image(s) corrupted:  13%|█▎        | 15349/118287 [00:18<01:45, 971.57it/s]0 image(s) corrupted:  13%|█▎        | 15452/118287 [00:18<02:45, 620.60it/s]0 image(s) corrupted:  13%|█▎        | 15534/118287 [00:18<03:55, 436.94it/s]0 image(s) corrupted:  13%|█▎        | 15598/118287 [00:18<03:57, 432.20it/s]0 image(s) corrupted:  13%|█▎        | 15655/118287 [00:19<04:18, 396.74it/s]0 image(s) corrupted:  13%|█▎        | 15704/118287 [00:19<04:47, 357.41it/s]0 image(s) corrupted:  13%|█▎        | 15746/118287 [00:19<05:09, 331.04it/s]0 image(s) corrupted:  13%|█▎        | 15820/118287 [00:19<04:45, 358.99it/s]0 image(s) corrupted:  13%|█▎        | 15859/118287 [00:19<05:02, 339.01it/s]0 image(s) corrupted:  13%|█▎        | 15918/118287 [00:19<04:27, 383.29it/s]0 image(s) corrupted:  13%|█▎        | 15966/118287 [00:20<04:37, 368.82it/s]0 image(s) corrupted:  14%|█▎        | 16089/118287 [00:20<03:03, 557.94it/s]0 image(s) corrupted:  14%|█▎        | 16228/118287 [00:20<02:15, 753.04it/s]0 image(s) corrupted:  14%|█▍        | 16314/118287 [00:20<02:15, 754.79it/s]0 image(s) corrupted:  14%|█▍        | 16436/118287 [00:20<01:57, 869.60it/s]0 image(s) corrupted:  14%|█▍        | 16618/118287 [00:20<01:30, 1124.10it/s]0 image(s) corrupted:  14%|█▍        | 16738/118287 [00:20<01:35, 1058.28it/s]0 image(s) corrupted:  14%|█▍        | 16873/118287 [00:20<01:29, 1127.81it/s]0 image(s) corrupted:  14%|█▍        | 16991/118287 [00:21<01:56, 873.23it/s] 0 image(s) corrupted:  14%|█▍        | 17119/118287 [00:21<01:44, 965.40it/s]0 image(s) corrupted:  15%|█▍        | 17251/118287 [00:21<01:36, 1051.09it/s]0 image(s) corrupted:  15%|█▍        | 17366/118287 [00:21<01:35, 1054.62it/s]0 image(s) corrupted:  15%|█▍        | 17478/118287 [00:21<01:55, 870.60it/s] 0 image(s) corrupted:  15%|█▍        | 17575/118287 [00:21<01:53, 890.17it/s]0 image(s) corrupted:  15%|█▍        | 17672/118287 [00:21<01:56, 862.26it/s]0 image(s) corrupted:  15%|█▌        | 17844/118287 [00:21<01:33, 1070.58it/s]0 image(s) corrupted:  15%|█▌        | 17958/118287 [00:22<01:54, 874.03it/s] 0 image(s) corrupted:  15%|█▌        | 18056/118287 [00:22<02:05, 796.91it/s]0 image(s) corrupted:  15%|█▌        | 18144/118287 [00:22<02:07, 782.51it/s]0 image(s) corrupted:  15%|█▌        | 18228/118287 [00:22<02:08, 778.67it/s]0 image(s) corrupted:  16%|█▌        | 18374/118287 [00:22<01:45, 945.00it/s]0 image(s) corrupted:  16%|█▌        | 18475/118287 [00:22<02:19, 715.15it/s]0 image(s) corrupted:  16%|█▌        | 18644/118287 [00:22<01:47, 924.35it/s]0 image(s) corrupted:  16%|█▌        | 18759/118287 [00:22<01:48, 916.63it/s]0 image(s) corrupted:  16%|█▌        | 18875/118287 [00:23<01:54, 867.57it/s]0 image(s) corrupted:  16%|█▌        | 18970/118287 [00:23<02:30, 658.26it/s]0 image(s) corrupted:  16%|█▌        | 19048/118287 [00:23<03:49, 432.56it/s]0 image(s) corrupted:  16%|█▌        | 19109/118287 [00:23<03:48, 434.26it/s]0 image(s) corrupted:  16%|█▌        | 19165/118287 [00:24<04:09, 397.56it/s]0 image(s) corrupted:  16%|█▌        | 19213/118287 [00:24<04:01, 410.63it/s]0 image(s) corrupted:  16%|█▋        | 19263/118287 [00:24<04:02, 408.49it/s]0 image(s) corrupted:  16%|█▋        | 19385/118287 [00:24<03:04, 535.07it/s]0 image(s) corrupted:  17%|█▋        | 19530/118287 [00:24<02:24, 681.43it/s]0 image(s) corrupted:  17%|█▋        | 19618/118287 [00:24<02:16, 724.61it/s]0 image(s) corrupted:  17%|█▋        | 19722/118287 [00:24<02:05, 785.75it/s]0 image(s) corrupted:  17%|█▋        | 19814/118287 [00:24<02:00, 817.18it/s]0 image(s) corrupted:  17%|█▋        | 19900/118287 [00:24<01:59, 823.44it/s]0 image(s) corrupted:  17%|█▋        | 20050/118287 [00:25<01:37, 1006.55it/s]0 image(s) corrupted:  17%|█▋        | 20154/118287 [00:25<01:42, 956.20it/s] 0 image(s) corrupted:  17%|█▋        | 20307/118287 [00:25<01:28, 1107.00it/s]0 image(s) corrupted:  17%|█▋        | 20421/118287 [00:25<01:46, 917.43it/s] 0 image(s) corrupted:  17%|█▋        | 20639/118287 [00:25<01:19, 1228.61it/s]0 image(s) corrupted:  18%|█▊        | 20793/118287 [00:25<01:20, 1213.10it/s]0 image(s) corrupted:  18%|█▊        | 20923/118287 [00:25<01:24, 1150.74it/s]0 image(s) corrupted:  18%|█▊        | 21088/118287 [00:25<01:21, 1199.91it/s]0 image(s) corrupted:  18%|█▊        | 21266/118287 [00:26<01:12, 1346.38it/s]0 image(s) corrupted:  18%|█▊        | 21407/118287 [00:26<01:16, 1268.79it/s]0 image(s) corrupted:  18%|█▊        | 21556/118287 [00:26<01:24, 1148.84it/s]0 image(s) corrupted:  18%|█▊        | 21676/118287 [00:26<01:37, 988.20it/s] 0 image(s) corrupted:  18%|█▊        | 21823/118287 [00:26<01:27, 1097.40it/s]0 image(s) corrupted:  19%|█▊        | 21941/118287 [00:26<01:30, 1061.81it/s]0 image(s) corrupted:  19%|█▊        | 22053/118287 [00:26<01:34, 1018.98it/s]0 image(s) corrupted:  19%|█▊        | 22167/118287 [00:26<01:32, 1037.95it/s]0 image(s) corrupted:  19%|█▉        | 22274/118287 [00:27<01:35, 1004.91it/s]0 image(s) corrupted:  19%|█▉        | 22377/118287 [00:27<01:35, 1001.85it/s]0 image(s) corrupted:  19%|█▉        | 22479/118287 [00:27<02:01, 787.22it/s] 0 image(s) corrupted:  19%|█▉        | 22566/118287 [00:27<02:05, 762.94it/s]0 image(s) corrupted:  19%|█▉        | 22708/118287 [00:27<01:46, 894.44it/s]0 image(s) corrupted:  19%|█▉        | 22803/118287 [00:27<01:54, 831.51it/s]0 image(s) corrupted:  19%|█▉        | 22891/118287 [00:27<01:54, 831.41it/s]0 image(s) corrupted:  19%|█▉        | 22977/118287 [00:28<01:56, 815.39it/s]0 image(s) corrupted:  19%|█▉        | 23061/118287 [00:28<01:59, 795.25it/s]0 image(s) corrupted:  20%|█▉        | 23142/118287 [00:28<02:29, 637.08it/s]0 image(s) corrupted:  20%|█▉        | 23211/118287 [00:28<03:08, 503.28it/s]0 image(s) corrupted:  20%|█▉        | 23269/118287 [00:28<04:08, 382.52it/s]0 image(s) corrupted:  20%|█▉        | 23316/118287 [00:28<04:11, 378.31it/s]0 image(s) corrupted:  20%|█▉        | 23360/118287 [00:29<04:42, 336.27it/s]0 image(s) corrupted:  20%|█▉        | 23398/118287 [00:29<05:13, 302.72it/s]0 image(s) corrupted:  20%|█▉        | 23436/118287 [00:29<05:52, 268.99it/s]0 image(s) corrupted:  20%|█▉        | 23472/118287 [00:29<05:58, 264.48it/s]0 image(s) corrupted:  20%|█▉        | 23524/118287 [00:29<05:06, 309.63it/s]0 image(s) corrupted:  20%|█▉        | 23560/118287 [00:29<05:52, 268.64it/s]0 image(s) corrupted:  20%|█▉        | 23597/118287 [00:30<05:59, 263.38it/s]0 image(s) corrupted:  20%|█▉        | 23635/118287 [00:30<05:39, 278.76it/s]0 image(s) corrupted:  20%|██        | 23789/118287 [00:30<02:51, 551.46it/s]0 image(s) corrupted:  20%|██        | 23931/118287 [00:30<02:04, 757.13it/s]0 image(s) corrupted:  20%|██        | 24128/118287 [00:30<01:28, 1058.53it/s]0 image(s) corrupted:  21%|██        | 24299/118287 [00:30<01:22, 1141.30it/s]0 image(s) corrupted:  21%|██        | 24478/118287 [00:30<01:12, 1301.18it/s]0 image(s) corrupted:  21%|██        | 24616/118287 [00:30<01:14, 1256.00it/s]0 image(s) corrupted:  21%|██        | 24781/118287 [00:30<01:08, 1359.72it/s]0 image(s) corrupted:  21%|██        | 24922/118287 [00:31<01:09, 1351.07it/s]0 image(s) corrupted:  21%|██        | 25105/118287 [00:31<01:06, 1393.19it/s]0 image(s) corrupted:  21%|██▏       | 25247/118287 [00:31<01:16, 1217.20it/s]0 image(s) corrupted:  21%|██▏       | 25417/118287 [00:31<01:09, 1337.29it/s]0 image(s) corrupted:  22%|██▏       | 25619/118287 [00:31<01:09, 1337.48it/s]0 image(s) corrupted:  22%|██▏       | 25757/118287 [00:31<01:14, 1243.14it/s]0 image(s) corrupted:  22%|██▏       | 25909/118287 [00:31<01:10, 1310.40it/s]0 image(s) corrupted:  22%|██▏       | 26044/118287 [00:32<01:27, 1049.28it/s]0 image(s) corrupted:  22%|██▏       | 26159/118287 [00:32<01:36, 953.23it/s] 0 image(s) corrupted:  22%|██▏       | 26262/118287 [00:32<01:45, 870.46it/s]0 image(s) corrupted:  22%|██▏       | 26355/118287 [00:32<02:04, 740.61it/s]0 image(s) corrupted:  22%|██▏       | 26435/118287 [00:32<02:03, 743.75it/s]0 image(s) corrupted:  22%|██▏       | 26590/118287 [00:32<01:40, 914.01it/s]0 image(s) corrupted:  23%|██▎       | 26719/118287 [00:32<01:33, 975.12it/s]0 image(s) corrupted:  23%|██▎       | 26872/118287 [00:32<01:25, 1071.88it/s]0 image(s) corrupted:  23%|██▎       | 26984/118287 [00:33<01:31, 993.99it/s] 0 image(s) corrupted:  23%|██▎       | 27088/118287 [00:33<01:40, 904.78it/s]0 image(s) corrupted:  23%|██▎       | 27182/118287 [00:33<02:53, 523.93it/s]0 image(s) corrupted:  23%|██▎       | 27255/118287 [00:34<03:56, 384.57it/s]0 image(s) corrupted:  23%|██▎       | 27312/118287 [00:34<05:00, 302.29it/s]0 image(s) corrupted:  23%|██▎       | 27395/118287 [00:34<04:23, 345.08it/s]0 image(s) corrupted:  23%|██▎       | 27443/118287 [00:34<04:49, 313.72it/s]0 image(s) corrupted:  23%|██▎       | 27594/118287 [00:34<03:03, 495.59it/s]0 image(s) corrupted:  23%|██▎       | 27667/118287 [00:34<02:50, 530.76it/s]0 image(s) corrupted:  23%|██▎       | 27739/118287 [00:35<02:55, 516.34it/s]0 image(s) corrupted:  24%|██▎       | 27877/118287 [00:35<02:10, 691.57it/s]0 image(s) corrupted:  24%|██▎       | 28007/118287 [00:35<01:49, 826.87it/s]0 image(s) corrupted:  24%|██▍       | 28106/118287 [00:35<01:44, 860.32it/s]0 image(s) corrupted:  24%|██▍       | 28204/118287 [00:35<02:06, 714.26it/s]0 image(s) corrupted:  24%|██▍       | 28381/118287 [00:35<01:34, 954.49it/s]0 image(s) corrupted:  24%|██▍       | 28493/118287 [00:35<01:31, 976.14it/s]0 image(s) corrupted:  24%|██▍       | 28603/118287 [00:35<01:45, 853.81it/s]0 image(s) corrupted:  24%|██▍       | 28699/118287 [00:36<02:00, 740.44it/s]0 image(s) corrupted:  24%|██▍       | 28783/118287 [00:36<02:02, 732.51it/s]0 image(s) corrupted:  24%|██▍       | 28863/118287 [00:36<02:03, 724.57it/s]0 image(s) corrupted:  24%|██▍       | 28950/118287 [00:36<01:57, 759.81it/s]0 image(s) corrupted:  25%|██▍       | 29030/118287 [00:36<02:16, 654.98it/s]0 image(s) corrupted:  25%|██▍       | 29101/118287 [00:36<02:22, 628.00it/s]0 image(s) corrupted:  25%|██▍       | 29267/118287 [00:36<01:45, 842.86it/s]0 image(s) corrupted:  25%|██▍       | 29356/118287 [00:37<01:49, 810.32it/s]0 image(s) corrupted:  25%|██▍       | 29440/118287 [00:37<02:03, 719.57it/s]0 image(s) corrupted:  25%|██▌       | 29623/118287 [00:37<01:29, 986.17it/s]0 image(s) corrupted:  25%|██▌       | 29787/118287 [00:37<01:26, 1022.56it/s]0 image(s) corrupted:  25%|██▌       | 29895/118287 [00:37<01:42, 862.59it/s] 0 image(s) corrupted:  25%|██▌       | 30082/118287 [00:37<01:21, 1087.25it/s]0 image(s) corrupted:  26%|██▌       | 30203/118287 [00:37<01:33, 942.59it/s] 0 image(s) corrupted:  26%|██▌       | 30400/118287 [00:37<01:15, 1167.56it/s]0 image(s) corrupted:  26%|██▌       | 30565/118287 [00:38<01:08, 1284.11it/s]0 image(s) corrupted:  26%|██▌       | 30741/118287 [00:38<01:02, 1406.78it/s]0 image(s) corrupted:  26%|██▌       | 30893/118287 [00:38<01:44, 836.82it/s] 0 image(s) corrupted:  26%|██▌       | 31012/118287 [00:39<02:39, 546.38it/s]0 image(s) corrupted:  26%|██▋       | 31103/118287 [00:39<03:22, 431.60it/s]0 image(s) corrupted:  26%|██▋       | 31174/118287 [00:39<03:17, 441.42it/s]0 image(s) corrupted:  27%|██▋       | 31371/118287 [00:39<02:12, 657.73it/s]0 image(s) corrupted:  27%|██▋       | 31534/118287 [00:39<01:51, 775.19it/s]0 image(s) corrupted:  27%|██▋       | 31642/118287 [00:39<01:47, 808.19it/s]0 image(s) corrupted:  27%|██▋       | 31838/118287 [00:39<01:22, 1041.97it/s]0 image(s) corrupted:  27%|██▋       | 32003/118287 [00:40<01:15, 1136.66it/s]0 image(s) corrupted:  27%|██▋       | 32188/118287 [00:40<01:06, 1303.47it/s]0 image(s) corrupted:  27%|██▋       | 32356/118287 [00:40<01:01, 1394.83it/s]0 image(s) corrupted:  28%|██▊       | 32553/118287 [00:40<00:55, 1545.98it/s]0 image(s) corrupted:  28%|██▊       | 32720/118287 [00:40<01:09, 1223.99it/s]0 image(s) corrupted:  28%|██▊       | 32878/118287 [00:40<01:08, 1248.68it/s]0 image(s) corrupted:  28%|██▊       | 33050/118287 [00:40<01:02, 1361.86it/s]0 image(s) corrupted:  28%|██▊       | 33199/118287 [00:40<01:07, 1264.71it/s]0 image(s) corrupted:  28%|██▊       | 33335/118287 [00:41<01:10, 1196.58it/s]0 image(s) corrupted:  28%|██▊       | 33462/118287 [00:41<01:25, 988.07it/s] 0 image(s) corrupted:  28%|██▊       | 33571/118287 [00:41<01:28, 951.94it/s]0 image(s) corrupted:  28%|██▊       | 33673/118287 [00:41<01:34, 895.47it/s]0 image(s) corrupted:  29%|██▊       | 33798/118287 [00:41<01:33, 904.03it/s]0 image(s) corrupted:  29%|██▊       | 33966/118287 [00:41<01:20, 1043.44it/s]0 image(s) corrupted:  29%|██▉       | 34117/118287 [00:41<01:13, 1147.39it/s]0 image(s) corrupted:  29%|██▉       | 34281/118287 [00:42<01:06, 1264.43it/s]0 image(s) corrupted:  29%|██▉       | 34479/118287 [00:42<00:57, 1454.49it/s]0 image(s) corrupted:  29%|██▉       | 34631/118287 [00:42<01:12, 1160.56it/s]0 image(s) corrupted:  29%|██▉       | 34760/118287 [00:42<01:23, 1001.52it/s]0 image(s) corrupted:  29%|██▉       | 34872/118287 [00:42<01:34, 887.08it/s] 0 image(s) corrupted:  30%|██▉       | 34970/118287 [00:42<01:42, 813.94it/s]0 image(s) corrupted:  30%|██▉       | 35125/118287 [00:42<01:30, 916.55it/s]0 image(s) corrupted:  30%|██▉       | 35245/118287 [00:43<01:25, 976.41it/s]0 image(s) corrupted:  30%|██▉       | 35349/118287 [00:43<01:35, 865.57it/s]0 image(s) corrupted:  30%|██▉       | 35442/118287 [00:43<01:50, 750.77it/s]0 image(s) corrupted:  30%|███       | 35523/118287 [00:43<02:32, 540.99it/s]0 image(s) corrupted:  30%|███       | 35588/118287 [00:43<03:23, 407.02it/s]0 image(s) corrupted:  30%|███       | 35640/118287 [00:44<03:24, 404.48it/s]0 image(s) corrupted:  30%|███       | 35689/118287 [00:44<04:36, 298.98it/s]0 image(s) corrupted:  30%|███       | 35736/118287 [00:44<04:26, 309.77it/s]0 image(s) corrupted:  30%|███       | 35798/118287 [00:44<04:28, 307.36it/s]0 image(s) corrupted:  30%|███       | 35834/118287 [00:44<04:28, 307.00it/s]0 image(s) corrupted:  30%|███       | 35868/118287 [00:45<04:40, 293.78it/s]0 image(s) corrupted:  30%|███       | 35910/118287 [00:45<04:38, 296.01it/s]0 image(s) corrupted:  30%|███       | 35998/118287 [00:45<03:16, 418.50it/s]0 image(s) corrupted:  31%|███       | 36137/118287 [00:45<02:08, 641.49it/s]0 image(s) corrupted:  31%|███       | 36243/118287 [00:45<01:50, 745.51it/s]0 image(s) corrupted:  31%|███       | 36381/118287 [00:45<01:30, 909.58it/s]0 image(s) corrupted:  31%|███       | 36497/118287 [00:45<01:23, 974.39it/s]0 image(s) corrupted:  31%|███       | 36602/118287 [00:45<01:23, 979.89it/s]0 image(s) corrupted:  31%|███       | 36705/118287 [00:45<01:22, 993.14it/s]0 image(s) corrupted:  31%|███       | 36808/118287 [00:46<01:29, 912.07it/s]0 image(s) corrupted:  31%|███       | 36903/118287 [00:46<01:29, 906.90it/s]0 image(s) corrupted:  31%|███▏      | 37005/118287 [00:46<01:29, 910.54it/s]0 image(s) corrupted:  31%|███▏      | 37148/118287 [00:46<01:17, 1042.95it/s]0 image(s) corrupted:  32%|███▏      | 37315/118287 [00:46<01:06, 1216.42it/s]0 image(s) corrupted:  32%|███▏      | 37466/118287 [00:46<01:02, 1299.65it/s]0 image(s) corrupted:  32%|███▏      | 37599/118287 [00:46<01:04, 1241.98it/s]0 image(s) corrupted:  32%|███▏      | 37772/118287 [00:46<00:59, 1363.31it/s]0 image(s) corrupted:  32%|███▏      | 37911/118287 [00:46<01:02, 1286.39it/s]0 image(s) corrupted:  32%|███▏      | 38042/118287 [00:47<01:18, 1015.93it/s]0 image(s) corrupted:  32%|███▏      | 38154/118287 [00:47<01:17, 1035.96it/s]0 image(s) corrupted:  32%|███▏      | 38354/118287 [00:47<01:04, 1244.54it/s]0 image(s) corrupted:  33%|███▎      | 38486/118287 [00:47<01:03, 1263.27it/s]0 image(s) corrupted:  33%|███▎      | 38618/118287 [00:47<01:13, 1083.57it/s]0 image(s) corrupted:  33%|███▎      | 38734/118287 [00:47<01:17, 1022.02it/s]0 image(s) corrupted:  33%|███▎      | 38842/118287 [00:47<01:23, 950.79it/s] 0 image(s) corrupted:  33%|███▎      | 38997/118287 [00:47<01:12, 1093.56it/s]0 image(s) corrupted:  33%|███▎      | 39147/118287 [00:48<01:07, 1178.33it/s]0 image(s) corrupted:  33%|███▎      | 39270/118287 [00:48<01:08, 1160.78it/s]0 image(s) corrupted:  33%|███▎      | 39449/118287 [00:48<00:59, 1323.91it/s]0 image(s) corrupted:  33%|███▎      | 39586/118287 [00:48<02:13, 591.31it/s] 0 image(s) corrupted:  34%|███▎      | 39689/118287 [00:49<02:41, 485.41it/s]0 image(s) corrupted:  34%|███▎      | 39771/118287 [00:49<03:22, 388.53it/s]0 image(s) corrupted:  34%|███▎      | 39835/118287 [00:49<03:38, 359.68it/s]0 image(s) corrupted:  34%|███▎      | 39907/118287 [00:49<03:13, 406.06it/s]0 image(s) corrupted:  34%|███▍      | 39965/118287 [00:50<03:32, 367.97it/s]0 image(s) corrupted:  34%|███▍      | 40014/118287 [00:50<03:56, 330.38it/s]0 image(s) corrupted:  34%|███▍      | 40083/118287 [00:50<03:20, 389.17it/s]0 image(s) corrupted:  34%|███▍      | 40252/118287 [00:50<02:16, 572.41it/s]0 image(s) corrupted:  34%|███▍      | 40404/118287 [00:50<01:42, 756.16it/s]0 image(s) corrupted:  34%|███▍      | 40541/118287 [00:50<01:27, 886.97it/s]0 image(s) corrupted:  34%|███▍      | 40687/118287 [00:50<01:17, 1000.37it/s]0 image(s) corrupted:  34%|███▍      | 40803/118287 [00:50<01:16, 1015.82it/s]0 image(s) corrupted:  35%|███▍      | 40914/118287 [00:51<01:21, 949.24it/s] 0 image(s) corrupted:  35%|███▍      | 41016/118287 [00:51<01:24, 917.30it/s]0 image(s) corrupted:  35%|███▍      | 41130/118287 [00:51<01:19, 964.76it/s]0 image(s) corrupted:  35%|███▍      | 41296/118287 [00:51<01:07, 1146.13it/s]0 image(s) corrupted:  35%|███▌      | 41416/118287 [00:51<01:10, 1093.23it/s]0 image(s) corrupted:  35%|███▌      | 41530/118287 [00:51<01:12, 1053.42it/s]0 image(s) corrupted:  35%|███▌      | 41703/118287 [00:51<01:02, 1234.29it/s]0 image(s) corrupted:  35%|███▌      | 41867/118287 [00:51<01:00, 1260.72it/s]0 image(s) corrupted:  36%|███▌      | 41996/118287 [00:52<01:03, 1198.42it/s]0 image(s) corrupted:  36%|███▌      | 42118/118287 [00:52<01:14, 1023.95it/s]0 image(s) corrupted:  36%|███▌      | 42293/118287 [00:52<01:03, 1192.82it/s]0 image(s) corrupted:  36%|███▌      | 42420/118287 [00:52<01:13, 1026.12it/s]0 image(s) corrupted:  36%|███▌      | 42617/118287 [00:52<01:03, 1198.99it/s]0 image(s) corrupted:  36%|███▌      | 42745/118287 [00:52<01:03, 1192.98it/s]0 image(s) corrupted:  36%|███▋      | 42894/118287 [00:52<00:59, 1266.87it/s]0 image(s) corrupted:  36%|███▋      | 43026/118287 [00:52<01:03, 1190.92it/s]0 image(s) corrupted:  36%|███▋      | 43149/118287 [00:53<01:11, 1049.37it/s]0 image(s) corrupted:  37%|███▋      | 43259/118287 [00:53<01:13, 1018.12it/s]0 image(s) corrupted:  37%|███▋      | 43364/118287 [00:53<01:25, 871.91it/s] 0 image(s) corrupted:  37%|███▋      | 43457/118287 [00:53<01:45, 707.46it/s]0 image(s) corrupted:  37%|███▋      | 43535/118287 [00:53<02:10, 573.88it/s]0 image(s) corrupted:  37%|███▋      | 43601/118287 [00:53<02:28, 503.39it/s]0 image(s) corrupted:  37%|███▋      | 43657/118287 [00:54<02:39, 468.18it/s]0 image(s) corrupted:  37%|███▋      | 43708/118287 [00:54<02:55, 425.54it/s]0 image(s) corrupted:  37%|███▋      | 43828/118287 [00:54<02:07, 581.93it/s]0 image(s) corrupted:  37%|███▋      | 43896/118287 [00:54<02:10, 568.31it/s]0 image(s) corrupted:  37%|███▋      | 43960/118287 [00:54<02:16, 543.28it/s]0 image(s) corrupted:  37%|███▋      | 44081/118287 [00:54<01:54, 649.34it/s]0 image(s) corrupted:  37%|███▋      | 44177/118287 [00:54<01:42, 722.62it/s]0 image(s) corrupted:  37%|███▋      | 44348/118287 [00:54<01:17, 948.67it/s]0 image(s) corrupted:  38%|███▊      | 44522/118287 [00:55<01:03, 1154.82it/s]0 image(s) corrupted:  38%|███▊      | 44645/118287 [00:55<01:03, 1163.75it/s]0 image(s) corrupted:  38%|███▊      | 44790/118287 [00:55<00:59, 1242.11it/s]0 image(s) corrupted:  38%|███▊      | 44919/118287 [00:55<00:58, 1253.34it/s]0 image(s) corrupted:  38%|███▊      | 45062/118287 [00:55<00:56, 1296.90it/s]0 image(s) corrupted:  38%|███▊      | 45225/118287 [00:55<00:53, 1365.75it/s]0 image(s) corrupted:  38%|███▊      | 45363/118287 [00:55<01:04, 1134.88it/s]0 image(s) corrupted:  38%|███▊      | 45484/118287 [00:55<01:09, 1047.60it/s]0 image(s) corrupted:  39%|███▊      | 45630/118287 [00:56<01:09, 1042.00it/s]0 image(s) corrupted:  39%|███▉      | 45858/118287 [00:56<00:53, 1342.59it/s]0 image(s) corrupted:  39%|███▉      | 46003/118287 [00:56<00:56, 1281.69it/s]0 image(s) corrupted:  39%|███▉      | 46152/118287 [00:56<00:56, 1270.62it/s]0 image(s) corrupted:  39%|███▉      | 46338/118287 [00:56<00:52, 1374.37it/s]0 image(s) corrupted:  39%|███▉      | 46480/118287 [00:56<00:54, 1314.85it/s]0 image(s) corrupted:  39%|███▉      | 46615/118287 [00:56<00:56, 1278.15it/s]0 image(s) corrupted:  40%|███▉      | 46765/118287 [00:56<00:53, 1334.25it/s]0 image(s) corrupted:  40%|███▉      | 46901/118287 [00:56<00:55, 1288.67it/s]0 image(s) corrupted:  40%|███▉      | 47042/118287 [00:57<00:54, 1295.59it/s]0 image(s) corrupted:  40%|███▉      | 47173/118287 [00:57<00:55, 1286.88it/s]0 image(s) corrupted:  40%|███▉      | 47303/118287 [00:57<01:08, 1028.94it/s]0 image(s) corrupted:  40%|████      | 47415/118287 [00:57<01:12, 977.58it/s] 0 image(s) corrupted:  40%|████      | 47519/118287 [00:57<01:14, 949.09it/s]0 image(s) corrupted:  40%|████      | 47724/118287 [00:57<01:04, 1099.89it/s]0 image(s) corrupted:  40%|████      | 47836/118287 [00:57<01:06, 1063.98it/s]0 image(s) corrupted:  41%|████      | 47943/118287 [00:58<01:15, 929.76it/s] 0 image(s) corrupted:  41%|████      | 48066/118287 [00:58<01:10, 1000.26it/s]0 image(s) corrupted:  41%|████      | 48212/118287 [00:58<01:02, 1116.56it/s]0 image(s) corrupted:  41%|████      | 48329/118287 [00:58<01:08, 1022.74it/s]0 image(s) corrupted:  41%|████      | 48436/118287 [00:58<01:48, 645.39it/s] 0 image(s) corrupted:  41%|████      | 48521/118287 [00:59<02:37, 443.52it/s]0 image(s) corrupted:  41%|████      | 48587/118287 [00:59<02:55, 398.02it/s]0 image(s) corrupted:  41%|████      | 48642/118287 [00:59<02:59, 388.59it/s]0 image(s) corrupted:  41%|████      | 48691/118287 [00:59<03:32, 327.18it/s]0 image(s) corrupted:  41%|████      | 48732/118287 [01:00<04:22, 265.39it/s]0 image(s) corrupted:  41%|████▏     | 48837/118287 [01:00<03:01, 382.90it/s]0 image(s) corrupted:  41%|████▏     | 49000/118287 [01:00<02:00, 577.00it/s]0 image(s) corrupted:  42%|████▏     | 49198/118287 [01:00<01:21, 849.44it/s]0 image(s) corrupted:  42%|████▏     | 49377/118287 [01:00<01:05, 1053.32it/s]0 image(s) corrupted:  42%|████▏     | 49561/118287 [01:00<01:00, 1129.92it/s]0 image(s) corrupted:  42%|████▏     | 49769/118287 [01:00<00:55, 1223.70it/s]0 image(s) corrupted:  42%|████▏     | 49905/118287 [01:00<00:55, 1226.26it/s]0 image(s) corrupted:  42%|████▏     | 50037/118287 [01:00<00:56, 1203.40it/s]0 image(s) corrupted:  42%|████▏     | 50234/118287 [01:01<00:49, 1380.49it/s]0 image(s) corrupted:  43%|████▎     | 50379/118287 [01:01<00:49, 1378.47it/s]0 image(s) corrupted:  43%|████▎     | 50522/118287 [01:01<00:53, 1268.09it/s]0 image(s) corrupted:  43%|████▎     | 50684/118287 [01:01<00:49, 1359.29it/s]0 image(s) corrupted:  43%|████▎     | 50825/118287 [01:01<01:04, 1045.67it/s]0 image(s) corrupted:  43%|████▎     | 50979/118287 [01:01<00:58, 1156.49it/s]0 image(s) corrupted:  43%|████▎     | 51108/118287 [01:01<01:03, 1061.46it/s]0 image(s) corrupted:  43%|████▎     | 51224/118287 [01:02<01:11, 933.30it/s] 0 image(s) corrupted:  43%|████▎     | 51400/118287 [01:02<00:59, 1120.10it/s]0 image(s) corrupted:  44%|████▎     | 51600/118287 [01:02<00:49, 1335.02it/s]0 image(s) corrupted:  44%|████▎     | 51747/118287 [01:02<00:48, 1366.41it/s]0 image(s) corrupted:  44%|████▍     | 51894/118287 [01:02<00:48, 1377.48it/s]0 image(s) corrupted:  44%|████▍     | 52039/118287 [01:02<01:01, 1084.49it/s]0 image(s) corrupted:  44%|████▍     | 52162/118287 [01:02<01:11, 929.01it/s] 0 image(s) corrupted:  44%|████▍     | 52296/118287 [01:02<01:04, 1016.61it/s]0 image(s) corrupted:  44%|████▍     | 52422/118287 [01:03<01:01, 1070.79it/s]0 image(s) corrupted:  44%|████▍     | 52612/118287 [01:03<00:51, 1278.33it/s]0 image(s) corrupted:  45%|████▍     | 52751/118287 [01:03<00:56, 1152.81it/s]0 image(s) corrupted:  45%|████▍     | 52876/118287 [01:03<01:07, 968.45it/s] 0 image(s) corrupted:  45%|████▍     | 52984/118287 [01:03<02:03, 527.15it/s]0 image(s) corrupted:  45%|████▍     | 53066/118287 [01:04<02:03, 529.88it/s]0 image(s) corrupted:  45%|████▍     | 53140/118287 [01:04<02:17, 472.22it/s]0 image(s) corrupted:  45%|████▌     | 53239/118287 [01:04<02:13, 487.97it/s]0 image(s) corrupted:  45%|████▌     | 53333/118287 [01:04<01:55, 564.18it/s]0 image(s) corrupted:  45%|████▌     | 53524/118287 [01:04<01:27, 743.57it/s]0 image(s) corrupted:  45%|████▌     | 53737/118287 [01:04<01:03, 1014.88it/s]0 image(s) corrupted:  46%|████▌     | 53962/118287 [01:04<00:50, 1285.23it/s]0 image(s) corrupted:  46%|████▌     | 54180/118287 [01:05<00:42, 1496.58it/s]0 image(s) corrupted:  46%|████▌     | 54352/118287 [01:05<00:53, 1189.31it/s]0 image(s) corrupted:  46%|████▌     | 54507/118287 [01:05<00:53, 1196.97it/s]0 image(s) corrupted:  46%|████▌     | 54644/118287 [01:05<00:55, 1148.83it/s]0 image(s) corrupted:  46%|████▋     | 54823/118287 [01:05<00:52, 1204.27it/s]0 image(s) corrupted:  46%|████▋     | 54952/118287 [01:05<00:53, 1180.47it/s]0 image(s) corrupted:  47%|████▋     | 55140/118287 [01:05<00:47, 1341.07it/s]0 image(s) corrupted:  47%|████▋     | 55333/118287 [01:06<00:42, 1481.17it/s]0 image(s) corrupted:  47%|████▋     | 55553/118287 [01:06<00:37, 1671.80it/s]0 image(s) corrupted:  47%|████▋     | 55728/118287 [01:06<00:37, 1648.93it/s]0 image(s) corrupted:  47%|████▋     | 55898/118287 [01:06<00:45, 1385.30it/s]0 image(s) corrupted:  47%|████▋     | 56047/118287 [01:06<00:48, 1283.32it/s]0 image(s) corrupted:  47%|████▋     | 56183/118287 [01:06<00:52, 1193.65it/s]0 image(s) corrupted:  48%|████▊     | 56326/118287 [01:06<00:49, 1242.27it/s]0 image(s) corrupted:  48%|████▊     | 56459/118287 [01:06<00:49, 1254.58it/s]0 image(s) corrupted:  48%|████▊     | 56684/118287 [01:06<00:40, 1509.14it/s]0 image(s) corrupted:  48%|████▊     | 56864/118287 [01:07<00:38, 1582.58it/s]0 image(s) corrupted:  48%|████▊     | 57027/118287 [01:07<00:46, 1329.54it/s]0 image(s) corrupted:  48%|████▊     | 57223/118287 [01:07<00:41, 1485.46it/s]0 image(s) corrupted:  49%|████▊     | 57382/118287 [01:07<00:41, 1453.71it/s]0 image(s) corrupted:  49%|████▊     | 57534/118287 [01:07<00:46, 1299.37it/s]0 image(s) corrupted:  49%|████▉     | 57671/118287 [01:07<00:57, 1047.33it/s]0 image(s) corrupted:  49%|████▉     | 57788/118287 [01:07<00:59, 1008.55it/s]0 image(s) corrupted:  49%|████▉     | 57955/118287 [01:08<00:52, 1158.80it/s]0 image(s) corrupted:  49%|████▉     | 58081/118287 [01:08<00:51, 1165.19it/s]0 image(s) corrupted:  49%|████▉     | 58236/118287 [01:08<00:47, 1262.33it/s]0 image(s) corrupted:  49%|████▉     | 58369/118287 [01:08<00:47, 1272.04it/s]0 image(s) corrupted:  49%|████▉     | 58521/118287 [01:08<00:44, 1338.57it/s]0 image(s) corrupted:  50%|████▉     | 58659/118287 [01:08<01:15, 790.75it/s] 0 image(s) corrupted:  50%|████▉     | 58768/118287 [01:09<01:36, 617.22it/s]0 image(s) corrupted:  50%|████▉     | 58855/118287 [01:09<01:36, 615.92it/s]0 image(s) corrupted:  50%|████▉     | 58935/118287 [01:09<02:00, 492.42it/s]0 image(s) corrupted:  50%|████▉     | 59027/118287 [01:09<01:49, 542.39it/s]0 image(s) corrupted:  50%|████▉     | 59095/118287 [01:09<01:44, 565.02it/s]0 image(s) corrupted:  50%|█████     | 59271/118287 [01:09<01:15, 777.39it/s]0 image(s) corrupted:  50%|█████     | 59447/118287 [01:09<01:00, 975.62it/s]0 image(s) corrupted:  50%|█████     | 59624/118287 [01:10<00:50, 1159.13it/s]0 image(s) corrupted:  51%|█████     | 59755/118287 [01:10<00:54, 1078.08it/s]0 image(s) corrupted:  51%|█████     | 59874/118287 [01:10<00:55, 1055.28it/s]0 image(s) corrupted:  51%|█████     | 60048/118287 [01:10<00:47, 1225.97it/s]0 image(s) corrupted:  51%|█████     | 60211/118287 [01:10<00:43, 1331.60it/s]0 image(s) corrupted:  51%|█████     | 60352/118287 [01:10<00:43, 1337.07it/s]0 image(s) corrupted:  51%|█████     | 60565/118287 [01:10<00:37, 1556.66it/s]0 image(s) corrupted:  51%|█████▏    | 60736/118287 [01:10<00:35, 1599.89it/s]0 image(s) corrupted:  51%|█████▏    | 60900/118287 [01:10<00:39, 1465.40it/s]0 image(s) corrupted:  52%|█████▏    | 61052/118287 [01:11<00:42, 1352.29it/s]0 image(s) corrupted:  52%|█████▏    | 61239/118287 [01:11<00:38, 1482.96it/s]0 image(s) corrupted:  52%|█████▏    | 61393/118287 [01:11<00:41, 1377.30it/s]0 image(s) corrupted:  52%|█████▏    | 61591/118287 [01:11<00:37, 1532.05it/s]0 image(s) corrupted:  52%|█████▏    | 61795/118287 [01:11<00:33, 1670.44it/s]0 image(s) corrupted:  52%|█████▏    | 62001/118287 [01:11<00:31, 1777.33it/s]0 image(s) corrupted:  53%|█████▎    | 62183/118287 [01:11<00:38, 1462.03it/s]0 image(s) corrupted:  53%|█████▎    | 62341/118287 [01:11<00:38, 1448.06it/s]0 image(s) corrupted:  53%|█████▎    | 62494/118287 [01:12<00:45, 1223.46it/s]0 image(s) corrupted:  53%|█████▎    | 62627/118287 [01:12<00:52, 1054.27it/s]0 image(s) corrupted:  53%|█████▎    | 62743/118287 [01:12<00:53, 1041.86it/s]0 image(s) corrupted:  53%|█████▎    | 62854/118287 [01:12<00:54, 1024.63it/s]0 image(s) corrupted:  53%|█████▎    | 63068/118287 [01:12<00:42, 1292.32it/s]0 image(s) corrupted:  53%|█████▎    | 63207/118287 [01:12<00:44, 1233.11it/s]0 image(s) corrupted:  54%|█████▎    | 63387/118287 [01:12<00:39, 1372.93it/s]0 image(s) corrupted:  54%|█████▍    | 63593/118287 [01:12<00:35, 1553.93it/s]0 image(s) corrupted:  54%|█████▍    | 63788/118287 [01:13<00:37, 1454.53it/s]0 image(s) corrupted:  54%|█████▍    | 63982/118287 [01:13<00:34, 1575.49it/s]0 image(s) corrupted:  54%|█████▍    | 64147/118287 [01:13<00:41, 1300.07it/s]0 image(s) corrupted:  54%|█████▍    | 64336/118287 [01:13<00:37, 1434.84it/s]0 image(s) corrupted:  55%|█████▍    | 64491/118287 [01:14<01:16, 698.80it/s] 0 image(s) corrupted:  55%|█████▍    | 64609/118287 [01:14<01:31, 585.91it/s]0 image(s) corrupted:  55%|█████▍    | 64703/118287 [01:14<01:28, 603.14it/s]0 image(s) corrupted:  55%|█████▍    | 64789/118287 [01:14<01:45, 509.47it/s]0 image(s) corrupted:  55%|█████▍    | 64859/118287 [01:15<02:03, 433.30it/s]0 image(s) corrupted:  55%|█████▍    | 64916/118287 [01:15<01:57, 452.34it/s]0 image(s) corrupted:  55%|█████▍    | 65031/118287 [01:15<01:43, 514.08it/s]0 image(s) corrupted:  55%|█████▌    | 65179/118287 [01:15<01:17, 689.71it/s]0 image(s) corrupted:  55%|█████▌    | 65383/118287 [01:15<00:54, 968.19it/s]0 image(s) corrupted:  55%|█████▌    | 65505/118287 [01:15<00:53, 987.05it/s]0 image(s) corrupted:  56%|█████▌    | 65718/118287 [01:15<00:41, 1252.70it/s]0 image(s) corrupted:  56%|█████▌    | 65884/118287 [01:15<00:38, 1352.61it/s]0 image(s) corrupted:  56%|█████▌    | 66091/118287 [01:15<00:33, 1541.14it/s]0 image(s) corrupted:  56%|█████▌    | 66316/118287 [01:16<00:29, 1734.28it/s]0 image(s) corrupted:  56%|█████▌    | 66501/118287 [01:16<00:30, 1724.83it/s]0 image(s) corrupted:  56%|█████▋    | 66681/118287 [01:16<00:31, 1629.79it/s]0 image(s) corrupted:  57%|█████▋    | 66851/118287 [01:16<00:40, 1263.81it/s]0 image(s) corrupted:  57%|█████▋    | 66996/118287 [01:16<00:40, 1253.24it/s]0 image(s) corrupted:  57%|█████▋    | 67172/118287 [01:16<00:37, 1374.41it/s]0 image(s) corrupted:  57%|█████▋    | 67372/118287 [01:16<00:33, 1533.11it/s]0 image(s) corrupted:  57%|█████▋    | 67536/118287 [01:16<00:35, 1430.06it/s]0 image(s) corrupted:  57%|█████▋    | 67688/118287 [01:17<00:38, 1308.04it/s]0 image(s) corrupted:  57%|█████▋    | 67826/118287 [01:17<00:40, 1242.04it/s]0 image(s) corrupted:  57%|█████▋    | 67994/118287 [01:17<00:37, 1338.48it/s]0 image(s) corrupted:  58%|█████▊    | 68181/118287 [01:17<00:34, 1462.01it/s]0 image(s) corrupted:  58%|█████▊    | 68381/118287 [01:17<00:31, 1603.75it/s]0 image(s) corrupted:  58%|█████▊    | 68547/118287 [01:17<00:32, 1508.88it/s]0 image(s) corrupted:  58%|█████▊    | 68703/118287 [01:17<00:37, 1324.39it/s]0 image(s) corrupted:  58%|█████▊    | 68878/118287 [01:17<00:34, 1430.76it/s]0 image(s) corrupted:  58%|█████▊    | 69028/118287 [01:18<00:38, 1266.15it/s]0 image(s) corrupted:  58%|█████▊    | 69162/118287 [01:18<00:41, 1182.39it/s]0 image(s) corrupted:  59%|█████▊    | 69395/118287 [01:18<00:33, 1463.05it/s]0 image(s) corrupted:  59%|█████▉    | 69552/118287 [01:18<00:36, 1347.30it/s]0 image(s) corrupted:  59%|█████▉    | 69698/118287 [01:18<00:35, 1374.62it/s]0 image(s) corrupted:  59%|█████▉    | 69845/118287 [01:18<00:34, 1398.73it/s]0 image(s) corrupted:  59%|█████▉    | 69990/118287 [01:18<00:56, 849.19it/s] 0 image(s) corrupted:  59%|█████▉    | 70104/118287 [01:19<01:05, 738.00it/s]0 image(s) corrupted:  59%|█████▉    | 70200/118287 [01:19<01:21, 589.01it/s]0 image(s) corrupted:  59%|█████▉    | 70278/118287 [01:19<01:27, 548.60it/s]0 image(s) corrupted:  59%|█████▉    | 70345/118287 [01:19<01:35, 500.25it/s]0 image(s) corrupted:  60%|█████▉    | 70404/118287 [01:19<01:48, 441.71it/s]0 image(s) corrupted:  60%|█████▉    | 70472/118287 [01:20<01:40, 477.83it/s]0 image(s) corrupted:  60%|█████▉    | 70591/118287 [01:20<01:23, 570.32it/s]0 image(s) corrupted:  60%|█████▉    | 70776/118287 [01:20<00:57, 832.27it/s]0 image(s) corrupted:  60%|█████▉    | 70953/118287 [01:20<00:46, 1020.20it/s]0 image(s) corrupted:  60%|██████    | 71114/118287 [01:20<00:41, 1139.67it/s]0 image(s) corrupted:  60%|██████    | 71308/118287 [01:20<00:35, 1313.60it/s]0 image(s) corrupted:  60%|██████    | 71475/118287 [01:20<00:35, 1321.53it/s]0 image(s) corrupted:  61%|██████    | 71663/118287 [01:20<00:32, 1444.83it/s]0 image(s) corrupted:  61%|██████    | 71842/118287 [01:21<00:30, 1507.32it/s]0 image(s) corrupted:  61%|██████    | 72012/118287 [01:21<00:30, 1538.97it/s]0 image(s) corrupted:  61%|██████    | 72220/118287 [01:21<00:27, 1687.58it/s]0 image(s) corrupted:  61%|██████    | 72393/118287 [01:21<00:27, 1681.13it/s]0 image(s) corrupted:  61%|██████▏   | 72585/118287 [01:21<00:26, 1749.33it/s]0 image(s) corrupted:  62%|██████▏   | 72780/118287 [01:21<00:25, 1806.53it/s]0 image(s) corrupted:  62%|██████▏   | 72963/118287 [01:21<00:25, 1807.13it/s]0 image(s) corrupted:  62%|██████▏   | 73145/118287 [01:21<00:25, 1798.30it/s]0 image(s) corrupted:  62%|██████▏   | 73351/118287 [01:21<00:24, 1819.61it/s]0 image(s) corrupted:  62%|██████▏   | 73534/118287 [01:21<00:25, 1737.47it/s]0 image(s) corrupted:  62%|██████▏   | 73709/118287 [01:22<00:26, 1703.47it/s]0 image(s) corrupted:  62%|██████▏   | 73880/118287 [01:22<00:26, 1692.60it/s]0 image(s) corrupted:  63%|██████▎   | 74075/118287 [01:22<00:25, 1765.01it/s]0 image(s) corrupted:  63%|██████▎   | 74253/118287 [01:22<00:25, 1700.91it/s]0 image(s) corrupted:  63%|██████▎   | 74424/118287 [01:22<00:26, 1680.18it/s]0 image(s) corrupted:  63%|██████▎   | 74593/118287 [01:22<00:28, 1519.11it/s]0 image(s) corrupted:  63%|██████▎   | 74811/118287 [01:22<00:25, 1691.83it/s]0 image(s) corrupted:  63%|██████▎   | 74987/118287 [01:22<00:25, 1707.22it/s]0 image(s) corrupted:  64%|██████▎   | 75211/118287 [01:22<00:23, 1818.72it/s]0 image(s) corrupted:  64%|██████▎   | 75395/118287 [01:23<00:23, 1787.25it/s]0 image(s) corrupted:  64%|██████▍   | 75589/118287 [01:23<00:24, 1729.02it/s]0 image(s) corrupted:  64%|██████▍   | 75798/118287 [01:23<00:23, 1822.58it/s]0 image(s) corrupted:  64%|██████▍   | 75998/118287 [01:23<00:23, 1827.30it/s]0 image(s) corrupted:  64%|██████▍   | 76182/118287 [01:23<00:25, 1647.03it/s]0 image(s) corrupted:  65%|██████▍   | 76351/118287 [01:23<00:34, 1218.36it/s]0 image(s) corrupted:  65%|██████▍   | 76491/118287 [01:24<00:58, 716.78it/s] 0 image(s) corrupted:  65%|██████▍   | 76598/118287 [01:24<01:04, 647.20it/s]0 image(s) corrupted:  65%|██████▍   | 76688/118287 [01:24<01:14, 557.94it/s]0 image(s) corrupted:  65%|██████▍   | 76762/118287 [01:24<01:24, 492.33it/s]0 image(s) corrupted:  65%|██████▍   | 76834/118287 [01:24<01:19, 518.53it/s]0 image(s) corrupted:  65%|██████▌   | 76897/118287 [01:25<01:20, 513.13it/s]0 image(s) corrupted:  65%|██████▌   | 76956/118287 [01:25<01:23, 497.05it/s]0 image(s) corrupted:  65%|██████▌   | 77011/118287 [01:25<01:36, 425.89it/s]0 image(s) corrupted:  65%|██████▌   | 77058/118287 [01:25<01:49, 376.41it/s]0 image(s) corrupted:  65%|██████▌   | 77121/118287 [01:25<01:43, 399.28it/s]0 image(s) corrupted:  65%|██████▌   | 77197/118287 [01:25<01:28, 462.79it/s]0 image(s) corrupted:  65%|██████▌   | 77247/118287 [01:25<01:28, 462.23it/s]0 image(s) corrupted:  65%|██████▌   | 77296/118287 [01:26<01:37, 418.43it/s]0 image(s) corrupted:  65%|██████▌   | 77402/118287 [01:26<01:12, 567.35it/s]0 image(s) corrupted:  66%|██████▌   | 77536/118287 [01:26<00:55, 733.03it/s]0 image(s) corrupted:  66%|██████▌   | 77800/118287 [01:26<00:33, 1221.00it/s]0 image(s) corrupted:  66%|██████▌   | 77997/118287 [01:26<00:28, 1421.15it/s]0 image(s) corrupted:  66%|██████▌   | 78232/118287 [01:26<00:23, 1676.81it/s]0 image(s) corrupted:  66%|██████▋   | 78453/118287 [01:26<00:21, 1827.28it/s]0 image(s) corrupted:  67%|██████▋   | 78681/118287 [01:26<00:20, 1955.23it/s]0 image(s) corrupted:  67%|██████▋   | 78903/118287 [01:26<00:19, 2031.92it/s]0 image(s) corrupted:  67%|██████▋   | 79120/118287 [01:27<00:18, 2063.91it/s]0 image(s) corrupted:  67%|██████▋   | 79330/118287 [01:27<00:19, 1986.75it/s]0 image(s) corrupted:  67%|██████▋   | 79539/118287 [01:27<00:19, 2011.04it/s]0 image(s) corrupted:  67%|██████▋   | 79743/118287 [01:27<00:19, 1987.03it/s]0 image(s) corrupted:  68%|██████▊   | 79944/118287 [01:27<00:19, 1979.24it/s]0 image(s) corrupted:  68%|██████▊   | 80161/118287 [01:27<00:18, 2027.38it/s]0 image(s) corrupted:  68%|██████▊   | 80386/118287 [01:27<00:18, 2092.49it/s]0 image(s) corrupted:  68%|██████▊   | 80596/118287 [01:27<00:18, 2030.57it/s]0 image(s) corrupted:  68%|██████▊   | 80800/118287 [01:27<00:19, 1944.10it/s]0 image(s) corrupted:  68%|██████▊   | 81008/118287 [01:28<00:18, 1980.20it/s]0 image(s) corrupted:  69%|██████▊   | 81208/118287 [01:28<00:19, 1869.65it/s]0 image(s) corrupted:  69%|██████▉   | 81397/118287 [01:28<00:20, 1774.05it/s]0 image(s) corrupted:  69%|██████▉   | 81577/118287 [01:28<00:20, 1763.87it/s]0 image(s) corrupted:  69%|██████▉   | 81801/118287 [01:28<00:19, 1893.76it/s]0 image(s) corrupted:  69%|██████▉   | 82000/118287 [01:28<00:18, 1919.01it/s]0 image(s) corrupted:  69%|██████▉   | 82194/118287 [01:28<00:20, 1746.73it/s]0 image(s) corrupted:  70%|██████▉   | 82373/118287 [01:29<00:36, 991.25it/s] 0 image(s) corrupted:  70%|██████▉   | 82512/118287 [01:29<00:54, 655.48it/s]0 image(s) corrupted:  70%|██████▉   | 82619/118287 [01:29<00:50, 710.72it/s]0 image(s) corrupted:  70%|██████▉   | 82726/118287 [01:29<00:52, 675.50it/s]0 image(s) corrupted:  70%|███████   | 82818/118287 [01:30<01:01, 572.73it/s]0 image(s) corrupted:  70%|███████   | 82894/118287 [01:30<01:03, 555.44it/s]0 image(s) corrupted:  70%|███████   | 82962/118287 [01:30<01:18, 450.85it/s]0 image(s) corrupted:  70%|███████   | 83064/118287 [01:30<01:05, 539.37it/s]0 image(s) corrupted:  70%|███████   | 83132/118287 [01:30<01:02, 565.44it/s]0 image(s) corrupted:  70%|███████   | 83200/118287 [01:30<01:10, 494.71it/s]0 image(s) corrupted:  70%|███████   | 83260/118287 [01:30<01:07, 515.12it/s]0 image(s) corrupted:  70%|███████   | 83319/118287 [01:31<01:07, 518.93it/s]0 image(s) corrupted:  71%|███████   | 83397/118287 [01:31<01:01, 571.53it/s]0 image(s) corrupted:  71%|███████   | 83578/118287 [01:31<00:39, 877.55it/s]0 image(s) corrupted:  71%|███████   | 83762/118287 [01:31<00:31, 1101.19it/s]0 image(s) corrupted:  71%|███████   | 83984/118287 [01:31<00:26, 1301.35it/s]0 image(s) corrupted:  71%|███████   | 84267/118287 [01:31<00:21, 1577.56it/s]0 image(s) corrupted:  71%|███████▏  | 84543/118287 [01:31<00:17, 1881.93it/s]0 image(s) corrupted:  72%|███████▏  | 84766/118287 [01:31<00:16, 1974.13it/s]0 image(s) corrupted:  72%|███████▏  | 84972/118287 [01:31<00:16, 1997.81it/s]0 image(s) corrupted:  72%|███████▏  | 85185/118287 [01:32<00:16, 2034.07it/s]0 image(s) corrupted:  72%|███████▏  | 85409/118287 [01:32<00:15, 2091.38it/s]0 image(s) corrupted:  72%|███████▏  | 85621/118287 [01:32<00:15, 2093.47it/s]0 image(s) corrupted:  73%|███████▎  | 85840/118287 [01:32<00:15, 2119.14it/s]0 image(s) corrupted:  73%|███████▎  | 86056/118287 [01:32<00:15, 2124.44it/s]0 image(s) corrupted:  73%|███████▎  | 86270/118287 [01:32<00:15, 2089.24it/s]0 image(s) corrupted:  73%|███████▎  | 86494/118287 [01:32<00:14, 2132.77it/s]0 image(s) corrupted:  73%|███████▎  | 86716/118287 [01:32<00:14, 2144.51it/s]0 image(s) corrupted:  73%|███████▎  | 86931/118287 [01:32<00:14, 2105.18it/s]0 image(s) corrupted:  74%|███████▎  | 87142/118287 [01:32<00:15, 2071.97it/s]0 image(s) corrupted:  74%|███████▍  | 87355/118287 [01:33<00:14, 2088.22it/s]0 image(s) corrupted:  74%|███████▍  | 87571/118287 [01:33<00:14, 2083.23it/s]0 image(s) corrupted:  74%|███████▍  | 87803/118287 [01:33<00:14, 2148.82it/s]0 image(s) corrupted:  74%|███████▍  | 88019/118287 [01:33<00:14, 2145.58it/s]0 image(s) corrupted:  75%|███████▍  | 88243/118287 [01:33<00:13, 2171.38it/s]0 image(s) corrupted:  75%|███████▍  | 88469/118287 [01:33<00:13, 2196.36it/s]0 image(s) corrupted:  75%|███████▍  | 88689/118287 [01:33<00:13, 2176.25it/s]0 image(s) corrupted:  75%|███████▌  | 88907/118287 [01:34<00:22, 1325.55it/s]0 image(s) corrupted:  75%|███████▌  | 89081/118287 [01:34<00:21, 1386.64it/s]0 image(s) corrupted:  75%|███████▌  | 89251/118287 [01:34<00:27, 1054.48it/s]0 image(s) corrupted:  76%|███████▌  | 89389/118287 [01:34<00:29, 975.07it/s] 0 image(s) corrupted:  76%|███████▌  | 89509/118287 [01:34<00:33, 851.80it/s]0 image(s) corrupted:  76%|███████▌  | 89611/118287 [01:34<00:33, 867.14it/s]0 image(s) corrupted:  76%|███████▌  | 89760/118287 [01:34<00:28, 994.65it/s]0 image(s) corrupted:  76%|███████▌  | 89987/118287 [01:35<00:22, 1283.59it/s]0 image(s) corrupted:  76%|███████▋  | 90212/118287 [01:35<00:18, 1517.86it/s]0 image(s) corrupted:  76%|███████▋  | 90428/118287 [01:35<00:16, 1679.58it/s]0 image(s) corrupted:  77%|███████▋  | 90657/118287 [01:35<00:15, 1837.35it/s]0 image(s) corrupted:  77%|███████▋  | 90887/118287 [01:35<00:13, 1964.91it/s]0 image(s) corrupted:  77%|███████▋  | 91119/118287 [01:35<00:13, 2064.44it/s]0 image(s) corrupted:  77%|███████▋  | 91348/118287 [01:35<00:12, 2121.49it/s]0 image(s) corrupted:  77%|███████▋  | 91567/118287 [01:35<00:12, 2141.14it/s]0 image(s) corrupted:  78%|███████▊  | 91790/118287 [01:35<00:12, 2162.89it/s]0 image(s) corrupted:  78%|███████▊  | 92019/118287 [01:35<00:11, 2197.68it/s]0 image(s) corrupted:  78%|███████▊  | 92241/118287 [01:36<00:12, 2167.88it/s]0 image(s) corrupted:  78%|███████▊  | 92464/118287 [01:36<00:11, 2166.77it/s]0 image(s) corrupted:  78%|███████▊  | 92688/118287 [01:36<00:11, 2150.43it/s]0 image(s) corrupted:  79%|███████▊  | 92904/118287 [01:36<00:11, 2125.79it/s]0 image(s) corrupted:  79%|███████▊  | 93118/118287 [01:36<00:11, 2120.48it/s]0 image(s) corrupted:  79%|███████▉  | 93331/118287 [01:36<00:12, 2040.00it/s]0 image(s) corrupted:  79%|███████▉  | 93536/118287 [01:36<00:12, 2001.01it/s]0 image(s) corrupted:  79%|███████▉  | 93745/118287 [01:36<00:12, 2024.24it/s]0 image(s) corrupted:  79%|███████▉  | 93983/118287 [01:36<00:11, 2123.55it/s]0 image(s) corrupted:  80%|███████▉  | 94196/118287 [01:37<00:11, 2103.13it/s]0 image(s) corrupted:  80%|███████▉  | 94413/118287 [01:37<00:11, 2121.46it/s]0 image(s) corrupted:  80%|███████▉  | 94626/118287 [01:37<00:11, 2108.24it/s]0 image(s) corrupted:  80%|████████  | 94838/118287 [01:37<00:12, 1862.62it/s]0 image(s) corrupted:  80%|████████  | 95130/118287 [01:37<00:10, 2148.40it/s]0 image(s) corrupted:  81%|████████  | 95352/118287 [01:37<00:10, 2154.47it/s]0 image(s) corrupted:  81%|████████  | 95573/118287 [01:37<00:11, 1983.59it/s]0 image(s) corrupted:  81%|████████  | 95777/118287 [01:37<00:11, 1987.19it/s]0 image(s) corrupted:  81%|████████  | 95980/118287 [01:37<00:11, 1996.42it/s]0 image(s) corrupted:  81%|████████▏ | 96205/118287 [01:38<00:10, 2067.38it/s]0 image(s) corrupted:  82%|████████▏ | 96427/118287 [01:38<00:10, 2110.98it/s]0 image(s) corrupted:  82%|████████▏ | 96640/118287 [01:38<00:10, 2111.57it/s]0 image(s) corrupted:  82%|████████▏ | 96862/118287 [01:38<00:10, 2140.55it/s]0 image(s) corrupted:  82%|████████▏ | 97085/118287 [01:38<00:09, 2166.81it/s]0 image(s) corrupted:  82%|████████▏ | 97303/118287 [01:38<00:10, 2071.87it/s]0 image(s) corrupted:  82%|████████▏ | 97512/118287 [01:38<00:11, 1777.91it/s]0 image(s) corrupted:  83%|████████▎ | 97698/118287 [01:38<00:14, 1457.42it/s]0 image(s) corrupted:  83%|████████▎ | 97858/118287 [01:39<00:19, 1034.55it/s]0 image(s) corrupted:  83%|████████▎ | 97986/118287 [01:39<00:23, 849.81it/s] 0 image(s) corrupted:  83%|████████▎ | 98092/118287 [01:39<00:27, 741.13it/s]0 image(s) corrupted:  83%|████████▎ | 98226/118287 [01:39<00:23, 835.91it/s]0 image(s) corrupted:  83%|████████▎ | 98445/118287 [01:39<00:18, 1099.73it/s]0 image(s) corrupted:  83%|████████▎ | 98629/118287 [01:39<00:15, 1259.85it/s]0 image(s) corrupted:  84%|████████▎ | 98841/118287 [01:40<00:13, 1462.58it/s]0 image(s) corrupted:  84%|████████▎ | 99029/118287 [01:40<00:12, 1567.90it/s]0 image(s) corrupted:  84%|████████▍ | 99207/118287 [01:40<00:11, 1623.71it/s]0 image(s) corrupted:  84%|████████▍ | 99425/118287 [01:40<00:10, 1771.95it/s]0 image(s) corrupted:  84%|████████▍ | 99647/118287 [01:40<00:09, 1894.19it/s]0 image(s) corrupted:  84%|████████▍ | 99845/118287 [01:40<00:10, 1789.71it/s]0 image(s) corrupted:  85%|████████▍ | 100050/118287 [01:40<00:10, 1790.26it/s]0 image(s) corrupted:  85%|████████▍ | 100241/118287 [01:40<00:09, 1820.41it/s]0 image(s) corrupted:  85%|████████▍ | 100427/118287 [01:40<00:10, 1777.53it/s]0 image(s) corrupted:  85%|████████▌ | 100617/118287 [01:40<00:09, 1809.02it/s]0 image(s) corrupted:  85%|████████▌ | 100810/118287 [01:41<00:09, 1840.65it/s]0 image(s) corrupted:  85%|████████▌ | 101002/118287 [01:41<00:09, 1862.09it/s]0 image(s) corrupted:  86%|████████▌ | 101212/118287 [01:41<00:08, 1929.48it/s]0 image(s) corrupted:  86%|████████▌ | 101431/118287 [01:41<00:08, 2004.94it/s]0 image(s) corrupted:  86%|████████▌ | 101656/118287 [01:41<00:08, 2072.19it/s]0 image(s) corrupted:  86%|████████▌ | 101864/118287 [01:41<00:07, 2055.17it/s]0 image(s) corrupted:  86%|████████▋ | 102070/118287 [01:41<00:08, 1999.04it/s]0 image(s) corrupted:  86%|████████▋ | 102271/118287 [01:41<00:08, 1954.21it/s]0 image(s) corrupted:  87%|████████▋ | 102504/118287 [01:41<00:07, 2059.81it/s]0 image(s) corrupted:  87%|████████▋ | 102711/118287 [01:42<00:07, 2038.34it/s]0 image(s) corrupted:  87%|████████▋ | 102916/118287 [01:42<00:07, 1932.41it/s]0 image(s) corrupted:  87%|████████▋ | 103129/118287 [01:42<00:07, 1924.73it/s]0 image(s) corrupted:  87%|████████▋ | 103323/118287 [01:42<00:08, 1734.45it/s]0 image(s) corrupted:  88%|████████▊ | 103541/118287 [01:42<00:07, 1852.03it/s]0 image(s) corrupted:  88%|████████▊ | 103776/118287 [01:42<00:07, 1986.66it/s]0 image(s) corrupted:  88%|████████▊ | 103979/118287 [01:42<00:07, 1931.24it/s]0 image(s) corrupted:  88%|████████▊ | 104176/118287 [01:42<00:07, 1874.49it/s]0 image(s) corrupted:  88%|████████▊ | 104368/118287 [01:42<00:07, 1886.51it/s]0 image(s) corrupted:  88%|████████▊ | 104559/118287 [01:43<00:07, 1844.59it/s]0 image(s) corrupted:  89%|████████▊ | 104758/118287 [01:43<00:07, 1883.03it/s]0 image(s) corrupted:  89%|████████▊ | 104959/118287 [01:43<00:06, 1915.41it/s]0 image(s) corrupted:  89%|████████▉ | 105157/118287 [01:43<00:06, 1930.77it/s]0 image(s) corrupted:  89%|████████▉ | 105351/118287 [01:43<00:06, 1869.07it/s]0 image(s) corrupted:  89%|████████▉ | 105562/118287 [01:43<00:06, 1874.51it/s]0 image(s) corrupted:  89%|████████▉ | 105835/118287 [01:43<00:05, 2113.35it/s]0 image(s) corrupted:  90%|████████▉ | 106048/118287 [01:43<00:06, 1977.51it/s]0 image(s) corrupted:  90%|████████▉ | 106249/118287 [01:44<00:10, 1188.02it/s]0 image(s) corrupted:  90%|████████▉ | 106407/118287 [01:44<00:13, 910.96it/s] 0 image(s) corrupted:  90%|█████████ | 106534/118287 [01:44<00:14, 797.41it/s]0 image(s) corrupted:  90%|█████████ | 106643/118287 [01:44<00:14, 802.35it/s]0 image(s) corrupted:  90%|█████████ | 106742/118287 [01:45<00:17, 649.35it/s]0 image(s) corrupted:  90%|█████████ | 106823/118287 [01:45<00:20, 569.12it/s]0 image(s) corrupted:  90%|█████████ | 106925/118287 [01:45<00:17, 638.19it/s]0 image(s) corrupted:  91%|█████████ | 107085/118287 [01:45<00:13, 818.06it/s]0 image(s) corrupted:  91%|█████████ | 107293/118287 [01:45<00:10, 1040.58it/s]0 image(s) corrupted:  91%|█████████ | 107597/118287 [01:45<00:07, 1492.48it/s]0 image(s) corrupted:  91%|█████████ | 107811/118287 [01:45<00:06, 1647.79it/s]0 image(s) corrupted:  91%|█████████▏| 108015/118287 [01:45<00:05, 1725.24it/s]0 image(s) corrupted:  92%|█████████▏| 108246/118287 [01:45<00:05, 1878.03it/s]0 image(s) corrupted:  92%|█████████▏| 108462/118287 [01:46<00:05, 1955.36it/s]0 image(s) corrupted:  92%|█████████▏| 108679/118287 [01:46<00:04, 2011.22it/s]0 image(s) corrupted:  92%|█████████▏| 108892/118287 [01:46<00:04, 2042.93it/s]0 image(s) corrupted:  92%|█████████▏| 109130/118287 [01:46<00:04, 2137.81it/s]0 image(s) corrupted:  92%|█████████▏| 109348/118287 [01:46<00:04, 2130.05it/s]0 image(s) corrupted:  93%|█████████▎| 109572/118287 [01:46<00:04, 2154.14it/s]0 image(s) corrupted:  93%|█████████▎| 109807/118287 [01:46<00:03, 2208.56it/s]0 image(s) corrupted:  93%|█████████▎| 110030/118287 [01:46<00:03, 2181.88it/s]0 image(s) corrupted:  93%|█████████▎| 110250/118287 [01:46<00:03, 2185.46it/s]0 image(s) corrupted:  93%|█████████▎| 110470/118287 [01:47<00:03, 2124.77it/s]0 image(s) corrupted:  94%|█████████▎| 110684/118287 [01:47<00:03, 2046.60it/s]0 image(s) corrupted:  94%|█████████▎| 110890/118287 [01:47<00:03, 2025.24it/s]0 image(s) corrupted:  94%|█████████▍| 111094/118287 [01:47<00:03, 1937.85it/s]0 image(s) corrupted:  94%|█████████▍| 111289/118287 [01:47<00:03, 1904.22it/s]0 image(s) corrupted:  94%|█████████▍| 111495/118287 [01:47<00:03, 1941.67it/s]0 image(s) corrupted:  94%|█████████▍| 111690/118287 [01:47<00:03, 1912.59it/s]0 image(s) corrupted:  95%|█████████▍| 111913/118287 [01:47<00:03, 2002.53it/s]0 image(s) corrupted:  95%|█████████▍| 112114/118287 [01:47<00:03, 1933.19it/s]0 image(s) corrupted:  95%|█████████▍| 112338/118287 [01:47<00:02, 2018.92it/s]0 image(s) corrupted:  95%|█████████▌| 112541/118287 [01:48<00:02, 2005.03it/s]0 image(s) corrupted:  95%|█████████▌| 112775/118287 [01:48<00:02, 2101.31it/s]0 image(s) corrupted:  96%|█████████▌| 112986/118287 [01:48<00:02, 2057.89it/s]0 image(s) corrupted:  96%|█████████▌| 113193/118287 [01:48<00:02, 2029.75it/s]0 image(s) corrupted:  96%|█████████▌| 113397/118287 [01:48<00:02, 1997.71it/s]0 image(s) corrupted:  96%|█████████▌| 113598/118287 [01:48<00:02, 1993.93it/s]0 image(s) corrupted:  96%|█████████▌| 113810/118287 [01:48<00:02, 2023.65it/s]0 image(s) corrupted:  96%|█████████▋| 114013/118287 [01:48<00:02, 1549.51it/s]0 image(s) corrupted:  97%|█████████▋| 114185/118287 [01:49<00:03, 1105.11it/s]0 image(s) corrupted:  97%|█████████▋| 114324/118287 [01:49<00:04, 810.97it/s] 0 image(s) corrupted:  97%|█████████▋| 114434/118287 [01:49<00:05, 713.31it/s]0 image(s) corrupted:  97%|█████████▋| 114559/118287 [01:49<00:04, 785.23it/s]0 image(s) corrupted:  97%|█████████▋| 114657/118287 [01:49<00:04, 768.19it/s]0 image(s) corrupted:  97%|█████████▋| 114844/118287 [01:50<00:03, 978.25it/s]0 image(s) corrupted:  97%|█████████▋| 115062/118287 [01:50<00:02, 1164.53it/s]0 image(s) corrupted:  98%|█████████▊| 115364/118287 [01:50<00:01, 1582.73it/s]0 image(s) corrupted:  98%|█████████▊| 115593/118287 [01:50<00:01, 1743.86it/s]0 image(s) corrupted:  98%|█████████▊| 115828/118287 [01:50<00:01, 1896.98it/s]0 image(s) corrupted:  98%|█████████▊| 116057/118287 [01:50<00:01, 1997.56it/s]0 image(s) corrupted:  98%|█████████▊| 116270/118287 [01:50<00:01, 1977.24it/s]0 image(s) corrupted:  98%|█████████▊| 116477/118287 [01:50<00:00, 1974.17it/s]0 image(s) corrupted:  99%|█████████▊| 116681/118287 [01:50<00:00, 1971.87it/s]0 image(s) corrupted:  99%|█████████▉| 116883/118287 [01:51<00:00, 1955.49it/s]0 image(s) corrupted:  99%|█████████▉| 117105/118287 [01:51<00:00, 2023.17it/s]0 image(s) corrupted:  99%|█████████▉| 117310/118287 [01:51<00:00, 1949.14it/s]0 image(s) corrupted:  99%|█████████▉| 117507/118287 [01:51<00:00, 1822.58it/s]0 image(s) corrupted:  99%|█████████▉| 117692/118287 [01:51<00:00, 1692.55it/s]0 image(s) corrupted: 100%|█████████▉| 117865/118287 [01:51<00:00, 1585.31it/s]0 image(s) corrupted: 100%|█████████▉| 118070/118287 [01:51<00:00, 1634.78it/s]0 image(s) corrupted: 100%|█████████▉| 118259/118287 [01:51<00:00, 1694.99it/s]0 image(s) corrupted: 100%|██████████| 118287/118287 [01:51<00:00, 1057.37it/s]
+Train: Checking formats of labels with 8 process(es): 
+  0%|          | 0/118287 [00:00<?, ?it/s]354 label(s) found, 4 label(s) missing, 0 label(s) empty, 0 invalid label files:   0%|          | 358/118287 [00:00<00:33, 3491.49it/s]701 label(s) found, 7 label(s) missing, 0 label(s) empty, 0 invalid label files:   1%|          | 708/118287 [00:00<00:35, 3312.12it/s]1156 label(s) found, 13 label(s) missing, 0 label(s) empty, 0 invalid label files:   1%|          | 1169/118287 [00:00<00:30, 3882.46it/s]1584 label(s) found, 18 label(s) missing, 0 label(s) empty, 0 invalid label files:   1%|▏         | 1602/118287 [00:00<00:28, 4043.04it/s]1989 label(s) found, 23 label(s) missing, 0 label(s) empty, 0 invalid label files:   2%|▏         | 2012/118287 [00:00<00:28, 4061.59it/s]2397 label(s) found, 28 label(s) missing, 0 label(s) empty, 0 invalid label files:   2%|▏         | 2425/118287 [00:00<00:28, 4083.54it/s]2802 label(s) found, 33 label(s) missing, 0 label(s) empty, 0 invalid label files:   2%|▏         | 2835/118287 [00:00<00:28, 4059.65it/s]3240 label(s) found, 36 label(s) missing, 0 label(s) empty, 0 invalid label files:   3%|▎         | 3276/118287 [00:00<00:27, 4164.87it/s]3654 label(s) found, 39 label(s) missing, 0 label(s) empty, 0 invalid label files:   3%|▎         | 3693/118287 [00:00<00:27, 4145.16it/s]4071 label(s) found, 39 label(s) missing, 0 label(s) empty, 0 invalid label files:   3%|▎         | 4110/118287 [00:01<00:27, 4145.34it/s]4519 label(s) found, 44 label(s) missing, 0 label(s) empty, 0 invalid label files:   4%|▍         | 4563/118287 [00:01<00:26, 4251.70it/s]4940 label(s) found, 49 label(s) missing, 0 label(s) empty, 0 invalid label files:   4%|▍         | 4989/118287 [00:01<00:26, 4223.01it/s]5358 label(s) found, 54 label(s) missing, 0 label(s) empty, 0 invalid label files:   5%|▍         | 5412/118287 [00:01<00:26, 4222.95it/s]5778 label(s) found, 57 label(s) missing, 0 label(s) empty, 0 invalid label files:   5%|▍         | 5835/118287 [00:01<00:26, 4174.90it/s]6208 label(s) found, 64 label(s) missing, 0 label(s) empty, 0 invalid label files:   5%|▌         | 6272/118287 [00:01<00:26, 4222.23it/s]6633 label(s) found, 66 label(s) missing, 0 label(s) empty, 0 invalid label files:   6%|▌         | 6699/118287 [00:01<00:26, 4233.90it/s]7052 label(s) found, 71 label(s) missing, 0 label(s) empty, 0 invalid label files:   6%|▌         | 7123/118287 [00:01<00:26, 4185.15it/s]7473 label(s) found, 76 label(s) missing, 0 label(s) empty, 0 invalid label files:   6%|▋         | 7549/118287 [00:01<00:26, 4203.21it/s]7889 label(s) found, 81 label(s) missing, 0 label(s) empty, 0 invalid label files:   7%|▋         | 7970/118287 [00:01<00:26, 4142.23it/s]8304 label(s) found, 86 label(s) missing, 0 label(s) empty, 0 invalid label files:   7%|▋         | 8390/118287 [00:02<00:26, 4154.65it/s]8719 label(s) found, 87 label(s) missing, 0 label(s) empty, 0 invalid label files:   7%|▋         | 8806/118287 [00:02<00:26, 4135.93it/s]9144 label(s) found, 88 label(s) missing, 0 label(s) empty, 0 invalid label files:   8%|▊         | 9232/118287 [00:02<00:26, 4171.89it/s]9559 label(s) found, 93 label(s) missing, 0 label(s) empty, 0 invalid label files:   8%|▊         | 9652/118287 [00:02<00:26, 4161.09it/s]9974 label(s) found, 95 label(s) missing, 0 label(s) empty, 0 invalid label files:   9%|▊         | 10069/118287 [00:02<00:26, 4160.61it/s]10390 label(s) found, 100 label(s) missing, 0 label(s) empty, 0 invalid label files:   9%|▉         | 10490/118287 [00:02<00:25, 4172.36it/s]10805 label(s) found, 103 label(s) missing, 0 label(s) empty, 0 invalid label files:   9%|▉         | 10908/118287 [00:02<00:25, 4152.81it/s]11225 label(s) found, 105 label(s) missing, 0 label(s) empty, 0 invalid label files:  10%|▉         | 11330/118287 [00:02<00:25, 4171.92it/s]11652 label(s) found, 109 label(s) missing, 0 label(s) empty, 0 invalid label files:  10%|▉         | 11761/118287 [00:02<00:25, 4203.59it/s]12066 label(s) found, 116 label(s) missing, 0 label(s) empty, 0 invalid label files:  10%|█         | 12182/118287 [00:02<00:25, 4157.88it/s]12479 label(s) found, 121 label(s) missing, 0 label(s) empty, 0 invalid label files:  11%|█         | 12600/118287 [00:03<00:25, 4149.38it/s]12893 label(s) found, 123 label(s) missing, 0 label(s) empty, 0 invalid label files:  11%|█         | 13016/118287 [00:03<00:25, 4141.62it/s]13305 label(s) found, 126 label(s) missing, 0 label(s) empty, 0 invalid label files:  11%|█▏        | 13431/118287 [00:03<00:25, 4072.02it/s]13725 label(s) found, 129 label(s) missing, 0 label(s) empty, 0 invalid label files:  12%|█▏        | 13854/118287 [00:03<00:25, 4112.84it/s]14132 label(s) found, 134 label(s) missing, 0 label(s) empty, 0 invalid label files:  12%|█▏        | 14266/118287 [00:03<00:25, 4105.03it/s]14539 label(s) found, 138 label(s) missing, 0 label(s) empty, 0 invalid label files:  12%|█▏        | 14677/118287 [00:03<00:25, 4075.86it/s]14945 label(s) found, 140 label(s) missing, 0 label(s) empty, 0 invalid label files:  13%|█▎        | 15085/118287 [00:03<00:25, 4025.82it/s]15377 label(s) found, 145 label(s) missing, 0 label(s) empty, 0 invalid label files:  13%|█▎        | 15522/118287 [00:03<00:24, 4124.01it/s]15786 label(s) found, 149 label(s) missing, 0 label(s) empty, 0 invalid label files:  13%|█▎        | 15935/118287 [00:03<00:24, 4112.87it/s]16193 label(s) found, 154 label(s) missing, 0 label(s) empty, 0 invalid label files:  14%|█▍        | 16347/118287 [00:03<00:25, 4065.56it/s]16604 label(s) found, 156 label(s) missing, 0 label(s) empty, 0 invalid label files:  14%|█▍        | 16760/118287 [00:04<00:24, 4084.12it/s]17012 label(s) found, 160 label(s) missing, 0 label(s) empty, 0 invalid label files:  15%|█▍        | 17172/118287 [00:04<00:25, 4038.79it/s]17425 label(s) found, 162 label(s) missing, 0 label(s) empty, 0 invalid label files:  15%|█▍        | 17587/118287 [00:04<00:24, 4046.35it/s]17834 label(s) found, 167 label(s) missing, 0 label(s) empty, 0 invalid label files:  15%|█▌        | 18001/118287 [00:04<00:24, 4015.69it/s]18254 label(s) found, 173 label(s) missing, 0 label(s) empty, 0 invalid label files:  16%|█▌        | 18427/118287 [00:04<00:24, 4085.22it/s]18658 label(s) found, 178 label(s) missing, 0 label(s) empty, 0 invalid label files:  16%|█▌        | 18836/118287 [00:04<00:24, 4053.42it/s]19062 label(s) found, 180 label(s) missing, 0 label(s) empty, 0 invalid label files:  16%|█▋        | 19242/118287 [00:04<00:24, 4006.25it/s]19483 label(s) found, 182 label(s) missing, 0 label(s) empty, 0 invalid label files:  17%|█▋        | 19665/118287 [00:04<00:24, 4064.40it/s]19892 label(s) found, 189 label(s) missing, 0 label(s) empty, 0 invalid label files:  17%|█▋        | 20081/118287 [00:04<00:24, 4083.93it/s]20308 label(s) found, 192 label(s) missing, 0 label(s) empty, 0 invalid label files:  17%|█▋        | 20500/118287 [00:04<00:23, 4104.05it/s]20727 label(s) found, 198 label(s) missing, 0 label(s) empty, 0 invalid label files:  18%|█▊        | 20925/118287 [00:05<00:23, 4143.02it/s]21139 label(s) found, 201 label(s) missing, 0 label(s) empty, 0 invalid label files:  18%|█▊        | 21340/118287 [00:05<00:23, 4112.23it/s]21547 label(s) found, 205 label(s) missing, 0 label(s) empty, 0 invalid label files:  18%|█▊        | 21752/118287 [00:05<00:23, 4081.27it/s]21961 label(s) found, 210 label(s) missing, 0 label(s) empty, 0 invalid label files:  19%|█▊        | 22171/118287 [00:05<00:23, 4103.88it/s]22368 label(s) found, 214 label(s) missing, 0 label(s) empty, 0 invalid label files:  19%|█▉        | 22582/118287 [00:05<00:23, 4098.30it/s]22775 label(s) found, 217 label(s) missing, 0 label(s) empty, 0 invalid label files:  19%|█▉        | 22992/118287 [00:05<00:23, 4050.10it/s]23220 label(s) found, 220 label(s) missing, 0 label(s) empty, 0 invalid label files:  20%|█▉        | 23440/118287 [00:05<00:22, 4173.23it/s]23637 label(s) found, 224 label(s) missing, 0 label(s) empty, 0 invalid label files:  20%|██        | 23861/118287 [00:05<00:22, 4174.11it/s]24053 label(s) found, 226 label(s) missing, 0 label(s) empty, 0 invalid label files:  21%|██        | 24279/118287 [00:05<00:22, 4093.90it/s]24459 label(s) found, 230 label(s) missing, 0 label(s) empty, 0 invalid label files:  21%|██        | 24689/118287 [00:06<00:22, 4075.46it/s]24865 label(s) found, 232 label(s) missing, 0 label(s) empty, 0 invalid label files:  21%|██        | 25097/118287 [00:06<00:23, 4002.55it/s]25256 label(s) found, 242 label(s) missing, 0 label(s) empty, 0 invalid label files:  22%|██▏       | 25498/118287 [00:06<00:25, 3705.66it/s]25747 label(s) found, 245 label(s) missing, 0 label(s) empty, 0 invalid label files:  22%|██▏       | 25992/118287 [00:06<00:22, 4038.92it/s]26162 label(s) found, 248 label(s) missing, 0 label(s) empty, 0 invalid label files:  22%|██▏       | 26410/118287 [00:06<00:22, 4075.55it/s]26583 label(s) found, 254 label(s) missing, 0 label(s) empty, 0 invalid label files:  23%|██▎       | 26837/118287 [00:06<00:22, 4128.25it/s]26997 label(s) found, 256 label(s) missing, 0 label(s) empty, 0 invalid label files:  23%|██▎       | 27253/118287 [00:06<00:22, 4077.22it/s]27404 label(s) found, 259 label(s) missing, 0 label(s) empty, 0 invalid label files:  23%|██▎       | 27663/118287 [00:07<00:41, 2158.62it/s]27835 label(s) found, 263 label(s) missing, 0 label(s) empty, 0 invalid label files:  24%|██▍       | 28098/118287 [00:07<00:35, 2549.71it/s]28267 label(s) found, 268 label(s) missing, 0 label(s) empty, 0 invalid label files:  24%|██▍       | 28535/118287 [00:07<00:30, 2921.63it/s]28692 label(s) found, 273 label(s) missing, 0 label(s) empty, 0 invalid label files:  24%|██▍       | 28965/118287 [00:07<00:27, 3231.47it/s]29103 label(s) found, 277 label(s) missing, 0 label(s) empty, 0 invalid label files:  25%|██▍       | 29380/118287 [00:07<00:25, 3453.50it/s]29520 label(s) found, 278 label(s) missing, 0 label(s) empty, 0 invalid label files:  25%|██▌       | 29798/118287 [00:07<00:24, 3614.90it/s]29933 label(s) found, 278 label(s) missing, 0 label(s) empty, 0 invalid label files:  26%|██▌       | 30211/118287 [00:07<00:23, 3735.56it/s]30354 label(s) found, 284 label(s) missing, 0 label(s) empty, 0 invalid label files:  26%|██▌       | 30638/118287 [00:07<00:22, 3866.90it/s]30760 label(s) found, 287 label(s) missing, 0 label(s) empty, 0 invalid label files:  26%|██▌       | 31047/118287 [00:07<00:22, 3918.50it/s]31168 label(s) found, 290 label(s) missing, 0 label(s) empty, 0 invalid label files:  27%|██▋       | 31458/118287 [00:07<00:21, 3965.05it/s]31580 label(s) found, 293 label(s) missing, 0 label(s) empty, 0 invalid label files:  27%|██▋       | 31873/118287 [00:08<00:21, 3992.57it/s]31986 label(s) found, 294 label(s) missing, 0 label(s) empty, 0 invalid label files:  27%|██▋       | 32280/118287 [00:08<00:22, 3847.51it/s]32373 label(s) found, 300 label(s) missing, 0 label(s) empty, 0 invalid label files:  28%|██▊       | 32673/118287 [00:08<00:22, 3870.50it/s]32804 label(s) found, 301 label(s) missing, 0 label(s) empty, 0 invalid label files:  28%|██▊       | 33105/118287 [00:08<00:21, 3991.81it/s]33209 label(s) found, 304 label(s) missing, 0 label(s) empty, 0 invalid label files:  28%|██▊       | 33513/118287 [00:08<00:21, 4017.48it/s]33624 label(s) found, 308 label(s) missing, 0 label(s) empty, 0 invalid label files:  29%|██▊       | 33932/118287 [00:08<00:20, 4064.45it/s]34031 label(s) found, 310 label(s) missing, 0 label(s) empty, 0 invalid label files:  29%|██▉       | 34341/118287 [00:08<00:20, 4030.40it/s]34452 label(s) found, 312 label(s) missing, 0 label(s) empty, 0 invalid label files:  29%|██▉       | 34764/118287 [00:08<00:20, 4068.44it/s]34859 label(s) found, 314 label(s) missing, 0 label(s) empty, 0 invalid label files:  30%|██▉       | 35173/118287 [00:08<00:20, 4074.42it/s]35284 label(s) found, 318 label(s) missing, 0 label(s) empty, 0 invalid label files:  30%|███       | 35602/118287 [00:08<00:19, 4138.26it/s]35692 label(s) found, 325 label(s) missing, 0 label(s) empty, 0 invalid label files:  30%|███       | 36017/118287 [00:09<00:20, 4072.57it/s]36100 label(s) found, 325 label(s) missing, 0 label(s) empty, 0 invalid label files:  31%|███       | 36425/118287 [00:09<00:20, 4004.82it/s]36506 label(s) found, 327 label(s) missing, 0 label(s) empty, 0 invalid label files:  31%|███       | 36833/118287 [00:09<00:20, 4026.21it/s]36908 label(s) found, 329 label(s) missing, 0 label(s) empty, 0 invalid label files:  31%|███▏      | 37237/118287 [00:09<00:20, 4026.94it/s]37320 label(s) found, 332 label(s) missing, 0 label(s) empty, 0 invalid label files:  32%|███▏      | 37652/118287 [00:09<00:19, 4052.25it/s]37743 label(s) found, 334 label(s) missing, 0 label(s) empty, 0 invalid label files:  32%|███▏      | 38077/118287 [00:09<00:19, 4085.42it/s]38155 label(s) found, 338 label(s) missing, 0 label(s) empty, 0 invalid label files:  33%|███▎      | 38493/118287 [00:09<00:19, 4076.27it/s]38576 label(s) found, 340 label(s) missing, 0 label(s) empty, 0 invalid label files:  33%|███▎      | 38916/118287 [00:09<00:19, 4120.92it/s]38998 label(s) found, 348 label(s) missing, 0 label(s) empty, 0 invalid label files:  33%|███▎      | 39346/118287 [00:09<00:18, 4160.47it/s]39407 label(s) found, 356 label(s) missing, 0 label(s) empty, 0 invalid label files:  34%|███▎      | 39763/118287 [00:10<00:18, 4158.20it/s]39834 label(s) found, 359 label(s) missing, 0 label(s) empty, 0 invalid label files:  34%|███▍      | 40193/118287 [00:10<00:18, 4200.01it/s]40252 label(s) found, 362 label(s) missing, 0 label(s) empty, 0 invalid label files:  34%|███▍      | 40614/118287 [00:10<00:18, 4154.29it/s]40666 label(s) found, 364 label(s) missing, 0 label(s) empty, 0 invalid label files:  35%|███▍      | 41030/118287 [00:10<00:37, 2072.76it/s]41136 label(s) found, 369 label(s) missing, 0 label(s) empty, 0 invalid label files:  35%|███▌      | 41505/118287 [00:10<00:30, 2533.77it/s]41552 label(s) found, 369 label(s) missing, 0 label(s) empty, 0 invalid label files:  35%|███▌      | 41921/118287 [00:10<00:26, 2856.24it/s]41962 label(s) found, 370 label(s) missing, 0 label(s) empty, 0 invalid label files:  36%|███▌      | 42332/118287 [00:10<00:24, 3130.80it/s]42347 label(s) found, 374 label(s) missing, 0 label(s) empty, 0 invalid label files:  36%|███▌      | 42721/118287 [00:11<00:22, 3296.66it/s]42783 label(s) found, 378 label(s) missing, 0 label(s) empty, 0 invalid label files:  36%|███▋      | 43161/118287 [00:11<00:21, 3559.93it/s]43197 label(s) found, 381 label(s) missing, 0 label(s) empty, 0 invalid label files:  37%|███▋      | 43578/118287 [00:11<00:20, 3706.62it/s]43615 label(s) found, 382 label(s) missing, 0 label(s) empty, 0 invalid label files:  37%|███▋      | 43997/118287 [00:11<00:19, 3838.94it/s]44018 label(s) found, 387 label(s) missing, 0 label(s) empty, 0 invalid label files:  38%|███▊      | 44405/118287 [00:11<00:19, 3883.35it/s]44437 label(s) found, 391 label(s) missing, 0 label(s) empty, 0 invalid label files:  38%|███▊      | 44828/118287 [00:11<00:18, 3972.51it/s]44839 label(s) found, 399 label(s) missing, 0 label(s) empty, 0 invalid label files:  38%|███▊      | 45238/118287 [00:11<00:18, 4003.86it/s]45246 label(s) found, 402 label(s) missing, 0 label(s) empty, 0 invalid label files:  39%|███▊      | 45648/118287 [00:11<00:18, 4002.86it/s]45649 label(s) found, 406 label(s) missing, 0 label(s) empty, 0 invalid label files:  39%|███▉      | 46055/118287 [00:11<00:18, 3879.13it/s]46037 label(s) found, 411 label(s) missing, 0 label(s) empty, 0 invalid label files:  39%|███▉      | 46448/118287 [00:11<00:18, 3848.57it/s]46423 label(s) found, 414 label(s) missing, 0 label(s) empty, 0 invalid label files:  40%|███▉      | 46837/118287 [00:12<00:18, 3772.15it/s]46828 label(s) found, 418 label(s) missing, 0 label(s) empty, 0 invalid label files:  40%|███▉      | 47246/118287 [00:12<00:18, 3859.83it/s]47250 label(s) found, 420 label(s) missing, 0 label(s) empty, 0 invalid label files:  40%|████      | 47670/118287 [00:12<00:17, 3966.80it/s]47672 label(s) found, 425 label(s) missing, 0 label(s) empty, 0 invalid label files:  41%|████      | 48097/118287 [00:12<00:17, 4048.64it/s]48079 label(s) found, 429 label(s) missing, 0 label(s) empty, 0 invalid label files:  41%|████      | 48508/118287 [00:12<00:17, 4064.57it/s]48501 label(s) found, 433 label(s) missing, 0 label(s) empty, 0 invalid label files:  41%|████▏     | 48934/118287 [00:12<00:16, 4109.37it/s]48906 label(s) found, 440 label(s) missing, 0 label(s) empty, 0 invalid label files:  42%|████▏     | 49346/118287 [00:12<00:16, 4108.15it/s]49320 label(s) found, 446 label(s) missing, 0 label(s) empty, 0 invalid label files:  42%|████▏     | 49766/118287 [00:12<00:16, 4133.32it/s]49736 label(s) found, 451 label(s) missing, 0 label(s) empty, 0 invalid label files:  42%|████▏     | 50187/118287 [00:12<00:16, 4149.65it/s]50149 label(s) found, 454 label(s) missing, 0 label(s) empty, 0 invalid label files:  43%|████▎     | 50603/118287 [00:13<00:18, 3707.87it/s]50565 label(s) found, 458 label(s) missing, 0 label(s) empty, 0 invalid label files:  43%|████▎     | 51023/118287 [00:13<00:17, 3842.32it/s]50966 label(s) found, 466 label(s) missing, 0 label(s) empty, 0 invalid label files:  43%|████▎     | 51432/118287 [00:13<00:17, 3902.67it/s]51368 label(s) found, 469 label(s) missing, 0 label(s) empty, 0 invalid label files:  44%|████▍     | 51837/118287 [00:13<00:16, 3936.73it/s]51784 label(s) found, 471 label(s) missing, 0 label(s) empty, 0 invalid label files:  44%|████▍     | 52255/118287 [00:13<00:16, 3992.86it/s]52185 label(s) found, 474 label(s) missing, 0 label(s) empty, 0 invalid label files:  45%|████▍     | 52659/118287 [00:13<00:16, 3993.38it/s]52614 label(s) found, 477 label(s) missing, 0 label(s) empty, 0 invalid label files:  45%|████▍     | 53091/118287 [00:13<00:15, 4084.12it/s]53024 label(s) found, 482 label(s) missing, 0 label(s) empty, 0 invalid label files:  45%|████▌     | 53506/118287 [00:13<00:15, 4101.54it/s]53434 label(s) found, 485 label(s) missing, 0 label(s) empty, 0 invalid label files:  46%|████▌     | 53919/118287 [00:13<00:15, 4106.92it/s]53847 label(s) found, 492 label(s) missing, 0 label(s) empty, 0 invalid label files:  46%|████▌     | 54339/118287 [00:13<00:15, 4130.20it/s]54256 label(s) found, 497 label(s) missing, 0 label(s) empty, 0 invalid label files:  46%|████▋     | 54753/118287 [00:14<00:15, 4081.89it/s]54671 label(s) found, 498 label(s) missing, 0 label(s) empty, 0 invalid label files:  47%|████▋     | 55169/118287 [00:14<00:15, 4069.73it/s]55104 label(s) found, 501 label(s) missing, 0 label(s) empty, 0 invalid label files:  47%|████▋     | 55605/118287 [00:14<00:15, 4150.83it/s]55515 label(s) found, 506 label(s) missing, 0 label(s) empty, 0 invalid label files:  47%|████▋     | 56021/118287 [00:14<00:15, 4130.53it/s]55926 label(s) found, 509 label(s) missing, 0 label(s) empty, 0 invalid label files:  48%|████▊     | 56435/118287 [00:14<00:15, 4076.91it/s]56332 label(s) found, 514 label(s) missing, 0 label(s) empty, 0 invalid label files:  48%|████▊     | 56846/118287 [00:14<00:15, 4073.79it/s]56755 label(s) found, 521 label(s) missing, 0 label(s) empty, 0 invalid label files:  48%|████▊     | 57276/118287 [00:14<00:14, 4085.33it/s]57160 label(s) found, 525 label(s) missing, 0 label(s) empty, 0 invalid label files:  49%|████▉     | 57685/118287 [00:15<00:31, 1935.78it/s]57575 label(s) found, 527 label(s) missing, 0 label(s) empty, 0 invalid label files:  49%|████▉     | 58102/118287 [00:15<00:26, 2293.78it/s]57913 label(s) found, 529 label(s) missing, 0 label(s) empty, 0 invalid label files:  49%|████▉     | 58442/118287 [00:15<00:24, 2480.30it/s]58367 label(s) found, 533 label(s) missing, 0 label(s) empty, 0 invalid label files:  50%|████▉     | 58900/118287 [00:15<00:20, 2926.44it/s]58765 label(s) found, 537 label(s) missing, 0 label(s) empty, 0 invalid label files:  50%|█████     | 59302/118287 [00:15<00:18, 3174.14it/s]59157 label(s) found, 540 label(s) missing, 0 label(s) empty, 0 invalid label files:  50%|█████     | 59697/118287 [00:15<00:17, 3353.46it/s]59567 label(s) found, 542 label(s) missing, 0 label(s) empty, 0 invalid label files:  51%|█████     | 60109/118287 [00:15<00:16, 3553.72it/s]59957 label(s) found, 545 label(s) missing, 0 label(s) empty, 0 invalid label files:  51%|█████     | 60502/118287 [00:15<00:15, 3651.52it/s]60365 label(s) found, 553 label(s) missing, 0 label(s) empty, 0 invalid label files:  52%|█████▏    | 60918/118287 [00:15<00:15, 3747.19it/s]60772 label(s) found, 555 label(s) missing, 0 label(s) empty, 0 invalid label files:  52%|█████▏    | 61327/118287 [00:16<00:14, 3835.80it/s]61184 label(s) found, 559 label(s) missing, 0 label(s) empty, 0 invalid label files:  52%|█████▏    | 61743/118287 [00:16<00:14, 3906.36it/s]61583 label(s) found, 561 label(s) missing, 0 label(s) empty, 0 invalid label files:  53%|█████▎    | 62144/118287 [00:16<00:15, 3630.70it/s]61993 label(s) found, 563 label(s) missing, 0 label(s) empty, 0 invalid label files:  53%|█████▎    | 62556/118287 [00:16<00:14, 3763.35it/s]62396 label(s) found, 567 label(s) missing, 0 label(s) empty, 0 invalid label files:  53%|█████▎    | 62963/118287 [00:16<00:14, 3848.28it/s]62805 label(s) found, 569 label(s) missing, 0 label(s) empty, 0 invalid label files:  54%|█████▎    | 63374/118287 [00:16<00:14, 3914.45it/s]63226 label(s) found, 570 label(s) missing, 0 label(s) empty, 0 invalid label files:  54%|█████▍    | 63796/118287 [00:16<00:13, 3987.97it/s]63630 label(s) found, 573 label(s) missing, 0 label(s) empty, 0 invalid label files:  54%|█████▍    | 64203/118287 [00:16<00:13, 3983.92it/s]64029 label(s) found, 578 label(s) missing, 0 label(s) empty, 0 invalid label files:  55%|█████▍    | 64607/118287 [00:16<00:13, 3986.82it/s]64453 label(s) found, 580 label(s) missing, 0 label(s) empty, 0 invalid label files:  55%|█████▍    | 65033/118287 [00:16<00:13, 4065.36it/s]64866 label(s) found, 582 label(s) missing, 0 label(s) empty, 0 invalid label files:  55%|█████▌    | 65448/118287 [00:17<00:12, 4067.17it/s]65280 label(s) found, 584 label(s) missing, 0 label(s) empty, 0 invalid label files:  56%|█████▌    | 65864/118287 [00:17<00:12, 4079.61it/s]65684 label(s) found, 589 label(s) missing, 0 label(s) empty, 0 invalid label files:  56%|█████▌    | 66273/118287 [00:17<00:12, 4051.26it/s]66095 label(s) found, 594 label(s) missing, 0 label(s) empty, 0 invalid label files:  56%|█████▋    | 66689/118287 [00:17<00:12, 4080.88it/s]66503 label(s) found, 595 label(s) missing, 0 label(s) empty, 0 invalid label files:  57%|█████▋    | 67098/118287 [00:17<00:12, 4056.78it/s]66906 label(s) found, 598 label(s) missing, 0 label(s) empty, 0 invalid label files:  57%|█████▋    | 67504/118287 [00:17<00:12, 4035.82it/s]67307 label(s) found, 601 label(s) missing, 0 label(s) empty, 0 invalid label files:  57%|█████▋    | 67908/118287 [00:17<00:12, 4020.92it/s]67721 label(s) found, 605 label(s) missing, 0 label(s) empty, 0 invalid label files:  58%|█████▊    | 68326/118287 [00:17<00:12, 4053.96it/s]68128 label(s) found, 609 label(s) missing, 0 label(s) empty, 0 invalid label files:  58%|█████▊    | 68737/118287 [00:17<00:12, 4043.81it/s]68538 label(s) found, 612 label(s) missing, 0 label(s) empty, 0 invalid label files:  58%|█████▊    | 69150/118287 [00:18<00:12, 4065.40it/s]68942 label(s) found, 615 label(s) missing, 0 label(s) empty, 0 invalid label files:  59%|█████▉    | 69557/118287 [00:18<00:12, 4045.09it/s]69346 label(s) found, 619 label(s) missing, 0 label(s) empty, 0 invalid label files:  59%|█████▉    | 69965/118287 [00:18<00:11, 4054.53it/s]69745 label(s) found, 627 label(s) missing, 0 label(s) empty, 0 invalid label files:  59%|█████▉    | 70372/118287 [00:18<00:12, 3981.63it/s]70177 label(s) found, 630 label(s) missing, 0 label(s) empty, 0 invalid label files:  60%|█████▉    | 70807/118287 [00:18<00:11, 4088.23it/s]70582 label(s) found, 635 label(s) missing, 0 label(s) empty, 0 invalid label files:  60%|██████    | 71217/118287 [00:18<00:11, 4006.79it/s]70983 label(s) found, 636 label(s) missing, 0 label(s) empty, 0 invalid label files:  61%|██████    | 71619/118287 [00:18<00:11, 3996.58it/s]71389 label(s) found, 638 label(s) missing, 0 label(s) empty, 0 invalid label files:  61%|██████    | 72027/118287 [00:18<00:11, 4002.44it/s]71815 label(s) found, 639 label(s) missing, 0 label(s) empty, 0 invalid label files:  61%|██████▏   | 72454/118287 [00:18<00:11, 4059.20it/s]72219 label(s) found, 642 label(s) missing, 0 label(s) empty, 0 invalid label files:  62%|██████▏   | 72861/118287 [00:18<00:11, 4051.25it/s]72633 label(s) found, 649 label(s) missing, 0 label(s) empty, 0 invalid label files:  62%|██████▏   | 73282/118287 [00:19<00:10, 4096.06it/s]73040 label(s) found, 652 label(s) missing, 0 label(s) empty, 0 invalid label files:  62%|██████▏   | 73692/118287 [00:19<00:10, 4078.71it/s]73452 label(s) found, 659 label(s) missing, 0 label(s) empty, 0 invalid label files:  63%|██████▎   | 74111/118287 [00:19<00:10, 4106.62it/s]73861 label(s) found, 661 label(s) missing, 0 label(s) empty, 0 invalid label files:  63%|██████▎   | 74522/118287 [00:19<00:10, 4082.85it/s]74272 label(s) found, 664 label(s) missing, 0 label(s) empty, 0 invalid label files:  63%|██████▎   | 74936/118287 [00:19<00:10, 4088.92it/s]74677 label(s) found, 668 label(s) missing, 0 label(s) empty, 0 invalid label files:  64%|██████▎   | 75345/118287 [00:19<00:10, 3998.15it/s]75072 label(s) found, 674 label(s) missing, 0 label(s) empty, 0 invalid label files:  64%|██████▍   | 75746/118287 [00:19<00:12, 3469.97it/s]75495 label(s) found, 674 label(s) missing, 0 label(s) empty, 0 invalid label files:  64%|██████▍   | 76169/118287 [00:19<00:11, 3671.39it/s]75912 label(s) found, 677 label(s) missing, 0 label(s) empty, 0 invalid label files:  65%|██████▍   | 76589/118287 [00:19<00:10, 3809.47it/s]76304 label(s) found, 680 label(s) missing, 0 label(s) empty, 0 invalid label files:  65%|██████▌   | 76984/118287 [00:19<00:10, 3847.13it/s]76700 label(s) found, 685 label(s) missing, 0 label(s) empty, 0 invalid label files:  65%|██████▌   | 77385/118287 [00:20<00:10, 3875.19it/s]77087 label(s) found, 691 label(s) missing, 0 label(s) empty, 0 invalid label files:  66%|██████▌   | 77778/118287 [00:20<00:25, 1592.01it/s]77569 label(s) found, 693 label(s) missing, 0 label(s) empty, 0 invalid label files:  66%|██████▌   | 78262/118287 [00:20<00:19, 2061.79it/s]77980 label(s) found, 696 label(s) missing, 0 label(s) empty, 0 invalid label files:  67%|██████▋   | 78676/118287 [00:20<00:17, 2312.58it/s]78470 label(s) found, 698 label(s) missing, 0 label(s) empty, 0 invalid label files:  67%|██████▋   | 79168/118287 [00:21<00:13, 2807.09it/s]78871 label(s) found, 699 label(s) missing, 0 label(s) empty, 0 invalid label files:  67%|██████▋   | 79570/118287 [00:21<00:12, 3062.04it/s]79283 label(s) found, 702 label(s) missing, 0 label(s) empty, 0 invalid label files:  68%|██████▊   | 79985/118287 [00:21<00:11, 3299.12it/s]79693 label(s) found, 707 label(s) missing, 0 label(s) empty, 0 invalid label files:  68%|██████▊   | 80400/118287 [00:21<00:10, 3497.68it/s]80101 label(s) found, 712 label(s) missing, 0 label(s) empty, 0 invalid label files:  68%|██████▊   | 80813/118287 [00:21<00:10, 3661.23it/s]80516 label(s) found, 714 label(s) missing, 0 label(s) empty, 0 invalid label files:  69%|██████▊   | 81230/118287 [00:21<00:09, 3798.99it/s]80923 label(s) found, 715 label(s) missing, 0 label(s) empty, 0 invalid label files:  69%|██████▉   | 81638/118287 [00:21<00:09, 3836.20it/s]81335 label(s) found, 723 label(s) missing, 0 label(s) empty, 0 invalid label files:  69%|██████▉   | 82058/118287 [00:21<00:09, 3927.15it/s]81751 label(s) found, 729 label(s) missing, 0 label(s) empty, 0 invalid label files:  70%|██████▉   | 82480/118287 [00:21<00:08, 4010.86it/s]82152 label(s) found, 740 label(s) missing, 0 label(s) empty, 0 invalid label files:  70%|███████   | 82892/118287 [00:21<00:08, 4040.43it/s]82563 label(s) found, 741 label(s) missing, 0 label(s) empty, 0 invalid label files:  70%|███████   | 83304/118287 [00:22<00:08, 4060.45it/s]82970 label(s) found, 746 label(s) missing, 0 label(s) empty, 0 invalid label files:  71%|███████   | 83716/118287 [00:22<00:08, 4009.58it/s]83411 label(s) found, 752 label(s) missing, 0 label(s) empty, 0 invalid label files:  71%|███████   | 84163/118287 [00:22<00:08, 4142.22it/s]83826 label(s) found, 755 label(s) missing, 0 label(s) empty, 0 invalid label files:  72%|███████▏  | 84581/118287 [00:22<00:08, 4105.58it/s]84236 label(s) found, 758 label(s) missing, 0 label(s) empty, 0 invalid label files:  72%|███████▏  | 84994/118287 [00:22<00:08, 4082.72it/s]84653 label(s) found, 760 label(s) missing, 0 label(s) empty, 0 invalid label files:  72%|███████▏  | 85413/118287 [00:22<00:07, 4111.17it/s]85064 label(s) found, 762 label(s) missing, 0 label(s) empty, 0 invalid label files:  73%|███████▎  | 85826/118287 [00:22<00:07, 4108.18it/s]85474 label(s) found, 764 label(s) missing, 0 label(s) empty, 0 invalid label files:  73%|███████▎  | 86238/118287 [00:22<00:07, 4103.77it/s]85880 label(s) found, 769 label(s) missing, 0 label(s) empty, 0 invalid label files:  73%|███████▎  | 86649/118287 [00:22<00:07, 3956.99it/s]86291 label(s) found, 772 label(s) missing, 0 label(s) empty, 0 invalid label files:  74%|███████▎  | 87063/118287 [00:22<00:07, 3971.58it/s]86713 label(s) found, 780 label(s) missing, 0 label(s) empty, 0 invalid label files:  74%|███████▍  | 87493/118287 [00:23<00:07, 4063.23it/s]87119 label(s) found, 784 label(s) missing, 0 label(s) empty, 0 invalid label files:  74%|███████▍  | 87903/118287 [00:23<00:07, 4073.94it/s]87520 label(s) found, 792 label(s) missing, 0 label(s) empty, 0 invalid label files:  75%|███████▍  | 88312/118287 [00:23<00:07, 4052.50it/s]87930 label(s) found, 796 label(s) missing, 0 label(s) empty, 0 invalid label files:  75%|███████▌  | 88726/118287 [00:23<00:07, 4046.28it/s]88336 label(s) found, 796 label(s) missing, 0 label(s) empty, 0 invalid label files:  75%|███████▌  | 89132/118287 [00:23<00:07, 4015.99it/s]88738 label(s) found, 796 label(s) missing, 0 label(s) empty, 0 invalid label files:  76%|███████▌  | 89534/118287 [00:23<00:07, 3919.02it/s]89165 label(s) found, 802 label(s) missing, 0 label(s) empty, 0 invalid label files:  76%|███████▌  | 89967/118287 [00:23<00:07, 4038.08it/s]89565 label(s) found, 807 label(s) missing, 0 label(s) empty, 0 invalid label files:  76%|███████▋  | 90372/118287 [00:23<00:06, 4010.61it/s]89995 label(s) found, 811 label(s) missing, 0 label(s) empty, 0 invalid label files:  77%|███████▋  | 90806/118287 [00:23<00:06, 4106.87it/s]90408 label(s) found, 813 label(s) missing, 0 label(s) empty, 0 invalid label files:  77%|███████▋  | 91221/118287 [00:23<00:06, 4119.18it/s]90816 label(s) found, 818 label(s) missing, 0 label(s) empty, 0 invalid label files:  77%|███████▋  | 91634/118287 [00:24<00:06, 4113.14it/s]91225 label(s) found, 821 label(s) missing, 0 label(s) empty, 0 invalid label files:  78%|███████▊  | 92046/118287 [00:24<00:06, 4101.53it/s]91632 label(s) found, 828 label(s) missing, 0 label(s) empty, 0 invalid label files:  78%|███████▊  | 92460/118287 [00:24<00:06, 4108.25it/s]92053 label(s) found, 830 label(s) missing, 0 label(s) empty, 0 invalid label files:  79%|███████▊  | 92883/118287 [00:24<00:06, 4140.03it/s]92466 label(s) found, 832 label(s) missing, 0 label(s) empty, 0 invalid label files:  79%|███████▉  | 93298/118287 [00:24<00:06, 4094.43it/s]92874 label(s) found, 834 label(s) missing, 0 label(s) empty, 0 invalid label files:  79%|███████▉  | 93708/118287 [00:24<00:06, 4021.28it/s]93286 label(s) found, 834 label(s) missing, 0 label(s) empty, 0 invalid label files:  80%|███████▉  | 94120/118287 [00:24<00:05, 4040.92it/s]93688 label(s) found, 837 label(s) missing, 0 label(s) empty, 0 invalid label files:  80%|███████▉  | 94525/118287 [00:24<00:05, 4012.80it/s]94103 label(s) found, 844 label(s) missing, 0 label(s) empty, 0 invalid label files:  80%|████████  | 94947/118287 [00:24<00:05, 4073.00it/s]94520 label(s) found, 846 label(s) missing, 0 label(s) empty, 0 invalid label files:  81%|████████  | 95366/118287 [00:24<00:05, 4089.39it/s]94929 label(s) found, 847 label(s) missing, 0 label(s) empty, 0 invalid label files:  81%|████████  | 95776/118287 [00:25<00:06, 3715.79it/s]95308 label(s) found, 847 label(s) missing, 0 label(s) empty, 0 invalid label files:  81%|████████▏ | 96155/118287 [00:25<00:06, 3685.95it/s]95707 label(s) found, 850 label(s) missing, 0 label(s) empty, 0 invalid label files:  82%|████████▏ | 96557/118287 [00:25<00:05, 3774.00it/s]96120 label(s) found, 852 label(s) missing, 0 label(s) empty, 0 invalid label files:  82%|████████▏ | 96972/118287 [00:25<00:05, 3848.25it/s]96556 label(s) found, 853 label(s) missing, 0 label(s) empty, 0 invalid label files:  82%|████████▏ | 97409/118287 [00:25<00:05, 3990.27it/s]96975 label(s) found, 855 label(s) missing, 0 label(s) empty, 0 invalid label files:  83%|████████▎ | 97830/118287 [00:25<00:05, 4034.47it/s]97379 label(s) found, 857 label(s) missing, 0 label(s) empty, 0 invalid label files:  83%|████████▎ | 98236/118287 [00:25<00:04, 4037.06it/s]97783 label(s) found, 858 label(s) missing, 0 label(s) empty, 0 invalid label files:  83%|████████▎ | 98641/118287 [00:25<00:04, 4033.47it/s]98186 label(s) found, 860 label(s) missing, 0 label(s) empty, 0 invalid label files:  84%|████████▎ | 99046/118287 [00:25<00:04, 3953.04it/s]98619 label(s) found, 864 label(s) missing, 0 label(s) empty, 0 invalid label files:  84%|████████▍ | 99483/118287 [00:26<00:04, 4066.12it/s]99038 label(s) found, 868 label(s) missing, 0 label(s) empty, 0 invalid label files:  84%|████████▍ | 99906/118287 [00:26<00:04, 4092.61it/s]99447 label(s) found, 869 label(s) missing, 0 label(s) empty, 0 invalid label files:  85%|████████▍ | 100316/118287 [00:26<00:04, 4074.57it/s]99858 label(s) found, 873 label(s) missing, 0 label(s) empty, 0 invalid label files:  85%|████████▌ | 100731/118287 [00:26<00:04, 4094.75it/s]100267 label(s) found, 874 label(s) missing, 0 label(s) empty, 0 invalid label files:  86%|████████▌ | 101141/118287 [00:26<00:04, 4058.34it/s]100686 label(s) found, 880 label(s) missing, 0 label(s) empty, 0 invalid label files:  86%|████████▌ | 101566/118287 [00:26<00:04, 4111.18it/s]101101 label(s) found, 885 label(s) missing, 0 label(s) empty, 0 invalid label files:  86%|████████▌ | 101986/118287 [00:26<00:03, 4135.40it/s]101511 label(s) found, 889 label(s) missing, 0 label(s) empty, 0 invalid label files:  87%|████████▋ | 102400/118287 [00:26<00:03, 4134.42it/s]101918 label(s) found, 896 label(s) missing, 0 label(s) empty, 0 invalid label files:  87%|████████▋ | 102814/118287 [00:26<00:03, 4065.96it/s]102323 label(s) found, 903 label(s) missing, 0 label(s) empty, 0 invalid label files:  87%|████████▋ | 103226/118287 [00:27<00:09, 1526.02it/s]102805 label(s) found, 909 label(s) missing, 0 label(s) empty, 0 invalid label files:  88%|████████▊ | 103714/118287 [00:27<00:07, 1982.70it/s]103201 label(s) found, 909 label(s) missing, 0 label(s) empty, 0 invalid label files:  88%|████████▊ | 104110/118287 [00:27<00:06, 2298.25it/s]103566 label(s) found, 912 label(s) missing, 0 label(s) empty, 0 invalid label files:  88%|████████▊ | 104478/118287 [00:27<00:05, 2529.20it/s]104040 label(s) found, 916 label(s) missing, 0 label(s) empty, 0 invalid label files:  89%|████████▊ | 104956/118287 [00:27<00:04, 3001.78it/s]104434 label(s) found, 919 label(s) missing, 0 label(s) empty, 0 invalid label files:  89%|████████▉ | 105353/118287 [00:28<00:04, 3192.24it/s]104841 label(s) found, 923 label(s) missing, 0 label(s) empty, 0 invalid label files:  89%|████████▉ | 105764/118287 [00:28<00:03, 3414.72it/s]105241 label(s) found, 928 label(s) missing, 0 label(s) empty, 0 invalid label files:  90%|████████▉ | 106169/118287 [00:28<00:03, 3578.47it/s]105638 label(s) found, 931 label(s) missing, 0 label(s) empty, 0 invalid label files:  90%|█████████ | 106569/118287 [00:28<00:03, 3671.82it/s]106031 label(s) found, 935 label(s) missing, 0 label(s) empty, 0 invalid label files:  90%|█████████ | 106966/118287 [00:28<00:03, 3731.00it/s]106453 label(s) found, 936 label(s) missing, 0 label(s) empty, 0 invalid label files:  91%|█████████ | 107389/118287 [00:28<00:02, 3863.52it/s]106865 label(s) found, 938 label(s) missing, 0 label(s) empty, 0 invalid label files:  91%|█████████ | 107803/118287 [00:28<00:02, 3942.67it/s]107265 label(s) found, 944 label(s) missing, 0 label(s) empty, 0 invalid label files:  91%|█████████▏| 108209/118287 [00:28<00:02, 3949.20it/s]107691 label(s) found, 946 label(s) missing, 0 label(s) empty, 0 invalid label files:  92%|█████████▏| 108637/118287 [00:28<00:02, 4041.09it/s]108101 label(s) found, 950 label(s) missing, 0 label(s) empty, 0 invalid label files:  92%|█████████▏| 109051/118287 [00:28<00:02, 4040.08it/s]108539 label(s) found, 954 label(s) missing, 0 label(s) empty, 0 invalid label files:  93%|█████████▎| 109493/118287 [00:29<00:02, 4151.49it/s]108963 label(s) found, 958 label(s) missing, 0 label(s) empty, 0 invalid label files:  93%|█████████▎| 109921/118287 [00:29<00:01, 4187.47it/s]109381 label(s) found, 961 label(s) missing, 0 label(s) empty, 0 invalid label files:  93%|█████████▎| 110342/118287 [00:29<00:01, 4011.54it/s]109793 label(s) found, 966 label(s) missing, 0 label(s) empty, 0 invalid label files:  94%|█████████▎| 110759/118287 [00:29<00:01, 4041.40it/s]110197 label(s) found, 969 label(s) missing, 0 label(s) empty, 0 invalid label files:  94%|█████████▍| 111166/118287 [00:29<00:01, 4010.39it/s]110612 label(s) found, 974 label(s) missing, 0 label(s) empty, 0 invalid label files:  94%|█████████▍| 111586/118287 [00:29<00:01, 4063.86it/s]111017 label(s) found, 977 label(s) missing, 0 label(s) empty, 0 invalid label files:  95%|█████████▍| 111994/118287 [00:29<00:01, 4021.88it/s]111417 label(s) found, 981 label(s) missing, 0 label(s) empty, 0 invalid label files:  95%|█████████▌| 112398/118287 [00:29<00:01, 4021.56it/s]111830 label(s) found, 984 label(s) missing, 0 label(s) empty, 0 invalid label files:  95%|█████████▌| 112814/118287 [00:29<00:01, 4059.11it/s]112238 label(s) found, 986 label(s) missing, 0 label(s) empty, 0 invalid label files:  96%|█████████▌| 113224/118287 [00:29<00:01, 4070.38it/s]112644 label(s) found, 988 label(s) missing, 0 label(s) empty, 0 invalid label files:  96%|█████████▌| 113632/118287 [00:30<00:01, 4055.60it/s]113048 label(s) found, 990 label(s) missing, 0 label(s) empty, 0 invalid label files:  96%|█████████▋| 114038/118287 [00:30<00:01, 4044.11it/s]113450 label(s) found, 993 label(s) missing, 0 label(s) empty, 0 invalid label files:  97%|█████████▋| 114443/118287 [00:30<00:00, 4017.02it/s]113860 label(s) found, 994 label(s) missing, 0 label(s) empty, 0 invalid label files:  97%|█████████▋| 114854/118287 [00:30<00:00, 4040.45it/s]114272 label(s) found, 999 label(s) missing, 0 label(s) empty, 0 invalid label files:  97%|█████████▋| 115271/118287 [00:30<00:00, 4072.59it/s]114683 label(s) found, 1001 label(s) missing, 0 label(s) empty, 0 invalid label files:  98%|█████████▊| 115684/118287 [00:30<00:00, 4089.53it/s]115101 label(s) found, 1004 label(s) missing, 0 label(s) empty, 0 invalid label files:  98%|█████████▊| 116105/118287 [00:30<00:00, 4117.81it/s]115507 label(s) found, 1010 label(s) missing, 0 label(s) empty, 0 invalid label files:  99%|█████████▊| 116517/118287 [00:30<00:00, 4078.87it/s]115929 label(s) found, 1011 label(s) missing, 0 label(s) empty, 0 invalid label files:  99%|█████████▉| 116940/118287 [00:30<00:00, 4123.27it/s]116354 label(s) found, 1014 label(s) missing, 0 label(s) empty, 0 invalid label files:  99%|█████████▉| 117368/118287 [00:30<00:00, 4167.62it/s]116765 label(s) found, 1020 label(s) missing, 0 label(s) empty, 0 invalid label files: 100%|█████████▉| 117785/118287 [00:31<00:00, 4056.02it/s]117189 label(s) found, 1021 label(s) missing, 0 label(s) empty, 0 invalid label files: 100%|█████████▉| 118210/118287 [00:31<00:00, 4106.32it/s]117266 label(s) found, 1021 label(s) missing, 0 label(s) empty, 0 invalid label files: 100%|██████████| 118287/118287 [00:31<00:00, 3788.88it/s]
+Train: Final numbers of valid images: 118287/ labels: 118287. 
+230.3s for dataset initialization.
+img record infomation path is:coco/images/.val2017_cache.json
+Val: Checking formats of images with 8 process(es): 
+  0%|          | 0/5000 [00:00<?, ?it/s]0 image(s) corrupted:   1%|          | 35/5000 [00:00<00:15, 320.20it/s]0 image(s) corrupted:   3%|▎         | 167/5000 [00:00<00:05, 881.84it/s]0 image(s) corrupted:   6%|▌         | 295/5000 [00:00<00:04, 1057.67it/s]0 image(s) corrupted:   8%|▊         | 418/5000 [00:00<00:04, 1119.19it/s]0 image(s) corrupted:  11%|█▏        | 567/5000 [00:00<00:03, 1224.08it/s]0 image(s) corrupted:  14%|█▍        | 690/5000 [00:00<00:03, 1181.77it/s]0 image(s) corrupted:  16%|█▋        | 815/5000 [00:00<00:03, 1197.21it/s]0 image(s) corrupted:  19%|█▊        | 936/5000 [00:01<00:07, 576.28it/s] 0 image(s) corrupted:  21%|██        | 1027/5000 [00:01<00:06, 617.78it/s]0 image(s) corrupted:  22%|██▏       | 1115/5000 [00:01<00:05, 660.80it/s]0 image(s) corrupted:  25%|██▌       | 1263/5000 [00:01<00:04, 835.77it/s]0 image(s) corrupted:  27%|██▋       | 1368/5000 [00:01<00:04, 839.74it/s]0 image(s) corrupted:  30%|██▉       | 1477/5000 [00:01<00:03, 899.40it/s]0 image(s) corrupted:  32%|███▏      | 1579/5000 [00:01<00:03, 905.12it/s]0 image(s) corrupted:  35%|███▌      | 1773/5000 [00:01<00:02, 1175.13it/s]0 image(s) corrupted:  38%|███▊      | 1900/5000 [00:02<00:02, 1150.77it/s]0 image(s) corrupted:  40%|████      | 2022/5000 [00:02<00:02, 1145.62it/s]0 image(s) corrupted:  43%|████▎     | 2142/5000 [00:02<00:02, 1148.39it/s]0 image(s) corrupted:  46%|████▌     | 2276/5000 [00:02<00:02, 1201.93it/s]0 image(s) corrupted:  48%|████▊     | 2399/5000 [00:02<00:02, 1107.08it/s]0 image(s) corrupted:  51%|█████     | 2530/5000 [00:02<00:02, 1093.25it/s]0 image(s) corrupted:  54%|█████▎    | 2682/5000 [00:02<00:01, 1205.22it/s]0 image(s) corrupted:  56%|█████▌    | 2806/5000 [00:02<00:02, 1085.28it/s]0 image(s) corrupted:  59%|█████▊    | 2926/5000 [00:02<00:01, 1113.87it/s]0 image(s) corrupted:  62%|██████▏   | 3075/5000 [00:03<00:01, 1128.79it/s]0 image(s) corrupted:  64%|██████▍   | 3190/5000 [00:03<00:01, 1107.74it/s]0 image(s) corrupted:  66%|██████▌   | 3303/5000 [00:03<00:01, 1016.09it/s]0 image(s) corrupted:  70%|██████▉   | 3488/5000 [00:03<00:01, 1226.97it/s]0 image(s) corrupted:  72%|███████▏  | 3615/5000 [00:03<00:01, 1154.50it/s]0 image(s) corrupted:  75%|███████▍  | 3734/5000 [00:03<00:01, 1139.24it/s]0 image(s) corrupted:  77%|███████▋  | 3867/5000 [00:03<00:00, 1188.35it/s]0 image(s) corrupted:  80%|████████  | 4000/5000 [00:03<00:00, 1192.06it/s]0 image(s) corrupted:  83%|████████▎ | 4155/5000 [00:03<00:00, 1290.95it/s]0 image(s) corrupted:  86%|████████▌ | 4286/5000 [00:04<00:00, 1148.69it/s]0 image(s) corrupted:  88%|████████▊ | 4412/5000 [00:04<00:00, 1116.30it/s]0 image(s) corrupted:  91%|█████████ | 4532/5000 [00:04<00:00, 1092.35it/s]0 image(s) corrupted:  93%|█████████▎| 4660/5000 [00:04<00:00, 1110.65it/s]0 image(s) corrupted:  96%|█████████▋| 4822/5000 [00:04<00:00, 1181.10it/s]0 image(s) corrupted:  99%|█████████▉| 4941/5000 [00:04<00:00, 1182.30it/s]0 image(s) corrupted: 100%|██████████| 5000/5000 [00:04<00:00, 1050.59it/s]
+Val: Checking formats of labels with 8 process(es): 
+  0%|          | 0/5000 [00:00<?, ?it/s]193 label(s) found, 0 label(s) missing, 0 label(s) empty, 0 invalid label files:   4%|▍         | 193/5000 [00:00<00:02, 1903.78it/s]382 label(s) found, 2 label(s) missing, 0 label(s) empty, 0 invalid label files:   8%|▊         | 384/5000 [00:00<00:02, 1770.80it/s]632 label(s) found, 6 label(s) missing, 0 label(s) empty, 0 invalid label files:  13%|█▎        | 638/5000 [00:00<00:02, 2096.95it/s]939 label(s) found, 8 label(s) missing, 0 label(s) empty, 0 invalid label files:  19%|█▉        | 947/5000 [00:00<00:01, 2453.36it/s]1274 label(s) found, 10 label(s) missing, 0 label(s) empty, 0 invalid label files:  26%|██▌       | 1284/5000 [00:00<00:01, 2742.92it/s]1611 label(s) found, 12 label(s) missing, 0 label(s) empty, 0 invalid label files:  32%|███▏      | 1623/5000 [00:00<00:01, 2896.14it/s]1900 label(s) found, 14 label(s) missing, 0 label(s) empty, 0 invalid label files:  38%|███▊      | 1914/5000 [00:00<00:01, 2797.65it/s]2178 label(s) found, 17 label(s) missing, 0 label(s) empty, 0 invalid label files:  44%|████▍     | 2195/5000 [00:00<00:01, 2524.63it/s]2484 label(s) found, 23 label(s) missing, 0 label(s) empty, 0 invalid label files:  50%|█████     | 2507/5000 [00:00<00:00, 2660.91it/s]2751 label(s) found, 27 label(s) missing, 0 label(s) empty, 0 invalid label files:  56%|█████▌    | 2778/5000 [00:01<00:00, 2478.47it/s]3002 label(s) found, 29 label(s) missing, 0 label(s) empty, 0 invalid label files:  61%|██████    | 3031/5000 [00:01<00:00, 2326.07it/s]3237 label(s) found, 31 label(s) missing, 0 label(s) empty, 0 invalid label files:  65%|██████▌   | 3268/5000 [00:01<00:00, 2244.65it/s]3461 label(s) found, 34 label(s) missing, 0 label(s) empty, 0 invalid label files:  70%|██████▉   | 3495/5000 [00:01<00:00, 2169.21it/s]3687 label(s) found, 34 label(s) missing, 0 label(s) empty, 0 invalid label files:  74%|███████▍  | 3721/5000 [00:01<00:00, 2162.88it/s]3904 label(s) found, 35 label(s) missing, 0 label(s) empty, 0 invalid label files:  79%|███████▉  | 3939/5000 [00:01<00:00, 2162.24it/s]4118 label(s) found, 39 label(s) missing, 0 label(s) empty, 0 invalid label files:  83%|████████▎ | 4157/5000 [00:01<00:00, 2143.28it/s]4331 label(s) found, 41 label(s) missing, 0 label(s) empty, 0 invalid label files:  87%|████████▋ | 4372/5000 [00:01<00:00, 2061.04it/s]4536 label(s) found, 43 label(s) missing, 0 label(s) empty, 0 invalid label files:  92%|█████████▏| 4579/5000 [00:02<00:00, 1991.37it/s]4760 label(s) found, 47 label(s) missing, 0 label(s) empty, 0 invalid label files:  96%|█████████▌| 4807/5000 [00:02<00:00, 2030.81it/s]4952 label(s) found, 48 label(s) missing, 0 label(s) empty, 0 invalid label files: 100%|██████████| 5000/5000 [00:02<00:00, 2293.45it/s]
+Val: Final numbers of valid images: 5000/ labels: 5000. 
+13.4s for dataset initialization.
+Training start...
+
+     Epoch        lr  iou_loss  dfl_loss  cls_loss
+  0%|          | 0/1849 [00:00<?, ?it/s]                                          0%|          | 0/1849 [01:03<?, ?it/s]                                        
+ERROR in training steps.
+ERROR in training loop or eval/save model.
+OOM RuntimeError is raised due to the huge memory cost during label assignment.                     CPU mode is applied in this batch. If you want to avoid this issue,                     try to reduce the batch size or image size.
+------------CPU Mode for This Batch-------------
+OOM RuntimeError is raised due to the huge memory cost during label assignment.                     CPU mode is applied in this batch. If you want to avoid this issue,                     try to reduce the batch size or image size.
+------------CPU Mode for This Batch-------------
+Traceback (most recent call last):
+  File "tools/train.py", line 146, in <module>
+    main(args)
+  File "tools/train.py", line 136, in main
+    trainer.train()
+  File "/home/mohammad.bhat/qazim/yolov6_new/YOLOv6/yolov6/core/engine.py", line 124, in train
+    self.train_one_epoch(self.epoch)
+  File "/home/mohammad.bhat/qazim/yolov6_new/YOLOv6/yolov6/core/engine.py", line 138, in train_one_epoch
+    self.train_in_steps(epoch_num, self.step)
+  File "/home/mohammad.bhat/qazim/yolov6_new/YOLOv6/yolov6/core/engine.py", line 167, in train_in_steps
+    total_loss_ab, loss_items_ab = self.compute_loss_ab(preds[:3], targets, epoch_num, step_num,
+  File "/home/mohammad.bhat/qazim/yolov6_new/YOLOv6/yolov6/models/losses/loss_fuseab.py", line 127, in __call__
+    one_hot_label = F.one_hot(target_labels.long(), self.num_classes + 1)[..., :-1]
+torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 998.00 MiB (GPU 0; 39.59 GiB total capacity; 36.58 GiB already allocated; 623.62 MiB free; 37.52 GiB reserved in total by PyTorch) If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF

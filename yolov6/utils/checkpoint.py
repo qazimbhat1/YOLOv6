@@ -30,6 +30,7 @@ def load_state_dict(weights, model, map_location=None):
             print("yyyyyyeeeeessss", k)
         else:
             print("nnnnnoooooooooo", k)
+            #raise
     raise
 
     model.load_state_dict(state_dict, strict=False)
@@ -39,7 +40,7 @@ def load_state_dict(weights, model, map_location=None):
     #    print("Yes")
     #else:
     #    raise
-    #del ckpt, loaded_state_dict, model_state_dict
+    del ckpt, loaded_state_dict, model_state_dict
 
     return model
 
