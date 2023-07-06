@@ -36,9 +36,11 @@ from yolov6.utils.general import download_ckpt
 
 
 class Trainer:
-    def __init__(self, args, cfg, device):
+    def __init__(self, args, cfg, teacher_config, device):
+        #def __init__(self, args, cfg, teacher_config device):
         self.args = args
         self.cfg = cfg
+        self.teacher_config = teacher_config
         self.device = device
         self.max_epoch = args.epochs
 
@@ -56,11 +58,12 @@ class Trainer:
         # get model and optimizer
         self.distill_ns = True if self.args.distill and self.cfg.model.type in ['YOLOv6n','YOLOv6s'] else False
         model = self.get_model(args, cfg, self.num_classes, device)
+        #model = self.get_model(args, cfg, teacher_config, self.num_classes, device)
         if self.args.distill:
             if self.args.fuse_ab:
                 LOGGER.error('ERROR in: Distill models should turn off the fuse_ab.\n')
                 exit()
-            self.teacher_model = self.get_teacher_model(args, cfg, self.num_classes, device)
+            self.teacher_model = self.get_teacher_model(args, cfg, teacher_config, self.num_classes, device)
         if self.args.quant:
             self.quant_setup(model, cfg, device)
         if cfg.training_mode == 'repopt':
@@ -423,9 +426,13 @@ class Trainer:
         LOGGER.info('Model: {}'.format(model))
         return model
 
-    def get_teacher_model(self, args, cfg, nc, device):
-        teacher_fuse_ab = False if cfg.model.head.num_layers != 3 else True
-        model = build_model(cfg, nc, device, fuse_ab=teacher_fuse_ab)
+    #def get_teacher_model(self, args, cfg, nc, device):
+    def get_teacher_model(self, args, teacher_config, nc, device):
+        teacher_fuse_ab = False if teacher_config.model.head.num_layers != 3 else True\
+        #print("wwwwwwwwwwwwwwww",teacher_fuse_ab)
+        #raise
+        #model = build_model(cfg, nc, device, fuse_ab=teacher_fuse_ab)
+        model = build_model(teacher_config, nc, device, fuse_ab=teacher_fuse_ab)
         weights = args.teacher_model_path
         if weights:  # finetune if pretrained model is set
             LOGGER.info(f'Loading state_dict from {weights} for teacher')

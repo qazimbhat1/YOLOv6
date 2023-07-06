@@ -26,6 +26,7 @@ def get_args_parser(add_help=True):
     parser = argparse.ArgumentParser(description='YOLOv6 PyTorch Training', add_help=add_help)
     parser.add_argument('--data-path', default='./data/coco.yaml', type=str, help='path of dataset')
     parser.add_argument('--conf-file', default='./configs/yolov6n.py', type=str, help='experiments description file')
+    parser.add_argument('--teacher_config', default='./configs/yolov6l.py', type=str, help='experiments description file')
     parser.add_argument('--img-size', default=640, type=int, help='train, val image size (pixels)')
     parser.add_argument('--rect', action='store_true', help='whether to use rectangular training, default is False')
     parser.add_argument('--batch-size', default=32, type=int, help='total batch size for all GPUs')
@@ -95,6 +96,7 @@ def check_and_init(args):
         args.img_size = check_img_size(args.img_size, 32, floor=256)
 
     cfg = Config.fromfile(args.conf_file)
+    teacher_config = Config.fromfile(args.teacher_config)
     if not hasattr(cfg, 'training_mode'):
         setattr(cfg, 'training_mode', 'repvgg')
     # check device
@@ -105,14 +107,16 @@ def check_and_init(args):
     if master_process:
         save_yaml(vars(args), osp.join(args.save_dir, 'args.yaml'))
 
-    return cfg, device, args
+    #return cfg, device, args
+    return cfg, teacher_config, device, args
 
 
 def main(args):
     '''main function of training'''
     # Setup
     args.local_rank, args.rank, args.world_size = get_envs()
-    cfg, device, args = check_and_init(args)
+    cfg, teacher_config, device, args = check_and_init(args)
+    #cfg, device, args = check_and_init(args)
     # reload envs because args was chagned in check_and_init(args)
     args.local_rank, args.rank, args.world_size = get_envs()
     LOGGER.info(f'training args are: {args}\n')
@@ -124,7 +128,7 @@ def main(args):
                 init_method=args.dist_url, rank=args.local_rank, world_size=args.world_size,timeout=datetime.timedelta(seconds=7200))
 
     # Start
-    trainer = Trainer(args, cfg, device)
+    trainer = Trainer(args, cfg, teacher_config, device)
     # PTQ
     if args.quant and args.calib:
         trainer.calibrate(cfg)
