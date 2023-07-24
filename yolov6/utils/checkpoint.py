@@ -8,42 +8,15 @@ from yolov6.utils.events import LOGGER
 from yolov6.utils.torch_utils import fuse_model
 
 
-#def load_state_dict(weights, model, map_location=None):
- #   """Load weights from checkpoint file, only assign weights those layers' name and shape are match."""
-  #  ckpt = torch.load(weights, map_location=map_location)
-   # state_dict = ckpt['model'].float().state_dict()
-    #model_state_dict = model.state_dict()
-    #state_dict = {k: v for k, v in state_dict.items() if k in model_state_dict and v.shape == model_state_dict[k].shape}
-    #model.load_state_dict(state_dict, strict=False)
-    #del ckpt, state_dict, model_state_dict
-    #return model
 def load_state_dict(weights, model, map_location=None):
-    """Load weights from checkpoint file, only assign weights to layers whose name and shape match."""
+    """Load weights from checkpoint file, only assign weights those layers' name and shape are match."""
     ckpt = torch.load(weights, map_location=map_location)
-    loaded_state_dict = ckpt['model'].float().state_dict()
+    state_dict = ckpt['model'].float().state_dict()
     model_state_dict = model.state_dict()
-    state_dict = {}
-
-    for k, v in model_state_dict.items():
-        if k in loaded_state_dict and v.shape == loaded_state_dict[k].shape:
-            state_dict[k] = v
-            #print("yyyyyyeeeeessss", k)
-        else:
-            #print("nnnnnoooooooooo", k)
-            raise
-    #raise
-
+    state_dict = {k: v for k, v in state_dict.items() if k in model_state_dict and v.shape == model_state_dict[k].shape}
     model.load_state_dict(state_dict, strict=False)
-
-    # Check if all layer weights are loaded properly
-    #if all(k in state_dict for k in model_state_dict):
-    #    print("Yes")
-    #else:
-    #    raise
-    del ckpt, loaded_state_dict, model_state_dict
-
+    del ckpt, state_dict, model_state_dict
     return model
-
 
 
 def load_checkpoint(weights, map_location=None, inplace=True, fuse=True):

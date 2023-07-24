@@ -26,7 +26,6 @@ def get_args_parser(add_help=True):
     parser = argparse.ArgumentParser(description='YOLOv6 PyTorch Training', add_help=add_help)
     parser.add_argument('--data-path', default='./data/coco.yaml', type=str, help='path of dataset')
     parser.add_argument('--conf-file', default='./configs/yolov6n.py', type=str, help='experiments description file')
-    parser.add_argument('--teacher_config', default='./configs/yolov6l.py', type=str, help='experiments description file')
     parser.add_argument('--img-size', default=640, type=int, help='train, val image size (pixels)')
     parser.add_argument('--rect', action='store_true', help='whether to use rectangular training, default is False')
     parser.add_argument('--batch-size', default=32, type=int, help='total batch size for all GPUs')
@@ -66,14 +65,12 @@ def check_and_init(args):
     '''check config files and device.'''
     # check files
     master_process = args.rank == 0 if args.world_size > 1 else args.rank == -1
-    #print(args.conf_file,"0000000000000000000000000000")
     if args.resume:
         # args.resume can be a checkpoint file path or a boolean value.
         checkpoint_path = args.resume if isinstance(args.resume, str) else find_latest_checkpoint()
         assert os.path.isfile(checkpoint_path), f'the checkpoint path is not exist: {checkpoint_path}'
         LOGGER.info(f'Resume training from the checkpoint file :{checkpoint_path}')
         resume_opt_file_path = Path(checkpoint_path).parent.parent / 'args.yaml'
-        #print(resume_opt_file_path, "rrrrrrrrrrrrrrrrrrrrrrrr")
         if osp.exists(resume_opt_file_path):
             with open(resume_opt_file_path) as f:
                 args = argparse.Namespace(**yaml.safe_load(f))  # load args value from args.yaml
@@ -96,18 +93,10 @@ def check_and_init(args):
         args.width = check_img_size(args.width, 32, floor=256)
     else:
         args.img_size = check_img_size(args.img_size, 32, floor=256)
-    #print(args.conf_file, "111111111111111122222222222222222")
+
     cfg = Config.fromfile(args.conf_file)
-    teacher_config = Config.fromfile(args.teacher_config)
-    #print("Student Config")
-    #print(cfg)
-    #print("Teacher Config")
-    #print(teacher_config)
-    #raise
     if not hasattr(cfg, 'training_mode'):
         setattr(cfg, 'training_mode', 'repvgg')
-    if not hasattr(teacher_config, 'training_mode'):    #DONE added the teacher config 
-        setattr(teacher_config, 'training_mode', 'repvgg')
     # check device
     device = select_device(args.device)
     # set random seed
@@ -116,16 +105,14 @@ def check_and_init(args):
     if master_process:
         save_yaml(vars(args), osp.join(args.save_dir, 'args.yaml'))
 
-    #return cfg, device, args
-    return cfg, teacher_config, device, args
+    return cfg, device, args
 
 
 def main(args):
     '''main function of training'''
     # Setup
     args.local_rank, args.rank, args.world_size = get_envs()
-    cfg, teacher_config, device, args = check_and_init(args)
-    #cfg, device, args = check_and_init(args)
+    cfg, device, args = check_and_init(args)
     # reload envs because args was chagned in check_and_init(args)
     args.local_rank, args.rank, args.world_size = get_envs()
     LOGGER.info(f'training args are: {args}\n')
@@ -137,7 +124,7 @@ def main(args):
                 init_method=args.dist_url, rank=args.local_rank, world_size=args.world_size,timeout=datetime.timedelta(seconds=7200))
 
     # Start
-    trainer = Trainer(args, cfg, teacher_config, device)
+    trainer = Trainer(args, cfg, device)
     # PTQ
     if args.quant and args.calib:
         trainer.calibrate(cfg)
