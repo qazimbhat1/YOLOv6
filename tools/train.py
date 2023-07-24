@@ -66,12 +66,14 @@ def check_and_init(args):
     '''check config files and device.'''
     # check files
     master_process = args.rank == 0 if args.world_size > 1 else args.rank == -1
+    #print(args.conf_file,"0000000000000000000000000000")
     if args.resume:
         # args.resume can be a checkpoint file path or a boolean value.
         checkpoint_path = args.resume if isinstance(args.resume, str) else find_latest_checkpoint()
         assert os.path.isfile(checkpoint_path), f'the checkpoint path is not exist: {checkpoint_path}'
         LOGGER.info(f'Resume training from the checkpoint file :{checkpoint_path}')
         resume_opt_file_path = Path(checkpoint_path).parent.parent / 'args.yaml'
+        #print(resume_opt_file_path, "rrrrrrrrrrrrrrrrrrrrrrrr")
         if osp.exists(resume_opt_file_path):
             with open(resume_opt_file_path) as f:
                 args = argparse.Namespace(**yaml.safe_load(f))  # load args value from args.yaml
@@ -94,11 +96,18 @@ def check_and_init(args):
         args.width = check_img_size(args.width, 32, floor=256)
     else:
         args.img_size = check_img_size(args.img_size, 32, floor=256)
-
+    #print(args.conf_file, "111111111111111122222222222222222")
     cfg = Config.fromfile(args.conf_file)
     teacher_config = Config.fromfile(args.teacher_config)
+    #print("Student Config")
+    #print(cfg)
+    #print("Teacher Config")
+    #print(teacher_config)
+    #raise
     if not hasattr(cfg, 'training_mode'):
         setattr(cfg, 'training_mode', 'repvgg')
+    if not hasattr(teacher_config, 'training_mode'):    #DONE added the teacher config 
+        setattr(teacher_config, 'training_mode', 'repvgg')
     # check device
     device = select_device(args.device)
     # set random seed

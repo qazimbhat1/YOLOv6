@@ -58,6 +58,8 @@ class Trainer:
         # get model and optimizer
         self.distill_ns = True if self.args.distill and self.cfg.model.type in ['YOLOv6n','YOLOv6s'] else False
         model = self.get_model(args, cfg, self.num_classes, device)
+        #print("HHHHHHHHEEEEEEEEERRRRRRRRREEEEEEE")
+        #print(cfg)
         #model = self.get_model(args, cfg, teacher_config, self.num_classes, device)
         if self.args.distill:
             if self.args.fuse_ab:
@@ -81,6 +83,8 @@ class Trainer:
         if hasattr(self, "ckpt"):
             resume_state_dict = self.ckpt['model'].float().state_dict()  # checkpoint state_dict as FP32
             model.load_state_dict(resume_state_dict, strict=True)  # load
+            #print(self.ckpt)
+            #print(self.ckpt['optimizer'])
             self.start_epoch = self.ckpt['epoch'] + 1
             self.optimizer.load_state_dict(self.ckpt['optimizer'])
             self.scheduler.load_state_dict(self.ckpt['scheduler'])
@@ -120,6 +124,8 @@ class Trainer:
         try:
             self.before_train_loop()
             for self.epoch in range(self.start_epoch, self.max_epoch):
+                #print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                #raise
                 self.before_epoch()
                 self.train_one_epoch(self.epoch)
                 self.after_epoch()
@@ -144,6 +150,7 @@ class Trainer:
     # Training one batch data.
     def train_in_steps(self, epoch_num, step_num):
         images, targets = self.prepro_data(self.batch_data, self.device)
+        #print(images.shape)
         # plot train_batch and save to tensorboard once an epoch
         if self.write_trainbatch_tb and self.main_process and self.step == 0:
             self.plot_train_batch(images, targets)
@@ -153,13 +160,46 @@ class Trainer:
         with amp.autocast(enabled=self.device != 'cpu'):
             _, _, batch_height, batch_width = images.shape
             preds, s_featmaps = self.model(images)
+            #print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            #print(preds) #Done pred has shape, but index 0 (list object has no attribute shape)
+            #print(len(preds)) #Len of pred is 4
+            #print(s_featmaps[0].shape, "1")
+            #print(s_featmaps[1].shape, "2")
+            #print(s_featmaps[2].shape, "3")
+            #print(s_featmaps[3].shape, "4")
+            #print(preds[0].shape, "first")
+            #print(preds[1].shape, "2")
+            #print(preds[2].shape, "3")
+            #print(preds[3].shape, "4")
+            #print(preds[4].shape, "5")
+            #print(s_featmaps)
+            #print(len(s_featmaps)) #Len of s_featmaps is 3
+            #print(s_featmaps.shape, "Shapeeeeeeeeee") #Done s_featmaps 'list' object has no attribute 'shape'
+            #raise
             if self.args.distill:
                 with torch.no_grad():
                     t_preds, t_featmaps = self.teacher_model(images)
+                    #print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+                    #print(len(t_preds)) #Len of t_preds is 5
+                    #print(t_preds[0].shape, "first")
+                    #print(t_preds[1].shape, "2")
+                    #print(t_preds[2].shape, "3")
+                    #print(t_preds[3].shape, "4")
+                    #print(t_preds[4].shape, "5")
+                    #print(t_featmaps[0].shape, "1")
+                    #print(t_featmaps[1].shape, "2")
+                    #print(t_featmaps[2].shape, "3")
+                    #raise
+                    #print(len(t_featmaps)) #Len of t_feat_maps is 3
+                    #print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+                    #raise
                 temperature = self.args.temperature
-                total_loss, loss_items = self.compute_loss_distill(preds, t_preds, s_featmaps, t_featmaps, targets, \
+                total_loss, loss_items = self.compute_loss_distill(preds, s, s_featmaps, t_featmaps, targets, \
                                                                   epoch_num, self.max_epoch, temperature, step_num,
                                                                   batch_height, batch_width)
+                #print(total_loss)
+                #print(total_loss.shape, "sssshhhhhhaaaaappppppeeeeeee")
+                #raise
 
             elif self.args.fuse_ab:
                 total_loss, loss_items = self.compute_loss((preds[0],preds[3],preds[4]), targets, epoch_num,
@@ -309,7 +349,7 @@ class Trainer:
                                         )
         if self.args.distill :
             if self.cfg.model.type in ['YOLOv6n','YOLOv6s']:
-                Loss_distill_func = ComputeLoss_distill_ns
+                Loss_distill_func = ComputeLoss_distill_ns #TO-DO how do we check the config if the teacher and student model are different
             else:
                 Loss_distill_func = ComputeLoss_distill
 

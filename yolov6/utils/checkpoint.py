@@ -27,11 +27,11 @@ def load_state_dict(weights, model, map_location=None):
     for k, v in model_state_dict.items():
         if k in loaded_state_dict and v.shape == loaded_state_dict[k].shape:
             state_dict[k] = v
-            print("yyyyyyeeeeessss", k)
+            #print("yyyyyyeeeeessss", k)
         else:
-            print("nnnnnoooooooooo", k)
-            #raise
-    raise
+            #print("nnnnnoooooooooo", k)
+            raise
+    #raise
 
     model.load_state_dict(state_dict, strict=False)
 

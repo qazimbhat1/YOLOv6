@@ -31,7 +31,7 @@ model = dict(
         atss_warmup_epoch=0,
         iou_type='giou',
         use_dfl=True,
-        reg_max=0, #if use_dfl is False, please set reg_max to 0
+        reg_max=16, #if use_dfl is False, please set reg_max to 0
         distill_weight={
             'class': 2.0,
             'dfl': 1.0,

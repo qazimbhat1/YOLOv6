@@ -186,6 +186,16 @@ class ComputeLoss:
 
         logits_student = pred_scores
         logits_teacher = t_pred_scores
+        #raise
+        #print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        #print("Logits Student:")
+        #print(logits_student)
+        #print("Logits Teacher:")
+        #print(logits_teacher)
+        #print("Logits Student Shape:", logits_student.shape)
+        #print("Logits Teacher Shape:", logits_teacher.shape)
+        #print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        #raise
         distill_num_classes = self.num_classes
         d_loss_cls = self.distill_loss_cls(logits_student, logits_teacher, distill_num_classes, temperature)
         if self.distill_feat:
@@ -216,7 +226,10 @@ class ComputeLoss:
         pred_student = F.softmax(logits_student / temperature, dim=1)
         pred_teacher = F.softmax(logits_teacher / temperature, dim=1)
         log_pred_student = torch.log(pred_student)
-
+        #print("!!!!!!!!!!!!!!!!!")
+        #print(logits_student)
+        #print(logits_teacher)
+        #print("!!!!!!!!!!!!!!!!!")
         d_loss_cls = F.kl_div(log_pred_student, pred_teacher, reduction="sum")
         d_loss_cls *= temperature**2
         return d_loss_cls
@@ -359,4 +372,10 @@ class BboxLoss(nn.Module):
 
         d_loss_dfl = F.kl_div(log_pred_student, pred_teacher, reduction="none").sum(1).mean()
         d_loss_dfl *= temperature**2
+        #print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        #print(logits_student)
+        #print(logits_student.shape)
+        #print(logits_teacher)
+        #print(logits_teacher.shape)
+        #print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         return d_loss_dfl

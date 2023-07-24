@@ -64,6 +64,10 @@ class ComputeLoss:
         assert pred_scores.type() == pred_distri.type()
         gt_bboxes_scale = torch.tensor([batch_width, batch_height, batch_width, batch_height]).type_as(pred_scores)
         batch_size = pred_scores.shape[0]
+        #print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        #print(pred_scores)
+        #print(pred_scores.shape)
+        #print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
         # targets
         targets =self.preprocess(targets, batch_size, gt_bboxes_scale)
