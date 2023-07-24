@@ -194,7 +194,7 @@ class Trainer:
                     #print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
                     #raise
                 temperature = self.args.temperature
-                total_loss, loss_items = self.compute_loss_distill(preds, s, s_featmaps, t_featmaps, targets, \
+                total_loss, loss_items = self.compute_loss_distill(preds, t_preds, s_featmaps, t_featmaps, targets, \
                                                                   epoch_num, self.max_epoch, temperature, step_num,
                                                                   batch_height, batch_width)
                 #print(total_loss)
