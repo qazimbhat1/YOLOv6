@@ -137,6 +137,11 @@ class Trainer:
         except Exception as _:
             LOGGER.error('ERROR in training steps.')
             raise
+    #def save_preds_to_file(preds, file_path):#save the preds of the teacher model for distillaiton 
+    #torch.save(preds, file_path)
+
+    #def load_preds_from_file(file_path):# load the preds form the file during distillation for teacher model
+    #return torch.load(file_path)
 
     # Training one batch data.
     def train_in_steps(self, epoch_num, step_num):
@@ -150,6 +155,13 @@ class Trainer:
         with amp.autocast(enabled=self.device != 'cpu'):
             _, _, batch_height, batch_width = images.shape
             preds, s_featmaps = self.model(images)
+            #save_preds_to_file(preds, 'preds_list.pt')
+            #preds_loaded = load_preds_from_file(preds_list.pt)
+            #for i in range(0,len(preds_list.pt)):
+            #    if save_preds_to_file[i] == preds_loaded[i]:
+            #        print("Success")
+            #    else:
+            #        print("Failure")
             if self.args.distill:
                 with torch.no_grad():
                     t_preds, t_featmaps = self.teacher_model(images)
