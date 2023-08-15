@@ -115,7 +115,8 @@ class Evaler:
                 from yolov6.utils.metrics import ConfusionMatrix
                 confusion_matrix = ConfusionMatrix(nc=model.nc)
 
-        for i, (imgs, targets, paths, shapes) in enumerate(pbar):
+
+        for i, (imgs, targets, paths, shapes, status, affine_params) in enumerate(pbar):
             # pre-process
             t1 = time_sync()
             imgs = imgs.to(self.device, non_blocking=True)
@@ -124,9 +125,40 @@ class Evaler:
             self.speed_result[1] += time_sync() - t1  # pre-process time
 
             # Inference
+            #t2 = time_sync()
+            #outputs, _ = model(imgs)
+            #self.speed_result[2] += time_sync() - t2  # inference time
+
+            #Inference
             t2 = time_sync()
             outputs, _ = model(imgs)
-            self.speed_result[2] += time_sync() - t2  # inference time
+            #print(outputs.shape, paths)
+            self.speed_result[2] += time_sync() - t2
+            save_dir = "/home/mohammad.bhat/qazim/yolov6_new/YOLOv6/FKD/new_directory"
+            for k in range(len(paths)):
+                save_path = os.path.join(save_dir, str(paths[k].split('/')[-1].split('.')[0]))
+                #print(save_path)
+                #print(status[k], "-------")
+                #print(affine_params[k])
+                #state = [status[k], affine_params[k], save_path, outputs[k].detach().cpu().numpy()]
+                #torch.save(state, save_path)
+            #if i == 10:
+            #    break
+            #    raise
+
+
+            # Inference
+            #t2 = time_sync()
+            #outputs, _ = model(imgs)
+            #print(outputs.shape, paths)
+            #save_dir = "/home/zbhat/yolo/yolo_orig/yolo_orig_gsl"
+            #for k in range(len(paths)):
+            #    save_path = os.path.join(save_dir,str(paths[k].split('/')[-1].split('.')[0]))
+            #    print(save_path)
+            #    state = [save_path, outputs[k].detach().cpu().numpy()]
+            #    torch.save(state, save_path)
+                # raise
+            #self.speed_result[2] += time_sync() - t2  # inference time
 
             # post-process
             t3 = time_sync()

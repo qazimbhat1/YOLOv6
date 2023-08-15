@@ -10,20 +10,52 @@ import cv2
 import numpy as np
 
 
-def augment_hsv(im, hgain=0.5, sgain=0.5, vgain=0.5):
-    '''HSV color-space augmentation.'''
+def augment_hsv(im, hgain=0.5, sgain=0.5, vgain=0.5, hsv_params=None):
+    '''HSV color-space augmentation for soft label generation.'''
     if hgain or sgain or vgain:
-        r = np.random.uniform(-1, 1, 3) * [hgain, sgain, vgain] + 1  # random gains
+        if hsv_params is not None:
+            h_gain = hsv_params['h_gain']
+            s_gain = hsv_params['s_gain']
+            v_gain = hsv_params['v_gain']
+        else:
+            r = np.random.uniform(-1, 1, 3) * [hgain, sgain, vgain] + 1  # random gains
+            h_gain, s_gain, v_gain = r[0], r[1], r[2]
         hue, sat, val = cv2.split(cv2.cvtColor(im, cv2.COLOR_BGR2HSV))
         dtype = im.dtype  # uint8
 
         x = np.arange(0, 256, dtype=r.dtype)
-        lut_hue = ((x * r[0]) % 180).astype(dtype)
-        lut_sat = np.clip(x * r[1], 0, 255).astype(dtype)
-        lut_val = np.clip(x * r[2], 0, 255).astype(dtype)
+        lut_hue = ((x * h_gain) % 180).astype(dtype)
+        lut_sat = np.clip(x * s_gain, 0, 255).astype(dtype)
+        lut_val = np.clip(x * v_gain, 0, 255).astype(dtype)
 
         im_hsv = cv2.merge((cv2.LUT(hue, lut_hue), cv2.LUT(sat, lut_sat), cv2.LUT(val, lut_val)))
-        cv2.cvtColor(im_hsv, cv2.COLOR_HSV2BGR, dst=im)  # no return needed
+        cv2.cvtColor(im_hsv, cv2.COLOR_HSV2BGR, dst=im)  # Apply augmentation directly to the input image
+
+        # Return augmentation parameters as a dictionary
+        augmentation_params = {
+            'h_gain': h_gain,
+            's_gain': s_gain,
+            'v_gain': v_gain
+        }
+        
+        return im, augmentation_params
+    else:
+        return im, None  # No augmentation applied
+
+# def augment_hsv(im, hgain=0.5, sgain=0.5, vgain=0.5):
+#     '''HSV color-space augmentation.'''
+#     if hgain or sgain or vgain:
+#         r = np.random.uniform(-1, 1, 3) * [hgain, sgain, vgain] + 1  # random gains
+#         hue, sat, val = cv2.split(cv2.cvtColor(im, cv2.COLOR_BGR2HSV))
+#         dtype = im.dtype  # uint8
+
+#         x = np.arange(0, 256, dtype=r.dtype)
+#         lut_hue = ((x * r[0]) % 180).astype(dtype)
+#         lut_sat = np.clip(x * r[1], 0, 255).astype(dtype)
+#         lut_val = np.clip(x * r[2], 0, 255).astype(dtype)
+
+#         im_hsv = cv2.merge((cv2.LUT(hue, lut_hue), cv2.LUT(sat, lut_sat), cv2.LUT(val, lut_val)))
+#         cv2.cvtColor(im_hsv, cv2.COLOR_HSV2BGR, dst=im)  # no return needed
 
 
 def letterbox(im, new_shape=(640, 640), color=(114, 114, 114), auto=True, scaleup=True, stride=32):
@@ -75,15 +107,17 @@ def box_candidates(box1, box2, wh_thr=2, ar_thr=20, area_thr=0.1, eps=1e-16):  #
 
 
 def random_affine(img, labels=(), degrees=10, translate=.1, scale=.1, shear=10,
-                  new_shape=(640, 640)):
+                  new_shape=(640, 640), affine_params=None):
     '''Applies Random affine transformation.'''
     n = len(labels)
     if isinstance(new_shape, int):
         height = width = new_shape
     else:
         height, width = new_shape
-
-    M, s = get_transform_matrix(img.shape[:2], (height, width), degrees, scale, shear, translate)
+    if affine_params is None:
+        M, s = get_transform_matrix(img.shape[:2], (height, width), degrees, scale, shear, translate)
+    else: 
+        M, s = affine_params['M'], affine_params['s']
     if (M != np.eye(3)).any():  # image changed
         img = cv2.warpAffine(img, M[:2], dsize=(width, height), borderValue=(114, 114, 114))
 
@@ -109,8 +143,49 @@ def random_affine(img, labels=(), degrees=10, translate=.1, scale=.1, shear=10,
         i = box_candidates(box1=labels[:, 1:5].T * s, box2=new.T, area_thr=0.1)
         labels = labels[i]
         labels[:, 1:5] = new[i]
+    affine_params = {
+        'M': M,
+        's': s
+    }
+    return img, labels, affine_params
 
-    return img, labels
+# def random_affine(img, labels=(), degrees=10, translate=.1, scale=.1, shear=10,
+#                   new_shape=(640, 640)):
+#     '''Applies Random affine transformation.'''
+#     n = len(labels)
+#     if isinstance(new_shape, int):
+#         height = width = new_shape
+#     else:
+#         height, width = new_shape
+
+#     M, s = get_transform_matrix(img.shape[:2], (height, width), degrees, scale, shear, translate)
+#     if (M != np.eye(3)).any():  # image changed
+#         img = cv2.warpAffine(img, M[:2], dsize=(width, height), borderValue=(114, 114, 114))
+
+#     # Transform label coordinates
+#     if n:
+#         new = np.zeros((n, 4))
+
+#         xy = np.ones((n * 4, 3))
+#         xy[:, :2] = labels[:, [1, 2, 3, 4, 1, 4, 3, 2]].reshape(n * 4, 2)  # x1y1, x2y2, x1y2, x2y1
+#         xy = xy @ M.T  # transform
+#         xy = xy[:, :2].reshape(n, 8)  # perspective rescale or affine
+
+#         # create new boxes
+#         x = xy[:, [0, 2, 4, 6]]
+#         y = xy[:, [1, 3, 5, 7]]
+#         new = np.concatenate((x.min(1), y.min(1), x.max(1), y.max(1))).reshape(4, n).T
+
+#         # clip
+#         new[:, [0, 2]] = new[:, [0, 2]].clip(0, width)
+#         new[:, [1, 3]] = new[:, [1, 3]].clip(0, height)
+
+#         # filter candidates
+#         i = box_candidates(box1=labels[:, 1:5].T * s, box2=new.T, area_thr=0.1)
+#         labels = labels[i]
+#         labels[:, 1:5] = new[i]
+
+#     return img, labels
 
 
 def get_transform_matrix(img_shape, new_shape, degrees, scale, shear, translate):

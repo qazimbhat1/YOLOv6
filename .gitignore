@@ -26,6 +26,7 @@ wheels/
 .installed.cfg
 *.egg
 MANIFEST
+FKD/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -126,3 +127,6 @@ pretrained_models/
 
 #outputfile
 *.txt
+
+#folder
+qazim/yolov6_new/YOLOv6/FKD

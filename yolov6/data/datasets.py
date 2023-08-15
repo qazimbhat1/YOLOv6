@@ -48,6 +48,64 @@ def img2label_paths(img_paths):
     sa, sb = f'{os.sep}images{os.sep}', f'{os.sep}labels{os.sep}'  # /images/, /labels/ substrings
     return [sb.join(x.rsplit(sa, 1)).rsplit('.', 1)[0] + '.txt' for x in img_paths]
 
+import torch
+import torchvision.transforms.functional as t_F
+
+
+class RandomHorizontalFlipWithBbox(torch.nn.Module):
+    """Horizontally flip the given image and its bounding box coordinates randomly with a given probability.
+    If the image is a torch Tensor, it is expected to have [..., H, W] shape, where ... means an arbitrary number of leading dimensions.
+
+    Args:
+        p (float): probability of the image being flipped. Default value is 0.5
+    """
+
+    def __init__(self, p=0.5):
+        super().__init__()
+        self.p = p
+
+    def forward(self, img, labels, status):
+        """
+        Args:
+            img (PIL Image or np.array): Image to be flipped.
+            labels (np.array): Bounding box labels in the format [[class, x_min, y_min, x_max, y_max], ...].
+            status (bool): Status indicating whether to apply the flip.
+
+        Returns:
+            PIL Image or np.array: Randomly flipped image.
+            np.array: Updated bounding box labels after flip.
+            bool: Updated status after flip.
+        """
+
+        
+        if status is not None:
+            if status == True:
+                if isinstance(img, Image.Image):
+                    img = t_F.hflip(img)
+                else:
+                    img = np.flip(img, axis=1)
+                flipped_labels = labels.copy()
+                flipped_labels[:, 1] = 1.0 - labels[:, 1]
+                return img, flipped_labels, status
+            else:
+                return img, labels, status
+        else:
+            status = False
+            if torch.rand(1) < self.p:
+                if isinstance(img, Image.Image):
+                    img = t_F.hflip(img)
+                else:
+                    # print("==========", img)
+                    img = np.flip(img, axis=1)
+                    # print("+++++++++", img)
+
+                status = True
+                flipped_labels = labels.copy()
+                flipped_labels[:, 1] = 1.0 - labels[:, 1]
+                return img, flipped_labels, status
+            return img, labels, status
+
+
 class TrainValDataset(Dataset):
     '''YOLOv6 train_loader/val_loader, loads images and labels for training and validation.'''
     def __init__(
@@ -64,10 +122,11 @@ class TrainValDataset(Dataset):
         pad=0.0,
         rank=-1,
         data_dict=None,
-        task="train",
+        task="val",
         specific_shape = False,
         height=1088,
-        width=1920
+        width=1920,
+        gsl=True
 
     ):
         assert task.lower() in ("train", "val", "test", "speed"), f"Not supported task: {task}"
@@ -81,6 +140,7 @@ class TrainValDataset(Dataset):
         self.specific_shape = specific_shape
         self.target_height = height
         self.target_width = width
+        self.gsl = gsl
         if self.rect:
             shapes = [self.img_info[p]["shape"] for p in self.img_paths]
             self.shapes = np.array(shapes, dtype=np.float64)
@@ -101,12 +161,28 @@ class TrainValDataset(Dataset):
         t2 = time.time()
         if self.main_process:
             LOGGER.info(f"%.1fs for dataset initialization." % (t2 - t1))
+        self.augment = False
+        self.hyp = dict(
+            hsv_h=0.015,
+            hsv_s=0.7,
+            hsv_v=0.4,
+            degrees=0.0,
+            translate=0.1,
+            scale=0.9,
+            shear=0.0,
+            flipud=0.0,
+            fliplr=0.5,
+            mosaic=1.0,
+            mixup=0.1,
+        )
 
     def __len__(self):
         """Get the length of dataset"""
         return len(self.img_paths)
 
     def __getitem__(self, index):
+        status = None
+        affine_params = None
         """Fetching a data sample for a given key.
         This function applies mosaic and mixup augments during training.
         During validation, letterbox augment is applied.
@@ -119,6 +195,7 @@ class TrainValDataset(Dataset):
 
         # Mosaic Augmentation
         if self.augment and random.random() < self.hyp["mosaic"]:
+            print("yesssssss")
             img, labels = self.get_mosaic(index, target_shape)
             shapes = None
 
@@ -132,16 +209,19 @@ class TrainValDataset(Dataset):
         else:
             # Load image
             if self.hyp and "shrink_size" in self.hyp:
+                # print('h')
                 img, (h0, w0), (h, w) = self.load_image(index, self.hyp["shrink_size"])
             else:
                 img, (h0, w0), (h, w) = self.load_image(index)
-
+            #print("here:", type(img))
             # letterbox
+            # print("letterbox")
             img, ratio, pad = letterbox(img, target_shape, auto=False, scaleup=self.augment)
             shapes = (h0, w0), ((h * ratio / h0, w * ratio / w0), pad)  # for COCO mAP rescaling
 
             labels = self.labels[index].copy()
             if labels.size:
+                # print("2")
                 w *= ratio
                 h *= ratio
                 # new boxes
@@ -160,8 +240,9 @@ class TrainValDataset(Dataset):
                 )  # bottom right y
                 labels[:, 1:] = boxes
 
-            if self.augment:
-                img, labels = random_affine(
+            if self.augment or self.gsl:
+                # affine_params = None
+                img, labels, affine_params = random_affine(
                     img,
                     labels,
                     degrees=self.hyp["degrees"],
@@ -169,9 +250,11 @@ class TrainValDataset(Dataset):
                     scale=self.hyp["scale"],
                     shear=self.hyp["shear"],
                     new_shape=target_shape,
+                    # affine_params=affine_params,
                 )
 
         if len(labels):
+            # print("ww")
             h, w = img.shape[:2]
 
             labels[:, [1, 3]] = labels[:, [1, 3]].clip(0, w - 1e-3)  # x1, x2
@@ -183,9 +266,8 @@ class TrainValDataset(Dataset):
             boxes[:, 2] = (labels[:, 3] - labels[:, 1]) / w  # width
             boxes[:, 3] = (labels[:, 4] - labels[:, 2]) / h  # height
             labels[:, 1:] = boxes
-
-        if self.augment:
-            img, labels = self.general_augment(img, labels)
+        if self.augment or self.gsl:
+            img, labels, status = self.general_augment(img, labels)
 
         labels_out = torch.zeros((len(labels), 6))
         if len(labels):
@@ -195,7 +277,11 @@ class TrainValDataset(Dataset):
         img = img.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
         img = np.ascontiguousarray(img)
 
-        return torch.from_numpy(img), labels_out, self.img_paths[index], shapes
+        # Apply the RandomHorizontalFlipWithBbox transformation here
+        # status = None  # Set the initial status to None
+        # img, labels, status = RandomHorizontalFlipWithBbox()(img, labels, status)
+        # raise
+        return torch.from_numpy(img), labels_out, self.img_paths[index], shapes, status, affine_params
 
     def load_image(self, index, shrink_size=None):
         """Load image.
@@ -236,10 +322,10 @@ class TrainValDataset(Dataset):
     @staticmethod
     def collate_fn(batch):
         """Merges a list of samples to form a mini-batch of Tensor(s)"""
-        img, label, path, shapes = zip(*batch)
+        img, label, path, shapes, status, affine_params = zip(*batch)
         for i, l in enumerate(label):
             l[:, 0] = i  # add target image index for build_targets()
-        return torch.stack(img, 0), torch.cat(label, 0), path, shapes
+        return torch.stack(img, 0), torch.cat(label, 0), path, shapes, status, affine_params
 
     def get_imgs_labels(self, img_dirs):
         if not isinstance(img_dirs, list):
@@ -404,33 +490,43 @@ class TrainValDataset(Dataset):
         img, labels = mosaic_augmentation(shape, imgs, hs, ws, labels, self.hyp, self.specific_shape, self.target_height, self.target_width)
         return img, labels
 
-    def general_augment(self, img, labels):
+    def general_augment(self, img, labels, status_lr=None, status_ud=None, hsv_params=None):
         """Gets images and labels after general augment
         This function applies hsv, random ud-flip and random lr-flips augments.
         """
         nl = len(labels)
 
         # HSV color-space
-        augment_hsv(
+        hsv_params = None
+        img, hsv_params = augment_hsv(
             img,
             hgain=self.hyp["hsv_h"],
             sgain=self.hyp["hsv_s"],
             vgain=self.hyp["hsv_v"],
+            hsv_params=hsv_params
         )
 
         # Flip up-down
-        if random.random() < self.hyp["flipud"]:
+        status_ud = None
+        if status_ud==True or (random.random() < self.hyp["flipud"] and status_ud == None):
             img = np.flipud(img)
+            status_ud = True
             if nl:
                 labels[:, 2] = 1 - labels[:, 2]
+        else:
+            status_ud = False
 
         # Flip left-right
-        if random.random() < self.hyp["fliplr"]:
+        status_lr = None
+        if status_lr==True or (random.random() < self.hyp["fliplr"] and status_lr == None):
             img = np.fliplr(img)
+            status_lr = True
             if nl:
                 labels[:, 1] = 1 - labels[:, 1]
+        else:
+            status_lr = False
 
-        return img, labels
+        return img, labels, [status_lr, status_ud, hsv_params]
 
     def sort_files_shapes(self):
         '''Sort by aspect ratio.'''
