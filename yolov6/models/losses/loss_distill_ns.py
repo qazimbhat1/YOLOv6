@@ -72,6 +72,9 @@ class ComputeLoss:
 
         feats, pred_scores, pred_distri, pred_lrtb = outputs
         t_feats, t_pred_scores, t_pred_distri = t_outputs[0], t_outputs[-2], t_outputs[-1]
+        # t_feat = list
+        #t_pred = torch.Size([11, 8400, 80]) batch , 8400, class
+        #t_pred_distri = torch.Size([11, 8400, 68])
         anchors, anchor_points, n_anchors_list, stride_tensor = \
                generate_anchors(feats, self.fpn_strides, self.grid_cell_size, self.grid_cell_offset, device=feats[0].device)
         t_anchors, t_anchor_points, t_n_anchors_list, t_stride_tensor = \

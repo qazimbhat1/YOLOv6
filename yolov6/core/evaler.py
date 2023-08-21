@@ -18,6 +18,9 @@ from yolov6.utils.general import download_ckpt
 from yolov6.utils.checkpoint import load_checkpoint
 from yolov6.utils.torch_utils import time_sync, get_model_info
 
+from yolov6.models.yolo import build_model
+from yolov6.utils.checkpoint import load_state_dict, save_checkpoint, strip_optimizer
+
 
 class Evaler:
     def __init__(self,
@@ -60,20 +63,68 @@ class Evaler:
         self.height = height
         self.width = width
 
+        con_file_teacher = 'configs/yolov6n.py'
+        print("check the config file in evaler.py in init line number 66 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        from yolov6.utils.config import Config
+        self.num_classes = 80
+
+        self.cfg_teacher = Config.fromfile(con_file_teacher)
+        # print(cfg, cfg_teacher)
+        # raise
+        if not hasattr(self.cfg_teacher, 'training_mode'):
+            setattr(self.cfg_teacher, 'training_mode', 'repvgg')
+
+    # def init_model(self, model, weights, task):
+    #     if task != 'train':
+    #         if not os.path.exists(weights):
+    #             download_ckpt(weights)
+    #         model = load_checkpoint(weights, map_location=self.device)
+    #         self.stride = int(model.stride.max())
+    #         # switch to deploy
+    #         from yolov6.layers.common import RepVGGBlock
+    #         for layer in model.modules():
+    #             if isinstance(layer, RepVGGBlock):
+    #                 layer.switch_to_deploy()
+    #             elif isinstance(layer, torch.nn.Upsample) and not hasattr(layer, 'recompute_scale_factor'):
+    #                 layer.recompute_scale_factor = None  # torch 1.11.0 compatibility
+    #         LOGGER.info("Switch model to deploy modality.")
+    #         LOGGER.info("Model Summary: {}".format(get_model_info(model, self.img_size)))
+    #     if self.device.type != 'cpu':
+    #         model(torch.zeros(1, 3, self.img_size, self.img_size).to(self.device).type_as(next(model.parameters())))
+    #     model.half() if self.half else model.float()
+    #     return model
+
+    def get_teacher_model(self, teacher_model_path, cfg, nc, device):
+        teacher_fuse_ab = False if cfg.model.head.num_layers != 3 else True
+        model = build_model(cfg, nc, device, fuse_ab=teacher_fuse_ab)
+        weights = teacher_model_path
+        if weights:  # finetune if pretrained model is set
+            LOGGER.info(f'Loading state_dict from {weights} for teacher')
+            model = load_state_dict(weights, model, map_location=device)
+        LOGGER.info('Model: {}'.format(model))
+        # Do not update running means and running vars
+        for module in model.modules():
+            if isinstance(module, torch.nn.BatchNorm2d):
+                module.track_running_stats = False
+        return model
+
     def init_model(self, model, weights, task):
         if task != 'train':
             if not os.path.exists(weights):
                 download_ckpt(weights)
-            model = load_checkpoint(weights, map_location=self.device)
+            #model = load_checkpoint(weights, map_location=self.device)
+            #model.train()
+
+            model = self.get_teacher_model(weights, self.cfg_teacher, self.num_classes, self.device)
             self.stride = int(model.stride.max())
             # switch to deploy
             from yolov6.layers.common import RepVGGBlock
-            for layer in model.modules():
-                if isinstance(layer, RepVGGBlock):
-                    layer.switch_to_deploy()
-                elif isinstance(layer, torch.nn.Upsample) and not hasattr(layer, 'recompute_scale_factor'):
-                    layer.recompute_scale_factor = None  # torch 1.11.0 compatibility
-            LOGGER.info("Switch model to deploy modality.")
+            # for layer in model.modules():
+            #     if isinstance(layer, RepVGGBlock):
+            #         layer.switch_to_deploy()
+            #     elif isinstance(layer, torch.nn.Upsample) and not hasattr(layer, 'recompute_scale_factor'):
+            #         layer.recompute_scale_factor = None  # torch 1.11.0 compatibility
+            # LOGGER.info("Switch model to deploy modality.")
             LOGGER.info("Model Summary: {}".format(get_model_info(model, self.img_size)))
         if self.device.type != 'cpu':
             model(torch.zeros(1, 3, self.img_size, self.img_size).to(self.device).type_as(next(model.parameters())))
@@ -116,7 +167,7 @@ class Evaler:
                 confusion_matrix = ConfusionMatrix(nc=model.nc)
 
 
-        for i, (imgs, targets, paths, shapes, status, affine_params) in enumerate(pbar):
+        for i, (imgs, targets, paths, shapes, status, affine_params, _, _, _) in enumerate(pbar):
             # pre-process
             t1 = time_sync()
             imgs = imgs.to(self.device, non_blocking=True)
@@ -132,19 +183,27 @@ class Evaler:
             #Inference
             t2 = time_sync()
             outputs, _ = model(imgs)
-            #print(outputs.shape, paths)
+            t_feats, t_pred_scores, t_pred_distri = outputs[0], outputs[-2], outputs[-1]
+            #print(outputs.shape, "!!!!!!!!!!!!!!!")
+            #print(t_pred_scores.shape, "!!!!!!!!!!!!!!!")
+            #print(t_pred_distri.shape, "@@@@@@@@@@@@@@@")
+            # for i in t_feats:
+            #     print(i.shape)
+            #print(t_feats, "###########")
+            #raise
             self.speed_result[2] += time_sync() - t2
-            save_dir = "/home/mohammad.bhat/qazim/yolov6_new/YOLOv6/FKD/new_directory"
+            save_dir = "/l/users/mohammad.bhat/FKD"
             for k in range(len(paths)):
-                save_path = os.path.join(save_dir, str(paths[k].split('/')[-1].split('.')[0]))
-                #print(save_path)
-                #print(status[k], "-------")
-                #print(affine_params[k])
-                #state = [status[k], affine_params[k], save_path, outputs[k].detach().cpu().numpy()]
-                #torch.save(state, save_path)
-            #if i == 10:
-            #    break
-            #    raise
+                save_path = os.path.join(save_dir,str(paths[k].split('/')[-1].split('.')[0]))
+                output = []
+                out_feat = []
+                for out in t_feats:
+                    out_feat.append(out.detach().cpu().numpy())
+                output = [out_feat, t_pred_scores.detach().cpu().numpy(), t_pred_distri.detach().cpu().numpy()]
+                state = [status[k], affine_params[k], output]
+                torch.save(state, save_path)
+            #raise
+            continue
 
 
             # Inference

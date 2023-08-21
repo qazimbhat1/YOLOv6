@@ -181,6 +181,28 @@ class TrainValDataset(Dataset):
         return len(self.img_paths)
 
     def __getitem__(self, index):
+        if self.task == 'Train':
+            save_dir = "/l/users/mohammad.bhat/FKD"
+            save_path = os.path.join(save_dir,str(self.img_paths[index].split('/')[-1].split('.')[0]))
+            state = torch.load(save_path, map_location=torch.device('cpu'))
+            status, affine_params, outputs = state
+            # print(status, affine_params)
+            t_feats, t_pred_scores, t_pred_distri = outputs[0], outputs[-2], outputs[-1]
+            t_pred_scores = torch.from_numpy(t_pred_scores)
+            t_pred_distri = torch.from_numpy(t_pred_distri)
+            t_feats_dict = {}
+            for i in range(len(t_feats)):
+                t_feats_dict[str(i)] = torch.from_numpy(t_feats[i])
+            t_feats = t_feats_dict
+            # outputs = { 'B': t_pred_scores, 'C': t_pred_distri} #'A': t_feats,
+            # outputs = [(t_feats, t_pred_scores, t_pred_distri)]
+            # for f in t_feats:
+            #     print(f.shape)
+            # print(t_pred_distri.shape, t_pred_scores.shape)
+        else:
+            affine_params = None
+            status = [None, None, None]
+        self.augment = False
         status = None
         affine_params = None
         """Fetching a data sample for a given key.
@@ -281,7 +303,11 @@ class TrainValDataset(Dataset):
         # status = None  # Set the initial status to None
         # img, labels, status = RandomHorizontalFlipWithBbox()(img, labels, status)
         # raise
-        return torch.from_numpy(img), labels_out, self.img_paths[index], shapes, status, affine_params
+        #return torch.from_numpy(img), labels_out, self.img_paths[index], shapes, status, affine_params
+        if self.task=='Train':
+            return torch.from_numpy(img), labels_out, self.img_paths[index], shapes, status, affine_params, t_feats, t_pred_scores, t_pred_distri #outputs
+
+        return torch.from_numpy(img), labels_out, self.img_paths[index], shapes, status, affine_params, None, None, None
 
     def load_image(self, index, shrink_size=None):
         """Load image.
@@ -319,13 +345,32 @@ class TrainValDataset(Dataset):
                 )
         return im, (h0, w0), im.shape[:2]
 
+    # @staticmethod
+    # def collate_fn(batch):
+    #     """Merges a list of samples to form a mini-batch of Tensor(s)"""
+    #     img, label, path, shapes, status, affine_params = zip(*batch)
+    #     for i, l in enumerate(label):
+    #         l[:, 0] = i  # add target image index for build_targets()
+    #     return torch.stack(img, 0), torch.cat(label, 0), path, shapes, status, affine_params
+
     @staticmethod
     def collate_fn(batch):
         """Merges a list of samples to form a mini-batch of Tensor(s)"""
-        img, label, path, shapes, status, affine_params = zip(*batch)
+        img, label, path, shapes, status, affine_params, t_feats, t_pred_scores, t_pred_distri = zip(*batch)
+        # print(img.shape, t_pred_scores.shape)
+        print(type(t_feats), "!!!!!!!!!!!!!!!!!!!!")
+        print(t_feats)
+        if t_feats[0]!=None:
+            a_batch = torch.cat([sample['0'] for sample in t_feats], dim=0).squeeze(1)
+            b_batch = torch.cat([sample['1'] for sample in t_feats], dim=0).squeeze(1)
+            c_batch = torch.cat([sample['2'] for sample in t_feats], dim=0).squeeze(1)
+            # t_feats = {'a': a_batch, 'b': b_batch, 'c': c_batch}
+            t_feats = [a_batch,b_batch,c_batch]
+            t_pred_scores = torch.stack(t_pred_scores, 0).squeeze(1)
+            t_pred_distri = torch.stack(t_pred_distri,0).squeeze(1)
         for i, l in enumerate(label):
             l[:, 0] = i  # add target image index for build_targets()
-        return torch.stack(img, 0), torch.cat(label, 0), path, shapes, status, affine_params
+        return torch.stack(img, 0), torch.cat(label, 0), path, shapes, status, affine_params, t_feats, t_pred_scores, t_pred_distri
 
     def get_imgs_labels(self, img_dirs):
         if not isinstance(img_dirs, list):

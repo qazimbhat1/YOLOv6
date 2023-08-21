@@ -178,7 +178,12 @@ class Trainer:
             #raise
             if self.args.distill:
                 with torch.no_grad():
-                    t_preds, t_featmaps = self.teacher_model(images)
+                    #t_preds, t_featmaps = self.teacher_model(images)
+                    t_featmaps = None
+                    # out = self.batch_data[-1]#, self.batch_data[-2]
+                    t_feats, t_pred_scores, t_pred_distri = self.batch_data[-3], self.batch_data[-2], self.batch_data[-1]
+                    t_feats = [t.to(self.device) for t in t_feats]
+                    t_preds = [t_feats, t_pred_scores.to(self.device), t_pred_distri.to(self.device)]
                     #print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
                     #print(len(t_preds)) #Len of t_preds is 5
                     #print(t_preds[0].shape, "first")
