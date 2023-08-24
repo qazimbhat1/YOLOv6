@@ -62,8 +62,9 @@ class Evaler:
         self.specific_shape = specific_shape
         self.height = height
         self.width = width
+        self.gen_gsl=False
 
-        con_file_teacher = 'configs/yolov6n.py'
+        con_file_teacher = 'configs/yolov6l.py'
         print("check the config file in evaler.py in init line number 66 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         from yolov6.utils.config import Config
         self.num_classes = 80
@@ -112,20 +113,22 @@ class Evaler:
         if task != 'train':
             if not os.path.exists(weights):
                 download_ckpt(weights)
-            #model = load_checkpoint(weights, map_location=self.device)
-            #model.train()
+            model = load_checkpoint(weights, map_location=self.device)
 
-            model = self.get_teacher_model(weights, self.cfg_teacher, self.num_classes, self.device)
             self.stride = int(model.stride.max())
             # switch to deploy
             from yolov6.layers.common import RepVGGBlock
-            # for layer in model.modules():
-            #     if isinstance(layer, RepVGGBlock):
-            #         layer.switch_to_deploy()
-            #     elif isinstance(layer, torch.nn.Upsample) and not hasattr(layer, 'recompute_scale_factor'):
-            #         layer.recompute_scale_factor = None  # torch 1.11.0 compatibility
-            # LOGGER.info("Switch model to deploy modality.")
+            for layer in model.modules():
+                if isinstance(layer, RepVGGBlock):
+                    layer.switch_to_deploy()
+                elif isinstance(layer, torch.nn.Upsample) and not hasattr(layer, 'recompute_scale_factor'):
+                    layer.recompute_scale_factor = None  # torch 1.11.0 compatibility
+            LOGGER.info("Switch model to deploy modality.")
             LOGGER.info("Model Summary: {}".format(get_model_info(model, self.img_size)))
+
+            if self.gen_gsl:
+                model = self.get_teacher_model(weights, self.cfg_teacher, self.num_classes, self.device)
+
         if self.device.type != 'cpu':
             model(torch.zeros(1, 3, self.img_size, self.img_size).to(self.device).type_as(next(model.parameters())))
         model.half() if self.half else model.float()
@@ -180,30 +183,50 @@ class Evaler:
             #outputs, _ = model(imgs)
             #self.speed_result[2] += time_sync() - t2  # inference time
 
-            #Inference
+            # Inference
             t2 = time_sync()
             outputs, _ = model(imgs)
-            t_feats, t_pred_scores, t_pred_distri = outputs[0], outputs[-2], outputs[-1]
-            #print(outputs.shape, "!!!!!!!!!!!!!!!")
-            #print(t_pred_scores.shape, "!!!!!!!!!!!!!!!")
-            #print(t_pred_distri.shape, "@@@@@@@@@@@@@@@")
-            # for i in t_feats:
-            #     print(i.shape)
-            #print(t_feats, "###########")
-            #raise
-            self.speed_result[2] += time_sync() - t2
+
+            # import time
+            # start_time = time.time()
+            # outputs, _ = model(imgs)
+            # end_time = time.time()
+
+            # load_time = end_time - start_time
+            # print(f"Time taken to infer: {load_time:.4f} seconds")
+            
+
+            if self.gen_gsl == True:
+                #TODO: Use both models and save output from model without eval - req features achieved by disable eval()
+                #80,40,20x channel for t_preds,  8400, 80 and 8400, 68 for scores and distri
+                t_feats, t_pred_scores, t_pred_distri = outputs[0], outputs[-2], outputs[-1]
+
+                save_dir = "/l/users/mohammad.bhat/FKD_new"
+                for k in range(len(paths)):
+                    save_path = os.path.join(save_dir,str(paths[k].split('/')[-1].split('.')[0]))
+                    output = []
+                    out_feat = []
+                    for out in t_feats:
+                        out_feat.append(out.detach().cpu().numpy())
+                    output = [out_feat, t_pred_scores.detach().cpu().numpy(), t_pred_distri.detach().cpu().numpy()]
+                    state = [status[k], affine_params[k], output]
+                    torch.save(state, save_path)
+                    
+                    # import time
+                    # start_time = time.time()
+                    # state_ = torch.load(save_path)
+                    # end_time = time.time()
+
+                    # load_time = end_time - start_time
+                    # print(f"Time taken to load state: {load_time:.4f} seconds")
+                    # status, affine_params, outputs = state_
+                    # t_feats, t_pred_scores, t_pred_distri = outputs[0], outputs[-2], outputs[-1]
+                continue
+
+            self.speed_result[2] += time_sync() - t2  # inference time
+
+
             save_dir = "/l/users/mohammad.bhat/FKD"
-            for k in range(len(paths)):
-                save_path = os.path.join(save_dir,str(paths[k].split('/')[-1].split('.')[0]))
-                output = []
-                out_feat = []
-                for out in t_feats:
-                    out_feat.append(out.detach().cpu().numpy())
-                output = [out_feat, t_pred_scores.detach().cpu().numpy(), t_pred_distri.detach().cpu().numpy()]
-                state = [status[k], affine_params[k], output]
-                torch.save(state, save_path)
-            #raise
-            continue
 
 
             # Inference

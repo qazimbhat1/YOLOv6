@@ -182,7 +182,7 @@ class TrainValDataset(Dataset):
 
     def __getitem__(self, index):
         if self.task == 'Train':
-            save_dir = "/l/users/mohammad.bhat/FKD"
+            save_dir = "/l/users/mohammad.bhat/FKD_new"
             save_path = os.path.join(save_dir,str(self.img_paths[index].split('/')[-1].split('.')[0]))
             state = torch.load(save_path, map_location=torch.device('cpu'))
             status, affine_params, outputs = state
@@ -217,7 +217,7 @@ class TrainValDataset(Dataset):
 
         # Mosaic Augmentation
         if self.augment and random.random() < self.hyp["mosaic"]:
-            print("yesssssss")
+            #print("yesssssss")
             img, labels = self.get_mosaic(index, target_shape)
             shapes = None
 
@@ -358,8 +358,8 @@ class TrainValDataset(Dataset):
         """Merges a list of samples to form a mini-batch of Tensor(s)"""
         img, label, path, shapes, status, affine_params, t_feats, t_pred_scores, t_pred_distri = zip(*batch)
         # print(img.shape, t_pred_scores.shape)
-        print(type(t_feats), "!!!!!!!!!!!!!!!!!!!!")
-        print(t_feats)
+        #print(type(t_feats), "!!!!!!!!!!!!!!!!!!!!")
+        #print(t_feats)
         if t_feats[0]!=None:
             a_batch = torch.cat([sample['0'] for sample in t_feats], dim=0).squeeze(1)
             b_batch = torch.cat([sample['1'] for sample in t_feats], dim=0).squeeze(1)
