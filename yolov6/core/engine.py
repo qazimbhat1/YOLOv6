@@ -184,6 +184,13 @@ class Trainer:
                     t_feats, t_pred_scores, t_pred_distri = self.batch_data[-3], self.batch_data[-2], self.batch_data[-1]
                     t_feats = [t.to(self.device) for t in t_feats]
                     t_preds = [t_feats, t_pred_scores.to(self.device), t_pred_distri.to(self.device)]
+                    # print(type(t_preds[1]), "!!!!!!!!!!!!!!!!!!!!!!!")
+                    # print(t_preds[1].shape)
+                    # print(t_preds[2].shape)
+                    # print(len(t_preds[0]))
+                    # for i in t_preds[0]:
+                    #     print(i.shape)
+                    # raise
                     #print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
                     #print(len(t_preds)) #Len of t_preds is 5
                     #print(t_preds[0].shape, "first")
