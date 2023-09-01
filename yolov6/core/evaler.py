@@ -62,7 +62,7 @@ class Evaler:
         self.specific_shape = specific_shape
         self.height = height
         self.width = width
-        self.gen_gsl=False
+        self.gen_gsl=True
 
         con_file_teacher = 'configs/yolov6l.py'
         print("check the config file in evaler.py in init line number 66 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -172,16 +172,12 @@ class Evaler:
 
         for i, (imgs, targets, paths, shapes, status, affine_params, _, _, _) in enumerate(pbar):
             # pre-process
+            # print(imgs.shape, targets.shape)
             t1 = time_sync()
             imgs = imgs.to(self.device, non_blocking=True)
             imgs = imgs.half() if self.half else imgs.float()
             imgs /= 255
             self.speed_result[1] += time_sync() - t1  # pre-process time
-
-            # Inference
-            #t2 = time_sync()
-            #outputs, _ = model(imgs)
-            #self.speed_result[2] += time_sync() - t2  # inference time
 
             # Inference
             t2 = time_sync()
@@ -201,7 +197,7 @@ class Evaler:
                 #80,40,20x channel for t_preds,  8400, 80 and 8400, 68 for scores and distri
                 t_feats, t_pred_scores, t_pred_distri = outputs[0], outputs[-2], outputs[-1]
 
-                save_dir = "/l/users/mohammad.bhat/FKD_new"
+                save_dir = "/l/users/mohammad.bhat/FKD_train_full"
                 for k in range(len(paths)):
                     save_path = os.path.join(save_dir,str(paths[k].split('/')[-1].split('.')[0]))
                     output = []
@@ -209,7 +205,8 @@ class Evaler:
                     for out in t_feats:
                         out_feat.append(out.detach().cpu().numpy())
                     output = [out_feat, t_pred_scores.detach().cpu().numpy(), t_pred_distri.detach().cpu().numpy()]
-                    state = [status[k], affine_params[k], output]
+                    # state = [status[k], affine_params[k], output]
+                    state = [status[k], affine_params[k]]
                     torch.save(state, save_path)
                     
                     # import time
@@ -218,9 +215,89 @@ class Evaler:
                     # end_time = time.time()
 
                     # load_time = end_time - start_time
-                    # print(f"Time taken to load state: {load_time:.4f} seconds")
+                    # print(f"Time taken to load state torch: {load_time:.4f} seconds")
+
+
+                    #method 2: tried blosc - 0.1-0.2 sec, lz4: , zstd slower than blosc, method 3
+                    import blosc
+                    # import lz4
+                    # import zstd
+                    for i in range(3):
+                        # print(output[0][i].flatten().shape) #(1, 256, 40, 40) 
+                        # print(output[0][i].itemsize)
+                        compressed_data = blosc.compress(output[0][i].flatten().tobytes(), typesize=output[0][i].itemsize)
+                        # compressed_data = lz4.compress(output[0][i].tobytes())
+                        with open(save_path+str(i)+'.blosc', 'wb') as f:
+                            f.write(compressed_data)
+                    for i in range(1,3):
+                        compressed_data = blosc.compress(output[i].flatten().tobytes(), typesize=output[i].itemsize)
+                        # compressed_data = lz4.compress(output[i].tobytes())
+                        with open(save_path+str(i+2)+'.blosc', 'wb') as f:
+                            f.write(compressed_data)
+                    
+                    # import time
+                    # start_time = time.time()
+                    # for i in range(3):
+                    #     with open(save_path+str(i)+'.blosc', 'rb') as f:
+                    #         compressed_data = f.read()
+                    #     decompressed_data = np.frombuffer(blosc.decompress(compressed_data), dtype=output[0][i].dtype)
+                    #     # print(type(decompressed_data), decompressed_data.shape)
+                    #     # print(output[0][i].dtype)
+                    #     # print(decompressed_data == output[0][i].flatten())
+                    # for i in range(1,3):
+                    #     with open(save_path+str(i+2)+'.blosc', 'rb') as f:
+                    #         compressed_data = f.read()
+                    #     decompressed_data = np.frombuffer(blosc.decompress(compressed_data), dtype=output[i].dtype)
+                    #     # print(type(decompressed_data), decompressed_data.shape)
+                    #     # print(output[i].dtype) #float32
+                    # # end_time = time.time()
+                    # # load_time = end_time - start_time
+                    # # print(f"Time taken to load state blosc: {load_time:.4f} seconds")
+                    # raise
+
+
+                    # #method 3
+                    # #30-50% reduction in time - i.e ~1.5x-2x reduction
+                    # import gzip
+                    # import numpy
+                    # # print(save_path)
+                    # for i in range(3):
+
+                    #     f = gzip.GzipFile(save_path+str(i)+".npy.gz", "w")
+                    #     numpy.save(file=f, arr=output[0][i])
+                    #     f.close()
+                    # for i in range(1,3):
+
+                    #     f = gzip.GzipFile(save_path+str(i+2)+".npy.gz", "w")
+                    #     numpy.save(file=f, arr=output[i])
+                    #     f.close()
+                    # # np.save(save_path + '.npy', state)
+
+
+                    # import time
+                    # start_time = time.time()
+                    # output_0 = []
+                    # output = []
+                    # for i in range(3):
+
+                    #     f = gzip.GzipFile(save_path+str(i)+".npy.gz", "r")
+                    #     f = np.load(f)
+                    #     output_0.append(f)
+                        
+                    # output.append(output_0)
+                    # for i in range(1,3):
+
+                    #     f = gzip.GzipFile(save_path+str(i+2)+".npy.gz", "r")
+                    #     f = np.load(f)
+                    #     output.append(f)
+
+                    # end_time = time.time()
+                    # load_time = end_time - start_time
+                    # print(f"Time taken to load state numpy: {load_time:.4f} seconds")
+
                     # status, affine_params, outputs = state_
                     # t_feats, t_pred_scores, t_pred_distri = outputs[0], outputs[-2], outputs[-1]
+                    # raise
                 continue
 
             self.speed_result[2] += time_sync() - t2  # inference time
