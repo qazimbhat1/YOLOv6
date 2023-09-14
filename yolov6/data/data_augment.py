@@ -17,6 +17,8 @@ def augment_hsv(im, hgain=0.5, sgain=0.5, vgain=0.5, hsv_params=None):
             h_gain = hsv_params['h_gain']
             s_gain = hsv_params['s_gain']
             v_gain = hsv_params['v_gain']
+            #r = [h_gain, s_gain, v_gain]
+            r = h_gain
         else:
             r = np.random.uniform(-1, 1, 3) * [hgain, sgain, vgain] + 1  # random gains
             h_gain, s_gain, v_gain = r[0], r[1], r[2]

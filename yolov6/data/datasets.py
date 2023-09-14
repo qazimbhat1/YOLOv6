@@ -122,7 +122,7 @@ class TrainValDataset(Dataset):
         pad=0.0,
         rank=-1,
         data_dict=None,
-        task="val",
+        task="train",
         specific_shape = False,
         height=1088,
         width=1920,
@@ -161,7 +161,7 @@ class TrainValDataset(Dataset):
         t2 = time.time()
         if self.main_process:
             LOGGER.info(f"%.1fs for dataset initialization." % (t2 - t1))
-        self.augment = False
+        # self.augment = True
         self.hyp = dict(
             hsv_h=0.015,
             hsv_s=0.7,
@@ -175,40 +175,85 @@ class TrainValDataset(Dataset):
             mosaic=1.0,
             mixup=0.1,
         )
-
+        # if self.hyp!=None:
+        #     self.hyp = hyp
+        self.i = 0
     def __len__(self):
         """Get the length of dataset"""
         return len(self.img_paths)
 
     def __getitem__(self, index):
+        """Fetching a data sample for a given key.
+        This function applies mosaic and mixup augments during training.
+        During validation, letterbox augment is applied.
+        """
         if self.task == 'Train':
-            save_dir = "/l/users/mohammad.bhat/FKD_new"
-            save_path = os.path.join(save_dir,str(self.img_paths[index].split('/')[-1].split('.')[0]))
-            state = torch.load(save_path, map_location=torch.device('cpu'))
-            status, affine_params, outputs = state
-            # print(status, affine_params)
-            t_feats, t_pred_scores, t_pred_distri = outputs[0], outputs[-2], outputs[-1]
-            t_pred_scores = torch.from_numpy(t_pred_scores)
-            t_pred_distri = torch.from_numpy(t_pred_distri)
-            t_feats_dict = {}
-            for i in range(len(t_feats)):
-                t_feats_dict[str(i)] = torch.from_numpy(t_feats[i])
-            t_feats = t_feats_dict
+            # save_dir = "/home/projects1_metropolis/tmp/zaid/yolo/save_final_L"
+            # save_path = os.path.join(save_dir,str(self.img_paths[index].split('/')[-1].split('.')[0]))
+            # state = torch.load(save_path)#, map_location=torch.device('cpu'))
+            # status, affine_params, outputs = state
+            # t_feats, t_pred_scores, t_pred_distri = outputs[0], outputs[-2], outputs[-1]
             # outputs = { 'B': t_pred_scores, 'C': t_pred_distri} #'A': t_feats,
             # outputs = [(t_feats, t_pred_scores, t_pred_distri)]
             # for f in t_feats:
             #     print(f.shape)
             # print(t_pred_distri.shape, t_pred_scores.shape)
+
+
+            #Method 2
+            save_dir = "/l/users/mohammad.bhat/FKD_train_full"
+            save_path = os.path.join(save_dir,str(self.img_paths[index].split('/')[-1].split('.')[0]))
+
+            state = torch.load(save_path)#, map_location=torch.device('cpu'))
+            status, affine_params = state
+
+            import blosc
+            # import lz4
+            # import zstd
+            # import time
+            # start_time = time.time()
+            output_0 = []
+            output = []
+            for i in range(3):
+                with open(save_path+str(i)+'.blosc', 'rb') as f:
+                    compressed_data = f.read()
+                decompressed_data = np.frombuffer(blosc.decompress(compressed_data), dtype=np.float32)
+                # print(output[0][i].dtype)
+                output_0.append(decompressed_data)
+            output_0[0] = output_0[0].reshape((1,-1, 80, 80))
+            output_0[1] = output_0[1].reshape((1,-1, 40, 40))
+            output_0[2] = output_0[2].reshape((1,-1, 20, 20))
+
+            for i in range(1,3):
+                with open(save_path+str(i+2)+'.blosc', 'rb') as f:
+                    compressed_data = f.read()
+                decompressed_data = np.frombuffer(blosc.decompress(compressed_data), dtype=np.float32)
+                # print(output[i].dtype) #float32
+                output.append(decompressed_data)
+            
+            t_pred_scores = output[0].reshape((1, -1, 80))
+            t_pred_distri = output[1].reshape((1, -1, 68))
+            # print(t_pred_scores.shape, t_pred_distri.shape)
+            # print(output_0[0].shape, output_0[1].shape, output_0[2].shape)
+            t_feats = output_0
+            # end_time = time.time()
+            # load_time = end_time - start_time
+            # print(f"Time taken to load state blosc: {load_time:.4f} seconds")
+
+
+            t_pred_scores = torch.from_numpy(t_pred_scores.copy())
+            t_pred_distri = torch.from_numpy(t_pred_distri.copy())
+            # print(t_pred_scores.shape, t_pred_distri.shape)
+            t_feats_dict = {}
+            for i in range(len(t_feats)):
+                # print(t_feats[i].shape)
+                t_feats_dict[str(i)] = torch.from_numpy(t_feats[i].copy())
+            t_feats = t_feats_dict
+            # raise
         else:
             affine_params = None
             status = [None, None, None]
         self.augment = False
-        status = None
-        affine_params = None
-        """Fetching a data sample for a given key.
-        This function applies mosaic and mixup augments during training.
-        During validation, letterbox augment is applied.
-        """
         target_shape = (
                 (self.target_height, self.target_width) if self.specific_shape else
                 self.batch_shapes[self.batch_indices[index]] if self.rect
@@ -217,7 +262,6 @@ class TrainValDataset(Dataset):
 
         # Mosaic Augmentation
         if self.augment and random.random() < self.hyp["mosaic"]:
-            #print("yesssssss")
             img, labels = self.get_mosaic(index, target_shape)
             shapes = None
 
@@ -235,15 +279,14 @@ class TrainValDataset(Dataset):
                 img, (h0, w0), (h, w) = self.load_image(index, self.hyp["shrink_size"])
             else:
                 img, (h0, w0), (h, w) = self.load_image(index)
-            #print("here:", type(img))
-            # letterbox
-            # print("letterbox")
+
+            
+                
             img, ratio, pad = letterbox(img, target_shape, auto=False, scaleup=self.augment)
             shapes = (h0, w0), ((h * ratio / h0, w * ratio / w0), pad)  # for COCO mAP rescaling
 
             labels = self.labels[index].copy()
             if labels.size:
-                # print("2")
                 w *= ratio
                 h *= ratio
                 # new boxes
@@ -263,7 +306,6 @@ class TrainValDataset(Dataset):
                 labels[:, 1:] = boxes
 
             if self.augment or self.gsl:
-                # affine_params = None
                 img, labels, affine_params = random_affine(
                     img,
                     labels,
@@ -272,11 +314,11 @@ class TrainValDataset(Dataset):
                     scale=self.hyp["scale"],
                     shear=self.hyp["shear"],
                     new_shape=target_shape,
-                    # affine_params=affine_params,
+                    affine_params=affine_params,
                 )
+            #     print("---",labels.shape)
 
         if len(labels):
-            # print("ww")
             h, w = img.shape[:2]
 
             labels[:, [1, 3]] = labels[:, [1, 3]].clip(0, w - 1e-3)  # x1, x2
@@ -289,21 +331,20 @@ class TrainValDataset(Dataset):
             boxes[:, 3] = (labels[:, 4] - labels[:, 2]) / h  # height
             labels[:, 1:] = boxes
         if self.augment or self.gsl:
-            img, labels, status = self.general_augment(img, labels)
+            img, labels, status = self.general_augment(img, labels, status[0], status[1], status[2])
 
         labels_out = torch.zeros((len(labels), 6))
         if len(labels):
             labels_out[:, 1:] = torch.from_numpy(labels)
-
         # Convert
         img = img.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
         img = np.ascontiguousarray(img)
-
         # Apply the RandomHorizontalFlipWithBbox transformation here
         # status = None  # Set the initial status to None
         # img, labels, status = RandomHorizontalFlipWithBbox()(img, labels, status)
         # raise
-        #return torch.from_numpy(img), labels_out, self.img_paths[index], shapes, status, affine_params
+        # if self.task == 'Train':
+        #     return torch.from_numpy(img), labels_out, self.img_paths[index], shapes, outputs, None
         if self.task=='Train':
             return torch.from_numpy(img), labels_out, self.img_paths[index], shapes, status, affine_params, t_feats, t_pred_scores, t_pred_distri #outputs
 
@@ -345,21 +386,11 @@ class TrainValDataset(Dataset):
                 )
         return im, (h0, w0), im.shape[:2]
 
-    # @staticmethod
-    # def collate_fn(batch):
-    #     """Merges a list of samples to form a mini-batch of Tensor(s)"""
-    #     img, label, path, shapes, status, affine_params = zip(*batch)
-    #     for i, l in enumerate(label):
-    #         l[:, 0] = i  # add target image index for build_targets()
-    #     return torch.stack(img, 0), torch.cat(label, 0), path, shapes, status, affine_params
-
     @staticmethod
     def collate_fn(batch):
         """Merges a list of samples to form a mini-batch of Tensor(s)"""
         img, label, path, shapes, status, affine_params, t_feats, t_pred_scores, t_pred_distri = zip(*batch)
         # print(img.shape, t_pred_scores.shape)
-        #print(type(t_feats), "!!!!!!!!!!!!!!!!!!!!")
-        #print(t_feats)
         if t_feats[0]!=None:
             a_batch = torch.cat([sample['0'] for sample in t_feats], dim=0).squeeze(1)
             b_batch = torch.cat([sample['1'] for sample in t_feats], dim=0).squeeze(1)
@@ -540,9 +571,12 @@ class TrainValDataset(Dataset):
         This function applies hsv, random ud-flip and random lr-flips augments.
         """
         nl = len(labels)
-
+        # print(status_lr, status_ud, hsv_params)
+        # raise
         # HSV color-space
-        hsv_params = None
+        # hsv_params = None
+        
+        # raise
         img, hsv_params = augment_hsv(
             img,
             hgain=self.hyp["hsv_h"],
@@ -550,9 +584,10 @@ class TrainValDataset(Dataset):
             vgain=self.hyp["hsv_v"],
             hsv_params=hsv_params
         )
+        
+        # raise
 
         # Flip up-down
-        status_ud = None
         if status_ud==True or (random.random() < self.hyp["flipud"] and status_ud == None):
             img = np.flipud(img)
             status_ud = True
@@ -562,7 +597,6 @@ class TrainValDataset(Dataset):
             status_ud = False
 
         # Flip left-right
-        status_lr = None
         if status_lr==True or (random.random() < self.hyp["fliplr"] and status_lr == None):
             img = np.fliplr(img)
             status_lr = True
@@ -570,6 +604,88 @@ class TrainValDataset(Dataset):
                 labels[:, 1] = 1 - labels[:, 1]
         else:
             status_lr = False
+
+
+
+        # # status_lr = None
+        # if status_lr==True or (random.random() < self.hyp["fliplr"] and status_lr == None):
+        #     # print("flip image")
+        #     # print(type(img))
+        #     import matplotlib.pyplot as plt
+        #     import matplotlib.patches as patches
+
+            
+        #     img = np.fliplr(img)
+        #     print(img.shape)
+        #     # print(type(img))
+        #     # Display the image using matplotlib
+        #     # print(img.shape)
+        #     # plt.imsave('/home/zbhat/yolo/yolo_orig/yolo_orig_gsl/output_pred/'+str(self.i)+'output_flip.png', img)
+        #     # self.i+=1
+        #     # plt.imshow(img)
+        #     # plt.axis('off')  # Turn off axis labels and ticks
+        #     # plt.show()
+
+        #     # Save the image to a file
+        #     # plt.imsave('/home/zbhat/yolo/yolo_orig/yolo_orig_gsl/output_image1.png', img)
+        #     # raise
+        #     status_lr = True
+        #     if nl:
+        #         print("flip label")
+        #         print("1:", labels)
+        #         labels[:, 1] = 1 - labels[:, 1]
+        #         print("2:", labels)
+            
+        #     # Load image
+        #     image_path = '/home/zbhat/yolo/yolo_orig/yolo_orig_gsl/output_pred/'+str(self.i)+'output_img_plt.jpg'
+        #     # plt.imsave(image_path, img)
+        #     print(image_path)
+        #     cv2.imwrite(image_path, img)
+        #     image = cv2.imread(image_path)
+        #     print("CV2: ", image)
+        #     # if type(image)!=None:
+        #     #     print("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
+        #     #     raise
+        #     # print("-----------++++++++++++++",image)
+        #     # image = plt.imread(image_path)
+        #     # image = img
+        #     # Bounding box labels
+        #     bbox_labels = labels
+
+        #     # Display image with bounding boxes
+        #     # plt.imshow(image)
+
+        #     # Draw bounding boxes on the image
+        #     for label in bbox_labels:
+        #         class_label, x_center, y_center, width, height = label
+        #         # print("111111111111111111111111",label, image)
+        #         # print(label, image.shape)
+        #         x = int(x_center * image.shape[1])
+        #         y = int(y_center * image.shape[0])
+        #         bbox_width = int(width * image.shape[1])
+        #         bbox_height = int(height * image.shape[0])
+                
+        #         x1 = x - bbox_width // 2
+        #         y1 = y - bbox_height // 2
+        #         x2 = x1 + bbox_width
+        #         y2 = y1 + bbox_height
+                
+        #         color = (0, 0, 255)  # Red color for bounding box
+        #         thickness = 2  # Line thickness
+                
+        #         cv2.rectangle(image, (x1, y1), (x2, y2), color, thickness)
+        #         cv2.putText(image, f'Class {int(class_label)}', (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, thickness)
+        #         break
+
+        #     # Save the image with bounding box annotations
+        #     output_image_path = '/home/zbhat/yolo/yolo_orig/yolo_orig_gsl/output_pred/'+str(self.i)+'output_overlay.png'
+        #     # self.i+=1
+        #     # plt.savefig(output_image_path)
+        #     # plt.show()
+        #     cv2.imwrite(output_image_path, image)
+
+        # else:
+        #     status_lr = False
 
         return img, labels, [status_lr, status_ud, hsv_params]
 
