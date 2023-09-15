@@ -81,6 +81,7 @@ class TrainValDataset(Dataset):
         self.specific_shape = specific_shape
         self.target_height = height
         self.target_width = width
+        self.mix = False
         if self.rect:
             shapes = [self.img_info[p]["shape"] for p in self.img_paths]
             self.shapes = np.array(shapes, dtype=np.float64)
@@ -118,7 +119,8 @@ class TrainValDataset(Dataset):
                 )
 
         # Mosaic Augmentation
-        if self.augment and random.random() < self.hyp["mosaic"]:
+        if self.augment and random.random() < self.hyp["mosaic"] and self.mix:
+            #print("MMMMMMMMMMMMMMMOOOOOOOOOOOOOO")
             img, labels = self.get_mosaic(index, target_shape)
             shapes = None
 
@@ -135,6 +137,7 @@ class TrainValDataset(Dataset):
                 img, (h0, w0), (h, w) = self.load_image(index, self.hyp["shrink_size"])
             else:
                 img, (h0, w0), (h, w) = self.load_image(index)
+            #print("LLLLLLLLEEEEEEETTTTTTEEEEEEERRRRRRR")
 
             # letterbox
             img, ratio, pad = letterbox(img, target_shape, auto=False, scaleup=self.augment)
@@ -161,6 +164,7 @@ class TrainValDataset(Dataset):
                 labels[:, 1:] = boxes
 
             if self.augment:
+                #print("RRRRRRRAAAANNNNDDDDOOOOMMMM")
                 img, labels = random_affine(
                     img,
                     labels,
@@ -185,6 +189,7 @@ class TrainValDataset(Dataset):
             labels[:, 1:] = boxes
 
         if self.augment:
+            #print("GGGGGGGEEEEENNNNEEERRRRAAAALLLLL")
             img, labels = self.general_augment(img, labels)
 
         labels_out = torch.zeros((len(labels), 6))
@@ -194,6 +199,7 @@ class TrainValDataset(Dataset):
         # Convert
         img = img.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
         img = np.ascontiguousarray(img)
+        #raise
 
         return torch.from_numpy(img), labels_out, self.img_paths[index], shapes
 
