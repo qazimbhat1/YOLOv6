@@ -62,7 +62,7 @@ class Evaler:
         self.specific_shape = specific_shape
         self.height = height
         self.width = width
-        self.gen_gsl=False
+        self.gen_gsl=True
 
         con_file_teacher = 'configs/yolov6l.py'
         print("check the config file in evaler.py in init line number 66 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
