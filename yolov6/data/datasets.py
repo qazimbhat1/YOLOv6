@@ -201,7 +201,9 @@ class TrainValDataset(Dataset):
 
 
             #Method 2
-            save_dir = "/l/users/mohammad.bhat/FKD_train_full"
+            random_number = random.randint(0, 11)
+            save_dir = "/l/users/mohammad.bhat/FKD_train_full_1" + str(random_number)
+            #print(save_dir, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
             save_path = os.path.join(save_dir,str(self.img_paths[index].split('/')[-1].split('.')[0]))
 
             state = torch.load(save_path)#, map_location=torch.device('cpu'))

@@ -64,7 +64,7 @@ class Evaler:
         self.width = width
         self.gen_gsl=True
 
-        con_file_teacher = 'configs/yolov6l.py'
+        con_file_teacher = 'configs/yolov6n.py'
         print("check the config file in evaler.py in init line number 66 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         from yolov6.utils.config import Config
         self.num_classes = 80
@@ -197,7 +197,12 @@ class Evaler:
                 #80,40,20x channel for t_preds,  8400, 80 and 8400, 68 for scores and distri
                 t_feats, t_pred_scores, t_pred_distri = outputs[0], outputs[-2], outputs[-1]
 
-                save_dir = "/l/users/mohammad.bhat/FKD_train_full"
+                save_dir = "/l/users/mohammad.bhat/FKD_train_full_1"
+
+                # Check if the directory exists
+                if not os.path.exists(save_dir):
+                    # If it doesn't exist, create it
+                    os.makedirs(save_dir)
                 for k in range(len(paths)):
                     save_path = os.path.join(save_dir,str(paths[k].split('/')[-1].split('.')[0]))
                     output = []

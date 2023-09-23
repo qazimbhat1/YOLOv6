@@ -31,10 +31,9 @@ def load_state_dict(weights, model, map_location=None):
         else:
             #print("nnnnnoooooooooo", k)
             raise
-    #raise
-
+            
     model.load_state_dict(state_dict, strict=False)
-
+    
     # Check if all layer weights are loaded properly
     #if all(k in state_dict for k in model_state_dict):
     #    print("Yes")
