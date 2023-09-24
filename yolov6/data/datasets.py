@@ -108,6 +108,7 @@ class TrainValDataset(Dataset):
         return len(self.img_paths)
 
     def __getitem__(self, index):
+        self.augment = False
         """Fetching a data sample for a given key.
         This function applies mosaic and mixup augments during training.
         During validation, letterbox augment is applied.
@@ -120,7 +121,7 @@ class TrainValDataset(Dataset):
 
         # Mosaic Augmentation
         if self.augment and random.random() < self.hyp["mosaic"] and self.mix:
-            #print("MMMMMMMMMMMMMMMOOOOOOOOOOOOOO")
+            print("MMMMMMMMMMMMMMMOOOOOOOOOOOOOO")
             img, labels = self.get_mosaic(index, target_shape)
             shapes = None
 
@@ -137,7 +138,7 @@ class TrainValDataset(Dataset):
                 img, (h0, w0), (h, w) = self.load_image(index, self.hyp["shrink_size"])
             else:
                 img, (h0, w0), (h, w) = self.load_image(index)
-            #print("LLLLLLLLEEEEEEETTTTTTEEEEEEERRRRRRR")
+            print("LLLLLLLLEEEEEEETTTTTTEEEEEEERRRRRRR")
 
             # letterbox
             img, ratio, pad = letterbox(img, target_shape, auto=False, scaleup=self.augment)
@@ -164,7 +165,7 @@ class TrainValDataset(Dataset):
                 labels[:, 1:] = boxes
 
             if self.augment:
-                #print("RRRRRRRAAAANNNNDDDDOOOOMMMM")
+                print("RRRRRRRAAAANNNNDDDDOOOOMMMM")
                 img, labels = random_affine(
                     img,
                     labels,
@@ -189,7 +190,7 @@ class TrainValDataset(Dataset):
             labels[:, 1:] = boxes
 
         if self.augment:
-            #print("GGGGGGGEEEEENNNNEEERRRRAAAALLLLL")
+            print("GGGGGGGEEEEENNNNEEERRRRAAAALLLLL")
             img, labels = self.general_augment(img, labels)
 
         labels_out = torch.zeros((len(labels), 6))
@@ -199,7 +200,7 @@ class TrainValDataset(Dataset):
         # Convert
         img = img.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
         img = np.ascontiguousarray(img)
-        #raise
+        raise
 
         return torch.from_numpy(img), labels_out, self.img_paths[index], shapes
 
