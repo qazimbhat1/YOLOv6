@@ -197,7 +197,7 @@ class Evaler:
                 #80,40,20x channel for t_preds,  8400, 80 and 8400, 68 for scores and distri
                 t_feats, t_pred_scores, t_pred_distri = outputs[0], outputs[-2], outputs[-1]
 
-                save_dir = "/l/users/mohammad.bhat/FKD_train_full_1"
+                save_dir = "/l/users/mohammad.bhat/FKD_train_full"
 
                 # Check if the directory exists
                 if not os.path.exists(save_dir):
@@ -210,8 +210,8 @@ class Evaler:
                     for out in t_feats:
                         out_feat.append(out.detach().cpu().numpy())
                     output = [out_feat, t_pred_scores.detach().cpu().numpy(), t_pred_distri.detach().cpu().numpy()]
-                    # state = [status[k], affine_params[k], output]
-                    state = [status[k], affine_params[k]]
+                    state = [status[k], affine_params[k], output]
+                    #state = [status[k], affine_params[k]]
                     torch.save(state, save_path)
                     
                     # import time
@@ -223,22 +223,22 @@ class Evaler:
                     # print(f"Time taken to load state torch: {load_time:.4f} seconds")
 
 
-                    #method 2: tried blosc - 0.1-0.2 sec, lz4: , zstd slower than blosc, method 3
-                    import blosc
-                    # import lz4
-                    # import zstd
-                    for i in range(3):
-                        # print(output[0][i].flatten().shape) #(1, 256, 40, 40) 
-                        # print(output[0][i].itemsize)
-                        compressed_data = blosc.compress(output[0][i].flatten().tobytes(), typesize=output[0][i].itemsize)
-                        # compressed_data = lz4.compress(output[0][i].tobytes())
-                        with open(save_path+str(i)+'.blosc', 'wb') as f:
-                            f.write(compressed_data)
-                    for i in range(1,3):
-                        compressed_data = blosc.compress(output[i].flatten().tobytes(), typesize=output[i].itemsize)
-                        # compressed_data = lz4.compress(output[i].tobytes())
-                        with open(save_path+str(i+2)+'.blosc', 'wb') as f:
-                            f.write(compressed_data)
+                    # #method 2: tried blosc - 0.1-0.2 sec, lz4: , zstd slower than blosc, method 3
+                    # import blosc
+                    # # import lz4
+                    # # import zstd
+                    # for i in range(3):
+                    #     # print(output[0][i].flatten().shape) #(1, 256, 40, 40) 
+                    #     # print(output[0][i].itemsize)
+                    #     compressed_data = blosc.compress(output[0][i].flatten().tobytes(), typesize=output[0][i].itemsize)
+                    #     # compressed_data = lz4.compress(output[0][i].tobytes())
+                    #     with open(save_path+str(i)+'.blosc', 'wb') as f:
+                    #         f.write(compressed_data)
+                    # for i in range(1,3):
+                    #     compressed_data = blosc.compress(output[i].flatten().tobytes(), typesize=output[i].itemsize)
+                    #     # compressed_data = lz4.compress(output[i].tobytes())
+                    #     with open(save_path+str(i+2)+'.blosc', 'wb') as f:
+                    #         f.write(compressed_data)
                     
                     # import time
                     # start_time = time.time()
