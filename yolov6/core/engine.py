@@ -276,14 +276,14 @@ class Trainer:
 
     def eval_model(self):
         if not hasattr(self.cfg, "eval_params"):
-            results, vis_outputs, vis_paths = eval.run(self.data_dict,
+            eval.run(self.data_dict, #results, vis_outputs, vis_paths =
                             batch_size=self.batch_size // self.world_size * 2,
                             img_size=self.img_size,
                             model=self.ema.ema if self.args.calib is False else self.model,
                             conf_thres=0.03,
                             dataloader=self.val_loader,
                             save_dir=self.save_dir,
-                            task='train',
+                            task='val',
                             specific_shape=self.specific_shape,
                             height=self.height,
                             width=self.width
@@ -298,14 +298,14 @@ class Trainer:
                 else:
                     return default_value
             eval_img_size = get_cfg_value(self.cfg.eval_params, "img_size", self.img_size)
-            results, vis_outputs, vis_paths = eval.run(self.data_dict,
+            eval.run(self.data_dict, #results, vis_outputs, vis_paths =
                             batch_size=get_cfg_value(self.cfg.eval_params, "batch_size", self.batch_size // self.world_size * 2),
                             img_size=eval_img_size,
                             model=self.ema.ema if self.args.calib is False else self.model,
                             conf_thres=get_cfg_value(self.cfg.eval_params, "conf_thres", 0.03),
                             dataloader=self.val_loader,
                             save_dir=self.save_dir,
-                            task='train',
+                            task='val',
                             shrink_size=get_cfg_value(self.cfg.eval_params, "shrink_size", eval_img_size),
                             infer_on_rect=get_cfg_value(self.cfg.eval_params, "infer_on_rect", False),
                             verbose=get_cfg_value(self.cfg.eval_params, "verbose", False),
@@ -318,10 +318,10 @@ class Trainer:
                             width=self.width
                             )
 
-        LOGGER.info(f"Epoch: {self.epoch} | mAP@0.5: {results[0]} | mAP@0.50:0.95: {results[1]}")
-        self.evaluate_results = results[:2]
+        #LOGGER.info(f"Epoch: {self.epoch} | mAP@0.5: {results[0]} | mAP@0.50:0.95: {results[1]}")
+        #self.evaluate_results = results[:2]
         # plot validation predictions
-        self.plot_val_pred(vis_outputs, vis_paths)
+        #self.plot_val_pred(vis_outputs, vis_paths)
 
 
     def before_train_loop(self):

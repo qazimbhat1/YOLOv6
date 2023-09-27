@@ -21,7 +21,6 @@ from yolov6.utils.torch_utils import time_sync, get_model_info
 from yolov6.models.yolo import build_model
 from yolov6.utils.checkpoint import load_state_dict, save_checkpoint, strip_optimizer
 
-
 class Evaler:
     def __init__(self,
                  data,
@@ -45,7 +44,8 @@ class Evaler:
                  ):
         assert do_pr_metric or do_coco_metric, 'ERROR: at least set one val metric'
         self.data = data
-        self.batch_size = batch_size
+        # self.batch_size = batch_size
+        self.batch_size = 1
         self.img_size = img_size
         self.conf_thres = conf_thres
         self.iou_thres = iou_thres
@@ -62,10 +62,9 @@ class Evaler:
         self.specific_shape = specific_shape
         self.height = height
         self.width = width
-        self.gen_gsl=True
 
         con_file_teacher = 'configs/yolov6n.py'
-        print("check the config file in evaler.py in init line number 66 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print("----------------USING config N--------------")
         from yolov6.utils.config import Config
         self.num_classes = 80
 
@@ -74,26 +73,8 @@ class Evaler:
         # raise
         if not hasattr(self.cfg_teacher, 'training_mode'):
             setattr(self.cfg_teacher, 'training_mode', 'repvgg')
-
-    # def init_model(self, model, weights, task):
-    #     if task != 'train':
-    #         if not os.path.exists(weights):
-    #             download_ckpt(weights)
-    #         model = load_checkpoint(weights, map_location=self.device)
-    #         self.stride = int(model.stride.max())
-    #         # switch to deploy
-    #         from yolov6.layers.common import RepVGGBlock
-    #         for layer in model.modules():
-    #             if isinstance(layer, RepVGGBlock):
-    #                 layer.switch_to_deploy()
-    #             elif isinstance(layer, torch.nn.Upsample) and not hasattr(layer, 'recompute_scale_factor'):
-    #                 layer.recompute_scale_factor = None  # torch 1.11.0 compatibility
-    #         LOGGER.info("Switch model to deploy modality.")
-    #         LOGGER.info("Model Summary: {}".format(get_model_info(model, self.img_size)))
-    #     if self.device.type != 'cpu':
-    #         model(torch.zeros(1, 3, self.img_size, self.img_size).to(self.device).type_as(next(model.parameters())))
-    #     model.half() if self.half else model.float()
-    #     return model
+        
+        self.gen_gsl = True
 
     def get_teacher_model(self, teacher_model_path, cfg, nc, device):
         teacher_fuse_ab = False if cfg.model.head.num_layers != 3 else True
@@ -108,26 +89,31 @@ class Evaler:
             if isinstance(module, torch.nn.BatchNorm2d):
                 module.track_running_stats = False
         return model
-
+    
     def init_model(self, model, weights, task):
         if task != 'train':
-            if not os.path.exists(weights):
-                download_ckpt(weights)
-            model = load_checkpoint(weights, map_location=self.device)
-
-            self.stride = int(model.stride.max())
-            # switch to deploy
-            from yolov6.layers.common import RepVGGBlock
-            for layer in model.modules():
-                if isinstance(layer, RepVGGBlock):
-                    layer.switch_to_deploy()
-                elif isinstance(layer, torch.nn.Upsample) and not hasattr(layer, 'recompute_scale_factor'):
-                    layer.recompute_scale_factor = None  # torch 1.11.0 compatibility
-            LOGGER.info("Switch model to deploy modality.")
-            LOGGER.info("Model Summary: {}".format(get_model_info(model, self.img_size)))
-
             if self.gen_gsl:
+                print("Loading PTM from hard coded")
+                weights = "runs/train/_64_batch_size_test_step_1_N/weights/best_ckpt.pt"
                 model = self.get_teacher_model(weights, self.cfg_teacher, self.num_classes, self.device)
+                self.stride = int(model.stride.max())
+            else:
+                if not os.path.exists(weights):
+                    download_ckpt(weights)
+                model = load_checkpoint(weights, map_location=self.device)
+
+                self.stride = int(model.stride.max())
+                # switch to deploy
+                from yolov6.layers.common import RepVGGBlock
+                for layer in model.modules():
+                    if isinstance(layer, RepVGGBlock):
+                        layer.switch_to_deploy()
+                    elif isinstance(layer, torch.nn.Upsample) and not hasattr(layer, 'recompute_scale_factor'):
+                        layer.recompute_scale_factor = None  # torch 1.11.0 compatibility
+                LOGGER.info("Switch model to deploy modality.")
+                LOGGER.info("Model Summary: {}".format(get_model_info(model, self.img_size)))
+
+            
 
         if self.device.type != 'cpu':
             model(torch.zeros(1, 3, self.img_size, self.img_size).to(self.device).type_as(next(model.parameters())))
@@ -169,7 +155,6 @@ class Evaler:
                 from yolov6.utils.metrics import ConfusionMatrix
                 confusion_matrix = ConfusionMatrix(nc=model.nc)
 
-
         for i, (imgs, targets, paths, shapes, status, affine_params, _, _, _) in enumerate(pbar):
             # pre-process
             # print(imgs.shape, targets.shape)
@@ -195,14 +180,10 @@ class Evaler:
             if self.gen_gsl == True:
                 #TODO: Use both models and save output from model without eval - req features achieved by disable eval()
                 #80,40,20x channel for t_preds,  8400, 80 and 8400, 68 for scores and distri
+                print("Gen GSL")
                 t_feats, t_pred_scores, t_pred_distri = outputs[0], outputs[-2], outputs[-1]
 
                 save_dir = "/l/users/mohammad.bhat/FKD_train_full"
-
-                # Check if the directory exists
-                if not os.path.exists(save_dir):
-                    # If it doesn't exist, create it
-                    os.makedirs(save_dir)
                 for k in range(len(paths)):
                     save_path = os.path.join(save_dir,str(paths[k].split('/')[-1].split('.')[0]))
                     output = []
@@ -210,6 +191,7 @@ class Evaler:
                     for out in t_feats:
                         out_feat.append(out.detach().cpu().numpy())
                     output = [out_feat, t_pred_scores.detach().cpu().numpy(), t_pred_distri.detach().cpu().numpy()]
+                    print(t_pred_distri.shape)
                     state = [status[k], affine_params[k], output]
                     #state = [status[k], affine_params[k]]
                     torch.save(state, save_path)
@@ -307,23 +289,6 @@ class Evaler:
 
             self.speed_result[2] += time_sync() - t2  # inference time
 
-
-            save_dir = "/l/users/mohammad.bhat/FKD"
-
-
-            # Inference
-            #t2 = time_sync()
-            #outputs, _ = model(imgs)
-            #print(outputs.shape, paths)
-            #save_dir = "/home/zbhat/yolo/yolo_orig/yolo_orig_gsl"
-            #for k in range(len(paths)):
-            #    save_path = os.path.join(save_dir,str(paths[k].split('/')[-1].split('.')[0]))
-            #    print(save_path)
-            #    state = [save_path, outputs[k].detach().cpu().numpy()]
-            #    torch.save(state, save_path)
-                # raise
-            #self.speed_result[2] += time_sync() - t2  # inference time
-
             # post-process
             t3 = time_sync()
             outputs = non_max_suppression(outputs, self.conf_thres, self.iou_thres, multi_label=True)
@@ -335,8 +300,19 @@ class Evaler:
                 eval_outputs = copy.deepcopy([x.detach().cpu() for x in outputs])
 
             # save result
+            # print(targets) 
+            # print(outputs[0])
             pred_results.extend(self.convert_to_coco_format(outputs, imgs, paths, shapes, self.ids))
+            # out = self.convert_to_coco_format_label(targets, imgs, paths,  shapes, self.ids)
+            # print("1: ", len(pred_results))
+            # print("2: ", targets)
 
+            # raise
+
+
+            # raise
+            # for i in 
+            # print(pred_results.shape, targets.shape)
             # for tensorboard visualization, maximum images to show: 8
             if i == 0:
                 vis_num = min(len(imgs), 8)
@@ -349,9 +325,15 @@ class Evaler:
             # Statistics per image
             # This code is based on
             # https://github.com/ultralytics/yolov5/blob/master/val.py
+            # print(eval_outputs)
+            # raise
             for si, pred in enumerate(eval_outputs):
+                # print("----------------------")
+
                 labels = targets[targets[:, 0] == si, 1:]
                 nl = len(labels)
+                # print(nl)
+                # raise
                 tcls = labels[:, 0].tolist() if nl else []  # target class
                 seen += 1
 
@@ -380,14 +362,15 @@ class Evaler:
                     labelsn = torch.cat((labels[:, 0:1], tbox), 1)  # native-space labels
 
                     from yolov6.utils.metrics import process_batch
-
+                    # print(predn, labelsn)
+                    # raise
                     correct = process_batch(predn, labelsn, iouv)
                     if self.plot_confusion_matrix:
                         confusion_matrix.process_batch(predn, labelsn)
 
                 # Append statistics (correct, conf, pcls, tcls)
                 stats.append((correct.cpu(), pred[:, 4].cpu(), pred[:, 5].cpu(), tcls))
-
+        return
         if self.do_pr_metric:
             # Compute statistics
             stats = [np.concatenate(x, 0) for x in zip(*stats)]  # to numpy
@@ -420,7 +403,7 @@ class Evaler:
             else:
                 LOGGER.info("Calculate metric failed, might check dataset.")
                 self.pr_metric_result = (0.0, 0.0)
-
+        return
         return pred_results, vis_outputs, vis_paths
 
 
@@ -454,6 +437,7 @@ class Evaler:
 
             anno = COCO(anno_json)
             pred = anno.loadRes(pred_json)
+            print(anno, pred)
             cocoEval = COCOeval(anno, pred, 'bbox')
             if self.is_coco:
                 imgIds = [int(os.path.basename(x).split(".")[0])
@@ -556,7 +540,9 @@ class Evaler:
 
     def convert_to_coco_format(self, outputs, imgs, paths, shapes, ids):
         pred_results = []
+        
         for i, pred in enumerate(outputs):
+            # print(pred.shape, paths[i], shapes, pred[:,:4])
             if len(pred) == 0:
                 continue
             path, shape = Path(paths[i]), shapes[i][0]
@@ -577,6 +563,34 @@ class Evaler:
                     "score": score
                 }
                 pred_results.append(pred_data)
+        return pred_results
+    
+    def convert_to_coco_format_label(self, labels, imgs, paths, shapes, ids):
+        pred_results = []
+        pred = labels
+        # for i, pred in enumerate(outputs):
+        # if len(pred) == 0:
+        #     continue
+        # print(imgs.shape, labels.shape, shapes, pred)
+        path, shape = Path(paths[0]), shapes[0][0]
+        self.scale_coords(imgs[0].shape[1:], pred[:, 2:6], shape, shapes[0][1])
+        image_id = int(path.stem) if self.is_coco else path.stem
+        bboxes = self.box_convert(pred[:, 2:6])
+        bboxes[:, :2] -= bboxes[:, 2:] / 2
+        cls = pred[:, 1]
+        # scores = pred[:, 4]
+        for ind in range(pred.shape[0]):
+            category_id = ids[int(cls[ind])]
+            bbox = [round(x, 3) for x in bboxes[ind].tolist()]
+            # score = round(scores[ind].item(), 5)
+            pred_data = {
+                "image_id": image_id,
+                "category_id": category_id,
+                "bbox": bbox,
+                # "score": score
+            }
+            pred_results.append(pred_data)
+        print(pred_results)
         return pred_results
 
     @staticmethod

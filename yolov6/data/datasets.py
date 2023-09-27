@@ -188,11 +188,11 @@ class TrainValDataset(Dataset):
         During validation, letterbox augment is applied.
         """
         if self.task == 'Train':
-            # save_dir = "/home/projects1_metropolis/tmp/zaid/yolo/save_final_L"
-            # save_path = os.path.join(save_dir,str(self.img_paths[index].split('/')[-1].split('.')[0]))
-            # state = torch.load(save_path)#, map_location=torch.device('cpu'))
-            # status, affine_params, outputs = state
-            # t_feats, t_pred_scores, t_pred_distri = outputs[0], outputs[-2], outputs[-1]
+            save_dir = "/l/users/mohammad.bhat/FKD_train_full" #save_final_L
+            save_path = os.path.join(save_dir,str(self.img_paths[index].split('/')[-1].split('.')[0]))
+            state = torch.load(save_path)#, map_location=torch.device('cpu'))
+            status, affine_params, outputs = state
+            t_feats, t_pred_scores, t_pred_distri = outputs[0], outputs[-2], outputs[-1]
             # outputs = { 'B': t_pred_scores, 'C': t_pred_distri} #'A': t_feats,
             # outputs = [(t_feats, t_pred_scores, t_pred_distri)]
             # for f in t_feats:
@@ -200,47 +200,45 @@ class TrainValDataset(Dataset):
             # print(t_pred_distri.shape, t_pred_scores.shape)
 
 
-            #Method 2
-            random_number = random.randint(0, 11)
-            save_dir = "/l/users/mohammad.bhat/FKD_train_full_1" + str(random_number)
-            #print(save_dir, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-            save_path = os.path.join(save_dir,str(self.img_paths[index].split('/')[-1].split('.')[0]))
+            # #Method 2
+            # save_dir = "/home/projects1_metropolis/tmp/zaid/yolo/save_final_L_numpy"
+            # save_path = os.path.join(save_dir,str(self.img_paths[index].split('/')[-1].split('.')[0]))
 
-            state = torch.load(save_path)#, map_location=torch.device('cpu'))
-            status, affine_params = state
+            # state = torch.load(save_path)#, map_location=torch.device('cpu'))
+            # status, affine_params = state
 
-            import blosc
-            # import lz4
-            # import zstd
-            # import time
-            # start_time = time.time()
-            output_0 = []
-            output = []
-            for i in range(3):
-                with open(save_path+str(i)+'.blosc', 'rb') as f:
-                    compressed_data = f.read()
-                decompressed_data = np.frombuffer(blosc.decompress(compressed_data), dtype=np.float32)
-                # print(output[0][i].dtype)
-                output_0.append(decompressed_data)
-            output_0[0] = output_0[0].reshape((1,-1, 80, 80))
-            output_0[1] = output_0[1].reshape((1,-1, 40, 40))
-            output_0[2] = output_0[2].reshape((1,-1, 20, 20))
+            # import blosc
+            # # import lz4
+            # # import zstd
+            # # import time
+            # # start_time = time.time()
+            # output_0 = []
+            # output = []
+            # for i in range(3):
+            #     with open(save_path+str(i)+'.blosc', 'rb') as f:
+            #         compressed_data = f.read()
+            #     decompressed_data = np.frombuffer(blosc.decompress(compressed_data), dtype=np.float32)
+            #     # print(output[0][i].dtype)
+            #     output_0.append(decompressed_data)
+            # output_0[0] = output_0[0].reshape((1,-1, 80, 80))
+            # output_0[1] = output_0[1].reshape((1,-1, 40, 40))
+            # output_0[2] = output_0[2].reshape((1,-1, 20, 20))
 
-            for i in range(1,3):
-                with open(save_path+str(i+2)+'.blosc', 'rb') as f:
-                    compressed_data = f.read()
-                decompressed_data = np.frombuffer(blosc.decompress(compressed_data), dtype=np.float32)
-                # print(output[i].dtype) #float32
-                output.append(decompressed_data)
+            # for i in range(1,3):
+            #     with open(save_path+str(i+2)+'.blosc', 'rb') as f:
+            #         compressed_data = f.read()
+            #     decompressed_data = np.frombuffer(blosc.decompress(compressed_data), dtype=np.float32)
+            #     # print(output[i].dtype) #float32
+            #     output.append(decompressed_data)
             
-            t_pred_scores = output[0].reshape((1, -1, 80))
-            t_pred_distri = output[1].reshape((1, -1, 68))
-            # print(t_pred_scores.shape, t_pred_distri.shape)
-            # print(output_0[0].shape, output_0[1].shape, output_0[2].shape)
-            t_feats = output_0
-            # end_time = time.time()
-            # load_time = end_time - start_time
-            # print(f"Time taken to load state blosc: {load_time:.4f} seconds")
+            # t_pred_scores = output[0].reshape((1, -1, 80))
+            # t_pred_distri = output[1].reshape((1, -1, 68))
+            # # print(t_pred_scores.shape, t_pred_distri.shape)
+            # # print(output_0[0].shape, output_0[1].shape, output_0[2].shape)
+            # t_feats = output_0
+            # # end_time = time.time()
+            # # load_time = end_time - start_time
+            # # print(f"Time taken to load state blosc: {load_time:.4f} seconds")
 
 
             t_pred_scores = torch.from_numpy(t_pred_scores.copy())
