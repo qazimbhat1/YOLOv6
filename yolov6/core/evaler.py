@@ -180,7 +180,7 @@ class Evaler:
             if self.gen_gsl == True:
                 #TODO: Use both models and save output from model without eval - req features achieved by disable eval()
                 #80,40,20x channel for t_preds,  8400, 80 and 8400, 68 for scores and distri
-                print("Gen GSL")
+                #print("Gen GSL")
                 t_feats, t_pred_scores, t_pred_distri = outputs[0], outputs[-2], outputs[-1]
 
                 save_dir = "/l/users/mohammad.bhat/FKD_train_full"

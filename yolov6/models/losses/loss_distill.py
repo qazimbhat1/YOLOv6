@@ -77,10 +77,10 @@ class ComputeLoss:
                generate_anchors(feats, self.fpn_strides, self.grid_cell_size, self.grid_cell_offset, device=feats[0].device)
         t_anchors, t_anchor_points, t_n_anchors_list, t_stride_tensor = \
                generate_anchors(t_feats, self.fpn_strides, self.grid_cell_size, self.grid_cell_offset, device=feats[0].device)
-        print(t_outputs[-2].shape, "!!!!!!!!!!!!!!!")
-        print(t_outputs[-1].shape)
-        print(len(t_outputs))
-        raise
+        #print(t_outputs[-2].shape, "!!!!!!!!!!!!!!!")
+        #print(t_outputs[-1].shape)
+        #print(len(t_outputs))
+        #raise
 
         assert pred_scores.type() == pred_distri.type()
         gt_bboxes_scale = torch.tensor([batch_width, batch_height, batch_width, batch_height]).type_as(pred_scores)
