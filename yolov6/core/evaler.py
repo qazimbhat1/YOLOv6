@@ -44,8 +44,8 @@ class Evaler:
                  ):
         assert do_pr_metric or do_coco_metric, 'ERROR: at least set one val metric'
         self.data = data
-        # self.batch_size = batch_size
-        self.batch_size = 1
+        self.batch_size = batch_size
+        #self.batch_size = 1
         self.img_size = img_size
         self.conf_thres = conf_thres
         self.iou_thres = iou_thres
@@ -180,18 +180,21 @@ class Evaler:
             if self.gen_gsl == True:
                 #TODO: Use both models and save output from model without eval - req features achieved by disable eval()
                 #80,40,20x channel for t_preds,  8400, 80 and 8400, 68 for scores and distri
-                #print("Gen GSL")
-                t_feats, t_pred_scores, t_pred_distri = outputs[0], outputs[-2], outputs[-1]
+                # print(outputs[-2].shape)
 
                 save_dir = "/l/users/mohammad.bhat/FKD_train_full"
                 for k in range(len(paths)):
+                    # print("Gen GSL")
+                    t_feats, t_pred_scores, t_pred_distri = outputs[0], outputs[-2][k:k+1,:,:], outputs[-1][k:k+1,:,:]
+                    # print(t_pred_distri.shape, t_pred_scores.shape)
                     save_path = os.path.join(save_dir,str(paths[k].split('/')[-1].split('.')[0]))
+                    # print(save_path)
                     output = []
                     out_feat = []
                     for out in t_feats:
-                        out_feat.append(out.detach().cpu().numpy())
+                        out_feat.append(out[k:k+1,:,:,:].detach().cpu().numpy())
+                        # print(out[k:k+1,:,:,:].shape)
                     output = [out_feat, t_pred_scores.detach().cpu().numpy(), t_pred_distri.detach().cpu().numpy()]
-                    print(t_pred_distri.shape)
                     state = [status[k], affine_params[k], output]
                     #state = [status[k], affine_params[k]]
                     torch.save(state, save_path)

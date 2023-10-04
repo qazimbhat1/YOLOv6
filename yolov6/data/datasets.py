@@ -190,7 +190,13 @@ class TrainValDataset(Dataset):
         if self.task == 'Train':
             save_dir = "/l/users/mohammad.bhat/FKD_train_full" #save_final_L
             save_path = os.path.join(save_dir,str(self.img_paths[index].split('/')[-1].split('.')[0]))
-            state = torch.load(save_path)#, map_location=torch.device('cpu'))
+            try:
+                state = torch.load(save_path)#, map_location=torch.device('cpu'))
+            except:
+                save_dir = "/l/users/mohammad.bhat/FKD_train_full_golden_new" #save_final_L
+                save_path = os.path.join(save_dir,str(self.img_paths[index].split('/')[-1].split('.')[0]))
+                state = torch.load(save_path)#, map_location=torch.device('cpu'))
+
             status, affine_params, outputs = state
             t_feats, t_pred_scores, t_pred_distri = outputs[0], outputs[-2], outputs[-1]
             # outputs = { 'B': t_pred_scores, 'C': t_pred_distri} #'A': t_feats,
